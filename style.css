@@ -1,11 +1,12 @@
 :root {
-    --bg-color: #ffffff;
+    --bg-color: #f7f5f0;
+    /* Parchment tone to match banner */
     --text-color: #1e293b;
     --text-muted: #64748b;
     --primary-color: #d97706;
     /* Amber-600 */
-    --gold: #f59e0b;
-    /* Amber-500 */
+    --gold: #e5b522;
+    /* Patch 7.3 Gold */
     --gold-light: #fcd34d;
     --surface: #ffffff;
     --border: #e2e8f0;

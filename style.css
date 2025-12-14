@@ -52,9 +52,9 @@ body {
     z-index: 0;
     /* Behind logo */
 
-    /* Feathering effect (Fade to transparency at edges) */
-    mask-image: radial-gradient(ellipse at center top, black 70%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse at center top, black 70%, transparent 100%);
+    /* Feathering effect (Fade to transparency at the bottom) */
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 
 /* Logo Overlay */

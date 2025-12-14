@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Into The Mist</title>
+    <meta name="description" content="Site personnel et portfolio.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <h1>Into The Mist</h1>
+        <nav>
+            <!-- Auth status placeholder -->
+            <div id="auth-status"></div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Bienvenue dans la Brume</h2>
+            <p>Un espace personnel connecté à Supabase.</p>
+            <a href="#" class="cta-button" id="login-btn">Connexion (Demo)</a>
+        </section>
+
+        <section class="content-grid">
+            <div class="card">
+                <h3>Projets</h3>
+                <p>Découvrez mes dernières créations et expérimentations.</p>
+            </div>
+            <div class="card">
+                <h3>À propos</h3>
+                <p>En savoir plus sur mon parcours et mes compétences.</p>
+            </div>
+            <div class="card">
+                <h3>Contact</h3>
+                <p>N'hésitez pas à me contacter pour toute collaboration.</p>
+            </div>
+        </section>
+        
+        <section id="supabase-data" class="content-grid" style="margin-top: 2rem;">
+            <!-- Data from Supabase will appear here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Into The Mist. Tous droits réservés.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

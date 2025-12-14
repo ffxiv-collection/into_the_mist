@@ -62,8 +62,8 @@ body {
 .logo-circle {
     width: 150px;
     height: 150px;
-    background: #1e293b;
-    /* Dark background for contrast */
+    background: var(--gold);
+    /* Theme Gold instead of dark blue */
     border-radius: 50%;
     position: absolute;
     bottom: -75px;

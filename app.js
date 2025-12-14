@@ -16,26 +16,26 @@ try {
         supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('Supabase client initialisé via Vite');
 
-        // Fetch and display mascots
-        fetchMascots();
+        // Fetch and display sprites
+        fetchSprites();
     }
 } catch (error) {
     console.error('Erreur lors de l\'initialisation de Supabase:', error);
 }
 
 // Logic to scatter sprites without overlapping the center area too much
-async function fetchMascots() {
+// And keeping them BELOW the banner (Top > 35%)
+async function fetchSprites() {
     const container = document.getElementById('supabase-data');
     if (!container) return;
 
-    // container.innerHTML = '<p>Chargement...</p>'; // Remove loader for "decoration" feel
-
+    // Use the new 'sprites' table
     const { data, error } = await supabase
-        .from('mascots')
+        .from('sprites')
         .select('*');
 
     if (error || !data) {
-        console.error('Erreur fetch:', error);
+        console.error('Erreur fetch sprites:', error);
         return;
     }
 
@@ -43,36 +43,43 @@ async function fetchMascots() {
     container.innerHTML = '';
 
     // Create sprites
-    data.forEach((mascot, index) => {
+    data.forEach((spriteData, index) => {
         const sprite = document.createElement('div');
         sprite.className = 'floating-sprite';
-        sprite.style.backgroundImage = `url('${mascot.image_url}')`;
+
+        // Use the user-defined column name
+        const url = spriteData.icon_sprite_url;
+
+        if (!url) return;
+
+        sprite.style.backgroundImage = `url('${url}')`;
 
         // Random positioning logic
-        // We want them vaguely around the center, but not ON the center box.
-        // Simple approach: Random X/Y, but if it falls in the "danger zone" (center 40%), push it out.
+        // We want to avoid the TOP 35% (Banner) and the CENTER (Login Form)
 
         let x, y;
-        const safeZoneMin = 35; // 35%
-        const safeZoneMax = 65; // 65%
+        const quadrant = index % 4;
 
-        // Very basic scatter: 
-        // We loop until we find a pos outside the center box, or just pick a quadrant.
-        // Let's pick a quadrant based on index to distribute evenly.
-        const quadrant = index % 4; // 0: TopLeft, 1: TopRight, 2: BottomLeft, 3: BottomRight
-
-        if (quadrant === 0) { // Top Left
-            x = Math.random() * 30 + 10; // 10-40%
-            y = Math.random() * 30 + 10;
-        } else if (quadrant === 1) { // Top Right
-            x = Math.random() * 30 + 60; // 60-90%
-            y = Math.random() * 30 + 10;
-        } else if (quadrant === 2) { // Bottom Left
-            x = Math.random() * 30 + 10;
-            y = Math.random() * 30 + 60;
-        } else { // Bottom Right
-            x = Math.random() * 30 + 60;
-            y = Math.random() * 30 + 60;
+        // Adjusting quadrants to be "Below Banner" (Y > 35%)
+        // Top Left (but below banner)
+        if (quadrant === 0) {
+            x = Math.random() * 30 + 5;   // Left: 5% - 35%
+            y = Math.random() * 20 + 35;  // Top-ish: 35% - 55%
+        }
+        // Top Right (but below banner)
+        else if (quadrant === 1) {
+            x = Math.random() * 30 + 65;  // Right: 65% - 95%
+            y = Math.random() * 20 + 35;  // Top-ish: 35% - 55%
+        }
+        // Bottom Left
+        else if (quadrant === 2) {
+            x = Math.random() * 30 + 5;   // Left
+            y = Math.random() * 20 + 65;  // Bottom: 65% - 85%
+        }
+        // Bottom Right
+        else {
+            x = Math.random() * 30 + 65;  // Right
+            y = Math.random() * 20 + 65;  // Bottom
         }
 
         sprite.style.left = `${x}%`;

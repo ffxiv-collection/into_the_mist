@@ -97,7 +97,14 @@ body {
     font-weight: 700;
 }
 
-/* Forms */
+/* Forms - FIXED SPACING */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* Actual space between Input Groups and Button */
+}
+
 .form-group {
     display: flex;
     flex-direction: column;

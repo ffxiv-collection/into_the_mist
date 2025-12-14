@@ -14,9 +14,8 @@
 
 <body>
 
-    <!-- Banner & Logo -->
+    <!-- Banner & Logo (Always Visible) -->
     <div class="banner-container">
-        <!-- You can replace this later with <img src="..." class="banner-img"> -->
         <div class="logo-circle">
             <img src="https://res.cloudinary.com/dd4rdtrig/image/upload/v1765754698/ffxiv_logo_black_text_patch_7.0_pgijf1.png"
                 alt="Logo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
@@ -24,40 +23,66 @@
     </div>
 
     <main>
-        <!-- Login Form -->
-        <div class="auth-container">
-            <div class="auth-header">
-                <h2>Connexion</h2>
-            </div>
-
-            <form id="login-form">
-                <div class="form-group">
-                    <label>Entrez votre email</label>
-                    <input type="email" placeholder="Email" class="form-input" required>
+        <!-- VIEW: LOGIN (Default) -->
+        <div id="login-view">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h2>Connexion</h2>
                 </div>
 
-                <div class="form-group">
-                    <label>Entrez votre mot de passe</label>
-                    <input type="password" placeholder="Mot de passe" class="form-input" required>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Entrez votre email</label>
+                        <input type="email" id="email" placeholder="Email" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Entrez votre mot de passe</label>
+                        <input type="password" id="password" placeholder="Mot de passe" class="form-input" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="login-btn">Se connecter</button>
+                    <p id="error-msg" style="color: red; text-align: center; font-size: 0.9rem; display: none;"></p>
+                </form>
+
+                <div class="auth-links">
+                    <a href="#">J'ai oublié mon mot de passe</a>
+                    <br>
+                    <span>Vous n'avez pas encore de compte ? <a href="#">Inscription ici</a></span>
                 </div>
-
-                <button type="submit" class="btn-primary" id="login-btn">Se connecter</button>
-            </form>
-
-            <div class="auth-links">
-                <a href="#">J'ai oublié mon mot de passe</a>
-                <br>
-                <span>Vous n'avez pas encore de compte ? <a href="#">Inscription ici</a></span>
             </div>
 
-            <!-- Auth Status (Hidden or subtle) -->
-            <div id="auth-status" style="margin-top: 1rem; text-align: center; font-size: 0.8rem;"></div>
+            <!-- Mascots Decoration (Only on Login) -->
+            <section id="supabase-data"></section>
         </div>
 
-        <!-- Mascots Area (Animated) -->
-        <section id="supabase-data">
-            <!-- Loading... -->
-        </section>
+        <!-- VIEW: DASHBOARD (Hidden by default) -->
+        <div id="dashboard-view" class="hidden">
+
+            <!-- Navigation Menu -->
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active">Accueil</a></li>
+                    <li><a href="#" class="nav-link">Mascottes</a></li>
+                    <li><a href="#" class="nav-link">Montures</a></li>
+                    <li><a href="#" class="nav-link">Bardes</a></li>
+                    <li><a href="#" class="nav-link">Orchestion</a></li>
+                    <li style="margin-left: auto;"><button id="logout-btn" class="btn-logout">Déconnexion</button></li>
+                </ul>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="video-wrapper">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/ZHoZ5981rPg?si=7B5u...&rel=0"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script type="module" src="app.js"></script>

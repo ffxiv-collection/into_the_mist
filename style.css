@@ -1,12 +1,10 @@
 :root {
     --bg-color: #f7f5f0;
-    /* Parchment tone to match banner */
+    /* Parchment */
     --text-color: #1e293b;
     --text-muted: #64748b;
     --primary-color: #d97706;
-    /* Amber-600 */
     --gold: #e5b522;
-    /* Patch 7.3 Gold */
     --gold-light: #fcd34d;
     --surface: #ffffff;
     --border: #e2e8f0;
@@ -27,6 +25,11 @@ body {
     overflow-x: hidden;
 }
 
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
 /* Banner Section */
 .banner-container {
     width: 100%;
@@ -35,11 +38,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    margin-bottom: 4rem;
-    /* overflow: hidden; Removed to let logo hang out */
+    margin-bottom: 2rem;
+    /* Reduced margin slightly to bring menu closer */
 }
 
-/* Pseudo-element for the Background Image + Blur/Fade effect */
+/* Pseudo-element for Banner + Fade */
 .banner-container::before {
     content: '';
     position: absolute;
@@ -51,9 +54,6 @@ body {
     background-size: cover;
     background-position: center top;
     z-index: 0;
-    /* Behind logo */
-
-    /* Feathering effect (Fade to transparency at the bottom) */
     mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
@@ -63,11 +63,9 @@ body {
     width: 150px;
     height: 150px;
     background: #ffffff;
-    /* White background as requested */
     border-radius: 50%;
     position: absolute;
     bottom: -75px;
-    /* Half height to overlap */
     left: 50%;
     transform: translateX(-50%);
     box-shadow: var(--shadow-lg);
@@ -81,31 +79,24 @@ body {
     z-index: 10;
 }
 
+/* --- LOGIN VIEW STYLES --- */
+
 /* Auth Container */
 .auth-container {
     max-width: 450px;
     width: 90%;
     margin: 0 auto;
     padding: 3rem;
-    /* Uniform padding */
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);
     border-radius: 1.5rem;
-    /* Softer corners */
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    /* Deeper shadow */
+    box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    /* More space between elements */
     position: relative;
     z-index: 10;
     margin-top: 3rem;
-    /* Space for logo */
-}
-
-.auth-header {
-    text-align: center;
 }
 
 .auth-header h2 {
@@ -113,14 +104,13 @@ body {
     font-size: 2rem;
     margin: 0;
     font-weight: 700;
+    text-align: center;
 }
 
-/* Forms - FIXED SPACING */
 #login-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    /* Actual space between Input Groups and Button */
 }
 
 .form-group {
@@ -176,7 +166,7 @@ body {
     text-decoration: none;
 }
 
-/* Mascots as Decoration */
+/* Mascots Decoration */
 #supabase-data {
     position: fixed;
     top: 50%;
@@ -185,9 +175,7 @@ body {
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    /* Let clicks pass through to form */
     z-index: 1;
-    /* Behind form (auth-container is z-index: 5) */
     overflow: hidden;
 }
 
@@ -199,7 +187,6 @@ body {
     background-repeat: no-repeat;
     filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
     animation: float 6s ease-in-out infinite;
-    /* transition: top 0.5s, left 0.5s; Optional smooth loading */
 }
 
 @keyframes float {
@@ -212,4 +199,90 @@ body {
     50% {
         transform: translateY(-15px);
     }
+}
+
+/* --- DASHBOARD VIEW STYLES --- */
+
+/* Navigation */
+.main-nav {
+    max-width: 900px;
+    margin: 4rem auto 2rem auto;
+    /* Top margin accounts for Logo overlap */
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 20;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--gold);
+    background-color: #fffbeb;
+    /* Light gold tint */
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: #f1f5f9;
+    color: #ef4444;
+    /* Red for logout */
+    border-color: #ef4444;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.video-wrapper {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 4px solid #fff;
+}
+
+.video-wrapper iframe {
+    width: 100%;
+    height: 100%;
 }

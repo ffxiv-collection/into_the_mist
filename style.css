@@ -147,55 +147,42 @@ body {
 }
 
 /* Mascots Grid (Animated) */
+/* Mascots as Decoration */
 #supabase-data {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 4rem;
-    padding: 2rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    /* Let clicks pass through to form */
+    z-index: 1;
+    /* Behind form (auth-container is z-index: 5) */
+    overflow: hidden;
 }
 
-.mascot-card {
-    /* Transparent card to focus on the "Pixel Art" feel */
-    background: transparent;
-    border: none;
-    padding: 1rem;
-    width: 120px;
-    animation: float 6s ease-in-out infinite;
-}
-
-/* Randomize animation delay in JS or here for variety */
-.mascot-card:nth-child(odd) {
-    animation-duration: 5s;
-}
-
-.mascot-card:nth-child(even) {
-    animation-duration: 7s;
-}
-
-.card-image {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 0.5rem;
+.floating-sprite {
+    position: absolute;
+    width: 60px;
+    height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-color: transparent;
-    /* No background for sprites */
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1));
+    animation: float 6s ease-in-out infinite;
+    /* transition: top 0.5s, left 0.5s; Optional smooth loading */
 }
 
-.mascot-card h3 {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin: 0;
+/* Auth Container Adjustment */
+.auth-container {
+    padding: 3rem 2rem;
+    z-index: 10;
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    /* Slightly transparent to see sprites behind? */
+    backdrop-filter: blur(8px);
+    /* Nice glass effect */
 }
-
-.mascot-card p {
-    display: none;
-}
-
-/* Hide description for cleaner look */
 
 @keyframes float {
 

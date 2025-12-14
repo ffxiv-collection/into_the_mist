@@ -16,14 +16,6 @@ try {
         supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('Supabase client initialisé via Vite');
 
-        const statusEl = document.getElementById('auth-status');
-        if (statusEl) statusEl.innerHTML = '<span style="color: #4ade80; font-size: 0.9rem;">● Supabase connecté (Vite)</span>';
-
-        // Exemple: Écouter les changements d'état d'authentification
-        supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth event:', event, session);
-        });
-
         // Fetch and display mascots
         fetchMascots();
     }
@@ -31,46 +23,64 @@ try {
     console.error('Erreur lors de l\'initialisation de Supabase:', error);
 }
 
+// Logic to scatter sprites without overlapping the center area too much
 async function fetchMascots() {
     const container = document.getElementById('supabase-data');
     if (!container) return;
 
-    container.innerHTML = '<p>Chargement des mascottes...</p>';
+    // container.innerHTML = '<p>Chargement...</p>'; // Remove loader for "decoration" feel
 
     const { data, error } = await supabase
         .from('mascots')
         .select('*');
 
-    if (error) {
+    if (error || !data) {
         console.error('Erreur fetch:', error);
-        container.innerHTML = `<p style="color: red">Erreur: ${error.message}</p>`;
         return;
     }
 
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p>Aucune mascotte trouvée.</p>';
-        return;
-    }
+    // Clear container
+    container.innerHTML = '';
 
-    // Render cards
-    container.innerHTML = data.map(mascot => `
-        <div class="card mascot-card">
-            <div class="card-image" style="background-image: url('${mascot.image_url || 'https://via.placeholder.com/150'}')"></div>
-            <h3>${mascot.name}</h3>
-            <p>${mascot.description}</p>
-        </div>
-    `).join('');
-}
+    // Create sprites
+    data.forEach((mascot, index) => {
+        const sprite = document.createElement('div');
+        sprite.className = 'floating-sprite';
+        sprite.style.backgroundImage = `url('${mascot.image_url}')`;
 
-// Exemple de fonction de connexion (à connecter au bouton)
-const loginBtn = document.getElementById('login-btn');
-if (loginBtn) {
-    loginBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (!supabase) {
-            alert('Erreur configuration Supabase');
-            return;
+        // Random positioning logic
+        // We want them vaguely around the center, but not ON the center box.
+        // Simple approach: Random X/Y, but if it falls in the "danger zone" (center 40%), push it out.
+
+        let x, y;
+        const safeZoneMin = 35; // 35%
+        const safeZoneMax = 65; // 65%
+
+        // Very basic scatter: 
+        // We loop until we find a pos outside the center box, or just pick a quadrant.
+        // Let's pick a quadrant based on index to distribute evenly.
+        const quadrant = index % 4; // 0: TopLeft, 1: TopRight, 2: BottomLeft, 3: BottomRight
+
+        if (quadrant === 0) { // Top Left
+            x = Math.random() * 30 + 10; // 10-40%
+            y = Math.random() * 30 + 10;
+        } else if (quadrant === 1) { // Top Right
+            x = Math.random() * 30 + 60; // 60-90%
+            y = Math.random() * 30 + 10;
+        } else if (quadrant === 2) { // Bottom Left
+            x = Math.random() * 30 + 10;
+            y = Math.random() * 30 + 60;
+        } else { // Bottom Right
+            x = Math.random() * 30 + 60;
+            y = Math.random() * 30 + 60;
         }
-        alert('Fonctionnalité de connexion prête à être implémentée !');
+
+        sprite.style.left = `${x}%`;
+        sprite.style.top = `${y}%`;
+
+        // Random animation delay
+        sprite.style.animationDelay = `-${Math.random() * 5}s`;
+
+        container.appendChild(sprite);
     });
 }

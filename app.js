@@ -23,9 +23,43 @@ try {
         supabase.auth.onAuthStateChange((event, session) => {
             console.log('Auth event:', event, session);
         });
+
+        // Fetch and display mascots
+        fetchMascots();
     }
 } catch (error) {
     console.error('Erreur lors de l\'initialisation de Supabase:', error);
+}
+
+async function fetchMascots() {
+    const container = document.getElementById('supabase-data');
+    if (!container) return;
+
+    container.innerHTML = '<p>Chargement des mascottes...</p>';
+
+    const { data, error } = await supabase
+        .from('mascots')
+        .select('*');
+
+    if (error) {
+        console.error('Erreur fetch:', error);
+        container.innerHTML = `<p style="color: red">Erreur: ${error.message}</p>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p>Aucune mascotte trouvée.</p>';
+        return;
+    }
+
+    // Render cards
+    container.innerHTML = data.map(mascot => `
+        <div class="card mascot-card">
+            <div class="card-image" style="background-image: url('${mascot.image_url || 'https://via.placeholder.com/150'}')"></div>
+            <h3>${mascot.name}</h3>
+            <p>${mascot.description}</p>
+        </div>
+    `).join('');
 }
 
 // Exemple de fonction de connexion (à connecter au bouton)

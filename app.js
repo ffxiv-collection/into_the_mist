@@ -1,8 +1,5 @@
-// Récupération des variables d'environnement (si vous utilisez un bundler plus tard)
-// Pour l'instant, nous allons utiliser des placeholders que vous devrez remplacer.
-
-const SUPABASE_URL = 'VOTRE_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'VOTRE_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://hbktwpbyxpobtsoyqoss.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhia3R3cGJ5eHBvYnRzb3lxb3NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTI2MTYsImV4cCI6MjA4MTIyODYxNn0.TK7xhWRHQ2e_ztpgVXkhvQxR0AuvATymd9RvlgVAFAE';
 
 // Initialisation du client Supabase
 // Note: Ceci ne fonctionnera que si vous remplacez les valeurs ci-dessus.
@@ -16,7 +13,7 @@ try {
         supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('Supabase client initialisé');
         document.getElementById('auth-status').innerHTML = '<span style="color: #4ade80; font-size: 0.9rem;">● Supabase connecté</span>';
-        
+
         // Exemple: Écouter les changements d'état d'authentification
         supabase.auth.onAuthStateChange((event, session) => {
             console.log('Auth event:', event, session);

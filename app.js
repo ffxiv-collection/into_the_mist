@@ -42,8 +42,41 @@ async function fetchSprites() {
     // Clear container
     container.innerHTML = '';
 
+    // --- Slot System to avoid overlapping ---
+    // We define a "Grid" of possible positions.
+    // Screen is 100% x 100%.
+    // Sprite is roughly 5-8%. Let's say a slot is 10% x 10%.
+    // We want to avoid:
+    // 1. Top Banner: Y < 35%
+    // 2. Center Box: X between 30% and 70% (approx)
+
+    const slots = [];
+    const step = 12; // Grid cell size in %
+    const startY = 35; // Below banner
+
+    for (let y = startY; y < 90; y += step) {
+        for (let x = 5; x < 90; x += step) {
+            // Check if inside the Center "Danger Zone" (Login Box)
+            // Left: x < 30 is OK
+            // Right: x > 70 is OK
+            if (x > 30 && x < 70) {
+                continue; // Skip this slot
+            }
+            slots.push({ x, y });
+        }
+    }
+
+    // Shuffle slots (Fisher-Yates)
+    for (let i = slots.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [slots[i], slots[j]] = [slots[j], slots[i]];
+    }
+
     // Create sprites
     data.forEach((spriteData, index) => {
+        // If we run out of slots, stop spawning (or overlap, but let's just stop)
+        if (index >= slots.length) return;
+
         const sprite = document.createElement('div');
         sprite.className = 'floating-sprite';
 
@@ -54,36 +87,15 @@ async function fetchSprites() {
 
         sprite.style.backgroundImage = `url('${url}')`;
 
-        // Random positioning logic
-        // We want to avoid the TOP 35% (Banner) and the CENTER (Login Form)
+        // Pick a unique slot
+        const slot = slots[index];
 
-        let x, y;
-        const quadrant = index % 4;
+        // Add a tiny random jitter so they aren't perfectly aligned like a chessboard
+        const jitterX = (Math.random() - 0.5) * 4;
+        const jitterY = (Math.random() - 0.5) * 4;
 
-        // Adjusting quadrants to be "Below Banner" (Y > 35%)
-        // Top Left (but below banner)
-        if (quadrant === 0) {
-            x = Math.random() * 30 + 5;   // Left: 5% - 35%
-            y = Math.random() * 20 + 35;  // Top-ish: 35% - 55%
-        }
-        // Top Right (but below banner)
-        else if (quadrant === 1) {
-            x = Math.random() * 30 + 65;  // Right: 65% - 95%
-            y = Math.random() * 20 + 35;  // Top-ish: 35% - 55%
-        }
-        // Bottom Left
-        else if (quadrant === 2) {
-            x = Math.random() * 30 + 5;   // Left
-            y = Math.random() * 20 + 65;  // Bottom: 65% - 85%
-        }
-        // Bottom Right
-        else {
-            x = Math.random() * 30 + 65;  // Right
-            y = Math.random() * 20 + 65;  // Bottom
-        }
-
-        sprite.style.left = `${x}%`;
-        sprite.style.top = `${y}%`;
+        sprite.style.left = `${slot.x + jitterX}%`;
+        sprite.style.top = `${slot.y + jitterY}%`;
 
         // Random animation delay
         sprite.style.animationDelay = `-${Math.random() * 5}s`;

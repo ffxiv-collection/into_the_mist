@@ -5,58 +5,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Into The Mist</title>
-    <meta name="description" content="Site personnel et portfolio.">
-
-    <!-- Google Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
-        <h1>Into The Mist</h1>
-        <nav>
-            <!-- Auth status placeholder -->
-            <div id="auth-status"></div>
-        </nav>
-    </header>
+
+    <!-- Banner & Logo -->
+    <div class="banner-container">
+        <!-- You can replace this later with <img src="..." class="banner-img"> -->
+        <div class="logo-circle">
+            <span>LOGO</span>
+        </div>
+    </div>
 
     <main>
-        <section class="hero">
-            <h2>Bienvenue dans la Brume</h2>
-            <p>Un espace personnel connecté à Supabase.</p>
-            <a href="#" class="cta-button" id="login-btn">Connexion (Demo)</a>
-        </section>
+        <!-- Login Form -->
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Connexion</h2>
+            </div>
 
-        <section class="content-grid">
-            <div class="card">
-                <h3>Projets</h3>
-                <p>Découvrez mes dernières créations et expérimentations.</p>
-            </div>
-            <div class="card">
-                <h3>À propos</h3>
-                <p>En savoir plus sur mon parcours et mes compétences.</p>
-            </div>
-            <div class="card">
-                <h3>Contact</h3>
-                <p>N'hésitez pas à me contacter pour toute collaboration.</p>
-            </div>
-        </section>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Entrez votre email</label>
+                    <input type="email" placeholder="Email" class="form-input" required>
+                </div>
 
-        <section id="supabase-data" class="content-grid" style="margin-top: 2rem;">
-            <!-- Data from Supabase will appear here -->
+                <div class="form-group">
+                    <label>Entrez votre mot de passe</label>
+                    <input type="password" placeholder="Mot de passe" class="form-input" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="login-btn">Se connecter</button>
+            </form>
+
+            <div class="auth-links">
+                <a href="#">J'ai oublié mon mot de passe</a>
+                <br>
+                <span>Vous n'avez pas encore de compte ? <a href="#">Inscription ici</a></span>
+            </div>
+
+            <!-- Auth Status (Hidden or subtle) -->
+            <div id="auth-status" style="margin-top: 1rem; text-align: center; font-size: 0.8rem;"></div>
+        </div>
+
+        <!-- Mascots Area (Animated) -->
+        <section id="supabase-data">
+            <!-- Loading... -->
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Into The Mist. Tous droits réservés.</p>
-    </footer>
-
-    <!-- Script en type="module" pour Vite -->
     <script type="module" src="app.js"></script>
 </body>
 

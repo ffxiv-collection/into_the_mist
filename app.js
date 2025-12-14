@@ -1,18 +1,23 @@
-const SUPABASE_URL = 'https://hbktwpbyxpobtsoyqoss.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhia3R3cGJ5eHBvYnRzb3lxb3NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2NTI2MTYsImV4cCI6MjA4MTIyODYxNn0.TK7xhWRHQ2e_ztpgVXkhvQxR0AuvATymd9RvlgVAFAE';
+import { createClient } from '@supabase/supabase-js'
+
+// Utilisation des variables d'environnement VITE_
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Initialisation du client Supabase
-// Note: Ceci ne fonctionnera que si vous remplacez les valeurs ci-dessus.
 let supabase;
 
 try {
-    if (SUPABASE_URL === 'VOTRE_SUPABASE_URL' || !SUPABASE_URL) {
-        console.warn('Supabase URL non configurée.');
-        document.getElementById('auth-status').innerHTML = '<span style="color: #fbbf24; font-size: 0.9rem;">⚠️ Supabase non configuré</span>';
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        console.warn('Supabase URL ou Key manquante dans le fichier .env.');
+        const statusEl = document.getElementById('auth-status');
+        if (statusEl) statusEl.innerHTML = '<span style="color: #fbbf24; font-size: 0.9rem;">⚠️ Config manquante</span>';
     } else {
-        supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('Supabase client initialisé');
-        document.getElementById('auth-status').innerHTML = '<span style="color: #4ade80; font-size: 0.9rem;">● Supabase connecté</span>';
+        supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Supabase client initialisé via Vite');
+
+        const statusEl = document.getElementById('auth-status');
+        if (statusEl) statusEl.innerHTML = '<span style="color: #4ade80; font-size: 0.9rem;">● Supabase connecté (Vite)</span>';
 
         // Exemple: Écouter les changements d'état d'authentification
         supabase.auth.onAuthStateChange((event, session) => {
@@ -29,10 +34,9 @@ if (loginBtn) {
     loginBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         if (!supabase) {
-            alert('Veuillez configurer Supabase URL et Key dans app.js');
+            alert('Erreur configuration Supabase');
             return;
         }
-        // Logique de connexion ici
         alert('Fonctionnalité de connexion prête à être implémentée !');
     });
 }

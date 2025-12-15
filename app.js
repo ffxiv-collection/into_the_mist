@@ -121,8 +121,6 @@ function initDashboardNav() {
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Filter out if it's external or special but here we assume all .nav-link are views
             const text = link.textContent.trim();
             const targetId = sections[text];
             if (!targetId) return;
@@ -155,7 +153,6 @@ async function loadMinions() {
     const list = document.getElementById('minions-list');
     if (!list) return;
 
-    // Use Cache if available
     if (minionsCache) {
         renderMinions(minionsCache);
         return;
@@ -163,16 +160,20 @@ async function loadMinions() {
 
     list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des mascottes...</p>';
 
-    // Fetch from 'minions' table
+    // Fetch from 'minions' joined with 'patches'
+    // Requires Foreign Key relation to be set up in Supabase: minion.patch_id -> patches.id
     const { data, error } = await supabase
         .from('minions')
-        .select('*')
+        .select(`
+            *,
+            patches (*)
+        `)
         .order('id', { ascending: true })
         .limit(100);
 
     if (error) {
         console.error('Error fetching minions:', error);
-        list.innerHTML = '<p style="color:red; text-align:center;">Erreur de chargement ou table inexistante.</p>';
+        list.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement: ${error.message}</p>`;
         return;
     }
 
@@ -185,18 +186,38 @@ function renderMinions(data) {
     list.innerHTML = '';
 
     if (!data || data.length === 0) {
-        list.innerHTML = '<p style="text-align:center; padding: 2rem;">Aucune mascotte trouvée dans la base.</p>';
+        list.innerHTML = '<p style="text-align:center; padding: 2rem;">Aucune mascotte trouvée.</p>';
         return;
     }
 
     data.forEach((minion, index) => {
         const row = document.createElement('div');
 
-        // Handling Patch/Expansion styling
-        // Using patch_id provided by user
-        let patchVal = minion.patch_id || '2';
+        // Patch Data
+        // Joined data should be in minion.patches (object) or minion.patches (array)? 
+        // Typically object if 1:1.
 
-        const patchMajor = String(patchVal).charAt(0); // Take first digit for color class
+        // Try to determine major version for color
+        // If patches has a 'version' or 'name' we could parse it.
+        // Or fallback to patch_id column.
+
+        let patchData = null;
+        if (minion.patches && !Array.isArray(minion.patches)) {
+            patchData = minion.patches;
+        } else if (Array.isArray(minion.patches) && minion.patches.length > 0) {
+            patchData = minion.patches[0];
+        }
+
+        let patchVersion = '?';
+        let patchMajor = '2';
+
+        if (patchData && patchData.version) {
+            patchVersion = patchData.version;
+            patchMajor = String(patchVersion).charAt(0);
+        } else if (minion.patch_id) {
+            patchVersion = minion.patch_id; // Fallback to ID
+            patchMajor = String(minion.patch_id).charAt(0);
+        }
 
         row.className = `minion-row row-${patchMajor}`;
         row.style.animationDelay = `${index * 0.05}s`;
@@ -204,16 +225,38 @@ function renderMinions(data) {
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
         const name = minion.name || 'Inconnu';
 
+        // Patch Assets from joined table
+        const patchIconUrl = patchData ? patchData.icon_patch_url : null;
+        const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
+
+        // Build Patch Badge HTML
+        // If we have an image icon for the badge, use it instead of text badge? Or alongside?
+        // User said: "reprendre l'icone et le logo". 
+        // Screenshot shows a graphic badge (ICON) and the Logo text.
+
+        let badgeHtml = '';
+        if (patchIconUrl) {
+            badgeHtml += `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
+        } else {
+            badgeHtml += `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
+        }
+
+        let logoHtml = '';
+        if (patchLogoUrl) {
+            logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
+        }
+
         row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
                 <div class="minion-name">${name}</div>
                 <div class="minion-meta">
-                    <span class="patch-badge patch-${patchMajor}">Patch ${patchVal}</span>
+                    ${badgeHtml}
+                    ${logoHtml}
                     <!-- Extra Infos -->
-                    ${minion.hôtel_des_ventes ? '<span title="Vendable">💰</span>' : ''}
-                    ${minion.malle_surprise ? '<span title="Malle Surprise">🎁</span>' : ''}
-                    <div>⭐</div>
+                    ${minion.hôtel_des_ventes ? '<span title="Vendable" style="font-size:1.2rem;">💰</span>' : ''}
+                    ${minion.malle_surprise ? '<span title="Malle Surprise" style="font-size:1.2rem;">🎁</span>' : ''}
+                    <div style="margin-left:auto;">⭐</div>
                 </div>
             </div>
         `;

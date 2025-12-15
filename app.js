@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('Supabase initialized');
 
-        // Init Audio (Setup listeners, but DO NOT PLAY yet)
+        // Init Audio
         initAudioListeners();
 
         // Check Session
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup Event Listeners
         setupEventListeners();
 
-        // Load Sprites (Only needed if NOT logged in, but benign to load anyway)
+        // Load Sprites (Only needed if NOT logged in)
         if (!session) fetchSprites();
 
     } catch (e) {
@@ -52,17 +52,13 @@ function updateUI(session) {
         dashboardView.classList.remove('hidden');
         if (audioBtn) audioBtn.style.display = 'none';
 
-        // STOP Music if playing (e.g. refreshed page while logged in, or transition)
         stopBgMusic();
-
     } else {
         // Logged Out
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
         fetchSprites();
-
-        // START Music (Autoplay attempt)
         startBgMusic();
     }
 }
@@ -99,7 +95,6 @@ function setupEventListeners() {
                 errorMsg.style.display = 'block';
             } else {
                 console.log('Login success', data);
-                // Trigger Sound Effect specifically here on explicit login action
                 handleLoginSound();
             }
         });
@@ -112,11 +107,124 @@ function setupEventListeners() {
     }
 }
 
+// --- DASHBOARD NAVIGATION ---
+function initDashboardNav() {
+    const links = document.querySelectorAll('.nav-link');
+    const sections = {
+        'Accueil': 'dashboard-home',
+        'Mascottes': 'minions-view',
+        'Montures': 'mounts-view',
+        'Bardes': 'barding-view',
+        'Orchestion': 'orchestrion-view'
+    };
+
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Filter out if it's external or special but here we assume all .nav-link are views
+            const text = link.textContent.trim();
+            const targetId = sections[text];
+            if (!targetId) return;
+
+            // Active State
+            links.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            // Hide all
+            document.querySelectorAll('.dashboard-content').forEach(el => el.classList.add('hidden'));
+
+            // Show Target
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                targetEl.classList.remove('hidden');
+
+                // Fetch data if needed
+                if (targetId === 'minions-view') {
+                    loadMinions();
+                }
+            }
+        });
+    });
+}
+
+// --- MINIONS LOGIC ---
+let minionsCache = null;
+
+async function loadMinions() {
+    const list = document.getElementById('minions-list');
+    if (!list) return;
+
+    // Use Cache if available
+    if (minionsCache) {
+        renderMinions(minionsCache);
+        return;
+    }
+
+    list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des mascottes...</p>';
+
+    // Fetch from 'minions' table
+    const { data, error } = await supabase
+        .from('minions')
+        .select('*')
+        //.order('id', { ascending: true }) // Optional sorting
+        .limit(100); // Limit for performance init
+
+    if (error) {
+        console.error('Error fetching minions:', error);
+        list.innerHTML = '<p style="color:red; text-align:center;">Erreur de chargement ou table inexistante.</p>';
+        return;
+    }
+
+    minionsCache = data;
+    renderMinions(data);
+}
+
+function renderMinions(data) {
+    const list = document.getElementById('minions-list');
+    list.innerHTML = '';
+
+    if (!data || data.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding: 2rem;">Aucune mascotte trouvée dans la base.</p>';
+        return;
+    }
+
+    data.forEach((minion, index) => {
+        const row = document.createElement('div');
+        // Determine patch styling
+        // Try to handle numeric like 2.0 or just 2
+        let patchMajor = '2';
+        if (minion.patch) {
+            const str = String(minion.patch);
+            patchMajor = str.charAt(0);
+        }
+
+        row.className = `minion-row row-${patchMajor}`;
+        row.style.animationDelay = `${index * 0.05}s`; // Staggered Animation
+
+        const iconUrl = minion.icon || minion.image_url || 'https://xivapi.com/i/000000/000405.png';
+        const name = minion.name || 'Inconnu';
+        const patch = minion.patch || '?';
+
+        row.innerHTML = `
+            <img src="${iconUrl}" class="minion-icon" alt="${name}">
+            <div class="minion-info">
+                <div class="minion-name">${name}</div>
+                <div class="minion-meta">
+                    <span class="patch-badge patch-${patchMajor}">${patch}</span>
+                    ${minion.patch_logo ? `<img src="${minion.patch_logo}" class="patch-logo">` : ''}
+                    <div>⭐</div>
+                </div>
+            </div>
+        `;
+        list.appendChild(row);
+    });
+}
+
 // --- SPRITES LOGIC (Decoration) ---
 async function fetchSprites() {
     const container = document.getElementById('supabase-data');
     if (!container) return;
-
     if (container.children.length > 0) return;
 
     const { data, error } = await supabase.from('sprites').select('*');
@@ -139,15 +247,10 @@ async function fetchSprites() {
 
         for (let attempt = 0; attempt < 50; attempt++) {
             const cx = Math.random() * 90 + 2;
-            const cy = Math.random() * 55 + 35; // Below banner
-
-            // Avoid Center Box (Login form approx position)
-            // Left boundary: 30%, Right boundary: 70%
+            const cy = Math.random() * 55 + 35;
             const inCenterZone = (cx > 28 && cx < 72);
             if (inCenterZone) continue;
-
             if (isTooClose(cx, cy, placedPositions)) continue;
-
             validX = cx;
             validY = cy;
             found = true;
@@ -189,8 +292,6 @@ audioState.loginSound.volume = 0.6;
 
 function initAudioListeners() {
     const btn = document.getElementById('audio-toggle');
-
-    // Toggle Button
     if (btn) {
         btn.addEventListener('click', () => {
             if (audioState.isPlaying) {
@@ -201,17 +302,13 @@ function initAudioListeners() {
             }
         });
     }
-
-    // Capture first interaction to unlock AudioContext if needed
     document.addEventListener('click', () => {
         audioState.userInteracted = true;
     }, { once: true });
 }
 
 function startBgMusic() {
-    // Only play if not already playing
     if (audioState.isPlaying) return;
-
     const playPromise = audioState.bgMusic.play();
     if (playPromise !== undefined) {
         playPromise.then(() => {
@@ -237,10 +334,7 @@ function updateAudioIcon(isPlaying) {
 }
 
 function handleLoginSound() {
-    // Stop BG Music
     stopBgMusic();
     audioState.bgMusic.currentTime = 0;
-
-    // Play Success Sound
     audioState.loginSound.play().catch(e => console.log("Login sound blocked", e));
 }

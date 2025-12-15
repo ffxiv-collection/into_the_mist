@@ -148,17 +148,33 @@ function setupEventListeners() {
     }
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            // Play Logout Sound
-            if (audioState.logoutSound) {
-                audioState.logoutSound.currentTime = 0;
-                audioState.logoutSound.play().catch(() => { });
-            }
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
 
-            await supabase.auth.signOut();
-            window.location.hash = '';
+            // Sequential Audio Logic for Logout
+            if (audioState.logoutSound) {
+                // Play sound
+                audioState.logoutSound.currentTime = 0;
+                audioState.logoutSound.play().catch(() => {
+                    // Fallback if autoplay fails
+                    performLogout();
+                });
+
+                // Wait for sound to end before actually logging out
+                audioState.logoutSound.onended = () => {
+                    performLogout();
+                };
+            } else {
+                performLogout();
+            }
         });
     }
+}
+
+async function performLogout() {
+    await supabase.auth.signOut();
+    window.location.hash = '';
+    // updateUI is handled by onAuthStateChange listener
 }
 
 // --- DASHBOARD NAVIGATION ---

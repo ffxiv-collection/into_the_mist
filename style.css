@@ -89,6 +89,11 @@ body {
 }
 
 /* --- LOGIN VIEW STYLES --- */
+#login-view {
+    /* Added Animation */
+    animation: fadeIn 1.5s ease-in-out forwards;
+}
+
 .auth-container {
     max-width: 450px;
     width: 90%;

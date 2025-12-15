@@ -368,12 +368,19 @@ function renderMinions(data) {
             const iconUrl = s.icon_source_url || '';
             const isImg = iconUrl.startsWith('http');
 
-            const iconHtml = isImg
-                ? `<img src="${iconUrl}" class="meta-icon-img" title="${tooltip}">`
-                : `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
+            // ICON LOGIC: If 'Boutique', use Caddie icon. Else use source icon.
+            let iconHtml = '';
+
+            if (s.name === 'Boutique') {
+                iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
+            } else {
+                iconHtml = isImg
+                    ? `<img src="${iconUrl}" class="meta-icon-img" title="${tooltip}">`
+                    : `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
+            }
 
             return (s.name === 'Boutique' && minion.shop_url)
-                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
+                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
                 : iconHtml;
         }).join('')}
 

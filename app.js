@@ -4,6 +4,8 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 let supabase;
+let currentUser = null; // Store current user for RLS operations
+let userCollection = new Set(); // Store collected minion IDs
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -45,6 +47,7 @@ function updateUI(session) {
 
     if (session) {
         // --- LOGGED IN ---
+        currentUser = session.user; // Update current user
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
         if (audioBtn) audioBtn.style.display = 'none';
@@ -60,6 +63,10 @@ function updateUI(session) {
 
     } else {
         // --- LOGGED OUT ---
+        currentUser = null; // Clear user
+        userCollection.clear(); // Clear local collection cache
+        minionsCache = null; // Clear minions cache to force refresh on relogin
+
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
@@ -229,30 +236,45 @@ async function loadMinions() {
     const list = document.getElementById('minions-list');
     if (!list) return;
 
-    if (minionsCache) {
-        renderMinions(minionsCache);
-        return;
-    }
-
     list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des mascottes...</p>';
 
-    const { data, error } = await supabase
-        .from('minions')
-        .select(`
-            *,
-            patches (*)
-        `)
-        .order('id', { ascending: true })
-        .limit(100);
+    // 1. Fetch User Collection (if logged in)
+    if (currentUser) {
+        const { data: userMinions, error: userError } = await supabase
+            .from('user_minions')
+            .select('minion_id')
+            .eq('user_id', currentUser.id);
 
-    if (error) {
-        console.error('Error fetching minions:', error);
-        list.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement: ${error.message}</p>`;
-        return;
+        if (!userError && userMinions) {
+            userCollection = new Set(userMinions.map(row => row.minion_id));
+        } else {
+            console.error('Error fetching collection:', userError);
+        }
     }
 
-    minionsCache = data;
-    renderMinions(data);
+    // 2. Fetch Minions Data (Cache check handled below)
+    let minionsData = minionsCache;
+
+    if (!minionsData) {
+        const { data, error } = await supabase
+            .from('minions')
+            .select(`
+                *,
+                patches (*)
+            `)
+            .order('id', { ascending: true })
+            .limit(100);
+
+        if (error) {
+            console.error('Error fetching minions:', error);
+            list.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement: ${error.message}</p>`;
+            return;
+        }
+        minionsCache = data;
+        minionsData = data;
+    }
+
+    renderMinions(minionsData);
 }
 
 function renderMinions(data) {
@@ -285,7 +307,11 @@ function renderMinions(data) {
         const unavailableClass = isUnavailable ? 'unavailable' : '';
         const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
 
-        row.className = `minion-row row-${patchMajor} ${unavailableClass}`;
+        // Check if collected
+        const isCollected = userCollection.has(minion.id);
+        const collectedClass = isCollected ? 'collected' : '';
+
+        row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
@@ -319,7 +345,7 @@ function renderMinions(data) {
                         ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
                     </div>
                     <button class="btn-collect" aria-label="Ajouter à la collection">
-                        <span class="star-icon">☆</span> 
+                        <span class="star-icon">${isCollected ? '★' : '☆'}</span> 
                     </button>
                 </div>
             </div>
@@ -327,26 +353,66 @@ function renderMinions(data) {
 
         const btn = row.querySelector('.btn-collect');
         const star = btn.querySelector('.star-icon');
-        btn.addEventListener('click', (e) => {
+
+        btn.addEventListener('click', async (e) => {
             e.stopPropagation();
+
+            // Optimistic UI Update
+            const newCollectedState = !row.classList.contains('collected');
             row.classList.toggle('collected');
-            const isCollected = row.classList.contains('collected');
-            if (isCollected) {
+
+            if (newCollectedState) {
+                // COLLECTED
                 star.textContent = '★';
                 if (audioState.collectSound) {
                     audioState.collectSound.currentTime = 0;
                     audioState.collectSound.play().catch(() => { });
                 }
+                userCollection.add(minion.id);
             } else {
+                // REMOVED
                 star.textContent = '☆';
                 if (audioState.uncollectSound) {
                     audioState.uncollectSound.currentTime = 0;
                     audioState.uncollectSound.play().catch(() => { });
                 }
+                userCollection.delete(minion.id);
             }
+
+            // Sync with DB
+            await toggleCollection(minion.id, newCollectedState);
         });
+
         list.appendChild(row);
     });
+}
+
+// --- DB SYNC ---
+async function toggleCollection(minionId, isCollected) {
+    if (!currentUser) return;
+
+    if (isCollected) {
+        // INSERT
+        const { error } = await supabase
+            .from('user_minions')
+            .insert([{ user_id: currentUser.id, minion_id: minionId }]);
+
+        if (error) {
+            console.error('Error adding minion:', error);
+            // Revert would happen here if strict
+        }
+    } else {
+        // DELETE
+        const { error } = await supabase
+            .from('user_minions')
+            .delete()
+            .eq('user_id', currentUser.id)
+            .eq('minion_id', minionId);
+
+        if (error) {
+            console.error('Error removing minion:', error);
+        }
+    }
 }
 
 // --- SPRITES LOGIC ---

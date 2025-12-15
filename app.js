@@ -708,3 +708,17 @@ function handleLoginSound() {
     audioState.bgMusic.currentTime = 0;
     audioState.loginSound.play().catch(e => console.log("Login sound blocked", e));
 }
+
+function playCollectSound() {
+    if (audioState.collectSound) {
+        audioState.collectSound.currentTime = 0;
+        audioState.collectSound.play().catch(() => { });
+    }
+}
+
+function playUncollectSound() {
+    if (audioState.uncollectSound) {
+        audioState.uncollectSound.currentTime = 0;
+        audioState.uncollectSound.play().catch(() => { });
+    }
+}

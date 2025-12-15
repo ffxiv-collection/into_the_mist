@@ -453,10 +453,13 @@ function renderMinions(data) {
             if (minion.id) toggleCollection(minion.id, newCollectedState);
         });
 
-        // Open Modal on Row Click (except button)
-        row.addEventListener('click', () => {
-            openModal(minion, patchData);
-        });
+        // Open Modal ONLY on Source Button Click
+        if (btnSources) {
+            btnSources.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal(minion, patchData);
+            });
+        }
 
         list.appendChild(row);
     });

@@ -589,6 +589,29 @@ body {
     opacity: 0.5;
 }
 
+/* Sources Button */
+.btn-sources {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-muted);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+}
+
+.btn-sources:hover {
+    background: #f1f5f9;
+    color: var(--gold);
+    border-color: var(--gold);
+}
+
 @keyframes slideUpFade {
     from {
         opacity: 0;
@@ -984,6 +1007,7 @@ body {
     font-weight: 600;
     color: var(--text-color);
 }
+
 /* Info Button */
 .btn-info-modal {
     background: transparent;

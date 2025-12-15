@@ -378,9 +378,10 @@ function renderMinions(data) {
             if (s.name && s.name.toLowerCase().includes('boutique')) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
             } else {
-                iconHtml = isImg
-                    ? `<img src="${iconUrl}" class="meta-icon-img" title="${tooltip}">`
-                    : `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
+                // If it is an image, we HIDE it from the inline list (User Request)
+                if (isImg) return '';
+
+                iconHtml = `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
             }
 
             return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)

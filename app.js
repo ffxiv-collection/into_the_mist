@@ -461,9 +461,9 @@ function openModal(minion, patchData) {
     document.getElementById('modal-tooltip').textContent = minion.tooltip ? `"${minion.tooltip}"` : '';
     document.getElementById('modal-img').src = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
 
-    // Info Grid
-    document.getElementById('modal-patch').textContent = patchData ? patchData.version : (minion.patch_id || '?');
-    document.getElementById('modal-available').textContent = minion.available !== false ? 'Oui' : 'Non';
+    // Info Grid (REMOVED per user request)
+    // document.getElementById('modal-patch').textContent = patchData ? patchData.version : (minion.patch_id || '?');
+    // document.getElementById('modal-available').textContent = minion.available !== false ? 'Oui' : 'Non';
 
     // Sources List
     const list = document.getElementById('modal-sources-list');

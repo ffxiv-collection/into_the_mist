@@ -371,7 +371,7 @@ function renderMinions(data) {
             // ICON LOGIC: If 'Boutique', use Caddie icon. Else use source icon.
             let iconHtml = '';
 
-            if (s.name === 'Boutique') {
+            if (s.name && s.name.toLowerCase().includes('boutique')) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
             } else {
                 iconHtml = isImg
@@ -379,7 +379,7 @@ function renderMinions(data) {
                     : `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
             }
 
-            return (s.name === 'Boutique' && minion.shop_url)
+            return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
                 ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
                 : iconHtml;
         }).join('')}

@@ -1,6 +1,5 @@
 :root {
     --bg-color: #f7f5f0;
-    /* Parchment */
     --text-color: #1e293b;
     --text-muted: #64748b;
     --primary-color: #d97706;
@@ -13,7 +12,6 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
     --font-menu: 'Miedinger', sans-serif;
-    /* New Menu Font */
 }
 
 /* Custom Font */
@@ -91,8 +89,6 @@ body {
 }
 
 /* --- LOGIN VIEW STYLES --- */
-
-/* Auth Container */
 .auth-container {
     max-width: 450px;
     width: 90%;
@@ -212,8 +208,6 @@ body {
 }
 
 /* --- DASHBOARD VIEW STYLES --- */
-
-/* Navigation - FULL WIDTH */
 .main-nav {
     width: 100%;
     max-width: 100%;
@@ -232,7 +226,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* CENTER CONTENT */
     gap: 2rem;
     margin: 0 auto;
     padding: 0;
@@ -245,11 +238,8 @@ body {
     text-decoration: none;
     color: var(--text-color);
     font-family: var(--font-menu);
-    /* Custom Font Miedinger */
     font-weight: bold;
-    /* Requests slightly thicker */
     font-size: 1.3rem;
-    /* Larger for readability */
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     transition: all 0.2s;
@@ -281,7 +271,6 @@ body {
     border-color: #ef4444;
 }
 
-/* Dashboard Content */
 .dashboard-content {
     width: 100%;
     max-width: 1400px;
@@ -346,4 +335,139 @@ body {
 
 #dashboard-view {
     animation: fadeIn 2s ease-in-out forwards;
+}
+
+/* --- MINIONS LIST (Previously missing) --- */
+.minions-list {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.minion-row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    /* For animation */
+    animation: slideUpFade 0.5s ease-out forwards;
+    transition: transform 0.2s;
+}
+
+.minion-row:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.minion-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    margin-right: 1.5rem;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.minion-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.minion-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+    margin-right: auto;
+}
+
+.minion-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.patch-badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Patch Colors */
+.patch-2 {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+.patch-3 {
+    background-color: #93c5fd;
+}
+
+.patch-4 {
+    background-color: #fda4af;
+}
+
+.patch-5 {
+    background-color: #c4b5fd;
+}
+
+.patch-6 {
+    background-color: #fde68a;
+    color: #92400e;
+}
+
+.patch-7 {
+    background-color: #fcd34d;
+    color: #78350f;
+}
+
+/* Row Background tints */
+.row-2 {
+    background-color: #fefefe;
+}
+
+.row-3 {
+    background-color: #eff6ff;
+}
+
+.row-4 {
+    background-color: #fff1f2;
+}
+
+.row-5 {
+    background-color: #f5f3ff;
+}
+
+.row-6 {
+    background-color: #fffbeb;
+}
+
+.row-7 {
+    background-color: #fffdf2;
+}
+
+.patch-logo {
+    height: 30px;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

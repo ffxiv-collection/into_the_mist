@@ -22,6 +22,11 @@
         </div>
     </div>
 
+    <!-- Audio Control (Fixed) -->
+    <button id="audio-toggle" class="audio-btn" aria-label="Toggle Music">
+        <span id="audio-icon">🔇</span>
+    </button>
+
     <main>
         <!-- VIEW: LOGIN (Default) -->
         <div id="login-view">
@@ -71,8 +76,8 @@
                 </ul>
             </nav>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
+            <!-- Dashboard Content: Home (Video) -->
+            <div id="dashboard-home" class="dashboard-content">
                 <div class="video-wrapper">
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/ZHoZ5981rPg?si=7B5u...&rel=0"
                         title="YouTube video player" frameborder="0"
@@ -81,6 +86,25 @@
                     </iframe>
                 </div>
             </div>
+
+            <!-- Dashboard Content: Mascots List (Hidden) -->
+            <div id="minions-view" class="dashboard-content hidden">
+                <div id="minions-list" class="minions-list">
+                    <!-- Rows injected via JS -->
+                </div>
+            </div>
+
+            <!-- Placeholders for other views -->
+            <div id="mounts-view" class="dashboard-content hidden">
+                <p style="text-align:center;">Montures à venir...</p>
+            </div>
+            <div id="barding-view" class="dashboard-content hidden">
+                <p style="text-align:center;">Bardes à venir...</p>
+            </div>
+            <div id="orchestrion-view" class="dashboard-content hidden">
+                <p style="text-align:center;">Orchestion à venir...</p>
+            </div>
+
         </div>
 
     </main>

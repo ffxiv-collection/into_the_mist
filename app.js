@@ -402,8 +402,7 @@ function renderMinions(data) {
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
-                    <button class="btn-sources" aria-label="Voir les sources"><i class="fa-solid fa-info-circle"></i></button>
-                        <button class="btn-sources" title="Voir les moyens d'obtention">
+                    <button class="btn-sources" title="Voir les moyens d'obtention">
                             <i class="fa-solid fa-bars"></i>
                         </button>
                         <button class="btn-collect" title="Ajouter à ma collection">

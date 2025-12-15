@@ -436,6 +436,7 @@ body {
     display: flex;
     /* Robust Vertical Alignment */
     align-items: center;
+    gap: 0.5rem;
     font-weight: bold;
     font-size: 1.1rem;
     color: #333;
@@ -594,6 +595,19 @@ body {
     opacity: 0.5;
 }
 
+/* Shop Link Alignment */
+.shop-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.shop-link:hover {
+    transform: scale(1.1);
+}
+
 /* Sources Button (Minimal) */
 .btn-sources {
     background: transparent;
@@ -620,20 +634,7 @@ body {
     transform: scale(1.1);
 }
 
-.minion-name {
-    /* Existing styles */
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #333;
-    cursor: pointer;
-    margin-right: 0;
 
-    /* Layout correction for icons inside */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    /* Space between name and first icon */
-}
 
 @keyframes slideUpFade {
     from {
@@ -671,12 +672,7 @@ body {
     align-items: center;
 }
 
-.minion-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #333;
-    margin-right: auto;
-}
+
 
 .minion-meta {
     display: flex;

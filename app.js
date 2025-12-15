@@ -336,8 +336,8 @@ function renderMinions(data) {
                 <div style="margin-right:auto;">
                     <div class="minion-name">
                         ${name}
-                        ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible au Market Board"></i>' : ''}
-                        ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Malle Surprise / Materiel Container"></i>' : ''}
+                        ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
+                        ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                     </div>
                     ${unavailableBadge}
                 </div>

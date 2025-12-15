@@ -537,17 +537,26 @@ function openModal(minion, patchData) {
         const div = document.createElement('div');
         div.className = 'source-item';
 
-        // Prepare Title (Link or Text)
+        // Prepare Title and Details
         let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;
+        let sourceDetailsHtml = ms.details ? `<span class="source-details">${ms.details}</span>` : '';
+
+        // Apply Lodestone Link (prioritize details, fallback to title)
         if (ms.lodestone_url) {
-            sourceTitleHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-title" target="_blank">${s.name}</a>`;
+            if (ms.details) {
+                // Link the details
+                sourceDetailsHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-details" target="_blank">${ms.details}</a>`;
+            } else {
+                // Link the title if no details
+                sourceTitleHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-title" target="_blank">${s.name}</a>`;
+            }
         }
 
         div.innerHTML = `
             ${iconHtml}
             <div class="source-info">
                 ${sourceTitleHtml}
-                ${ms.details ? `<span class="source-details">${ms.details}</span>` : ''}
+                ${sourceDetailsHtml}
             </div>
             ${costHtml}
         `;

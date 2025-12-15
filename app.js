@@ -207,9 +207,9 @@ function renderMinions(data) {
 
         let badgeHtml = '';
         if (patchIconUrl) {
-            badgeHtml += `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
+            badgeHtml = `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
         } else {
-            badgeHtml += `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
+            badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
         }
 
         let logoHtml = '';
@@ -222,14 +222,18 @@ function renderMinions(data) {
             <div class="minion-info">
                 <div class="minion-name">${name}</div>
                 <div class="minion-meta">
-                    <!-- Assets aligned via CSS -->
-                    ${badgeHtml}
-                    ${logoHtml}
                     
-                    ${minion.hôtel_des_ventes ? '<span class="meta-icon" title="Vendable">💰</span>' : ''}
-                    ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
+                    <!-- Fixed Width Columns for Alignment -->
+                    <div class="col-badge">${badgeHtml}</div>
+                    <div class="col-logo">${logoHtml}</div>
                     
-                    <!-- Collection Button (Placeholder) -->
+                    <!-- Market Info -->
+                    <div class="col-market">
+                        ${minion.hôtel_des_ventes ? '<span class="meta-icon" title="Vendable">💰</span>' : ''}
+                        ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
+                    </div>
+
+                    <!-- Collection Button -->
                     <button class="btn-collect" aria-label="Ajouter à la collection">
                         <span class="star-icon">☆</span>
                     </button>

@@ -357,7 +357,6 @@ body {
     /* For animation */
     animation: slideUpFade 0.5s ease-out forwards;
     transition: transform 0.2s;
-    /* ensure flexible height if needed */
 }
 
 .minion-row:hover {
@@ -390,8 +389,31 @@ body {
 .minion-meta {
     display: flex;
     align-items: center;
-    /* VERTICAL ALIGNMENT FIXED */
-    gap: 1.5rem;
+    gap: 1rem;
+}
+
+/* Columns for Fixed Alignment */
+.col-badge {
+    width: 60px;
+    /* Fixed slot for Patch Badge */
+    display: flex;
+    justify-content: center;
+}
+
+.col-logo {
+    width: 160px;
+    /* Fixed slot for Patch Logo */
+    display: flex;
+    justify-content: flex-start;
+    /* Or center */
+}
+
+.col-market {
+    width: 70px;
+    /* Icons slot */
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
 
 /* Patch Colors */
@@ -427,20 +449,15 @@ body {
     height: 32px;
     width: auto;
     object-fit: contain;
-    margin-right: 0.5rem;
     filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
-    /* Helper to align if needed */
-    vertical-align: middle;
 }
 
 .patch-logo {
     height: 28px;
     width: auto;
     object-fit: contain;
-    margin-left: 0.5rem;
-    max-width: 140px;
+    max-width: 100%;
     opacity: 0.9;
-    vertical-align: middle;
 }
 
 /* Row Background tints */
@@ -492,13 +509,6 @@ body {
 .btn-collect:hover {
     border-color: var(--gold);
     color: var(--gold);
-}
-
-/* Active Added State (future logic) */
-.btn-collect.collected {
-    background: var(--gold);
-    color: white;
-    border-color: var(--gold);
 }
 
 @keyframes slideUpFade {

@@ -223,11 +223,9 @@ function renderMinions(data) {
                 <div class="minion-name">${name}</div>
                 <div class="minion-meta">
                     
-                    <!-- Fixed Width Columns for Alignment -->
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
                     
-                    <!-- Market Info -->
                     <div class="col-market">
                         ${minion.hôtel_des_ventes ? '<span class="meta-icon" title="Vendable">💰</span>' : ''}
                         ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
@@ -235,11 +233,25 @@ function renderMinions(data) {
 
                     <!-- Collection Button -->
                     <button class="btn-collect" aria-label="Ajouter à la collection">
-                        <span class="star-icon">☆</span>
+                        <!-- We can change icon to checkmark if needed, but star is classic. Let's start with Checkmark as requested for 'button style change' maybe? -->
+                        <span class="icon-frame">✔</span> 
                     </button>
                 </div>
             </div>
         `;
+
+        // Add specific event listener for the button in this row
+        const btn = row.querySelector('.btn-collect');
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Just in case
+
+            // Toggle Visuals
+            row.classList.toggle('collected');
+
+            // Interaction logic (save to DB) will go here later
+            console.log(`Toggled collection for: ${name}`);
+        });
+
         list.appendChild(row);
     });
 }

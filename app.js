@@ -233,22 +233,28 @@ function renderMinions(data) {
 
                     <!-- Collection Button -->
                     <button class="btn-collect" aria-label="Ajouter à la collection">
-                        <!-- We can change icon to checkmark if needed, but star is classic. Let's start with Checkmark as requested for 'button style change' maybe? -->
-                        <span class="icon-frame">✔</span> 
+                        <span class="star-icon">☆</span> 
                     </button>
                 </div>
             </div>
         `;
 
-        // Add specific event listener for the button in this row
         const btn = row.querySelector('.btn-collect');
+        const star = btn.querySelector('.star-icon');
+
         btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Just in case
+            e.stopPropagation();
 
             // Toggle Visuals
             row.classList.toggle('collected');
 
-            // Interaction logic (save to DB) will go here later
+            // Toggle Icon: ☆ (outline) <-> ★ (filled)
+            if (row.classList.contains('collected')) {
+                star.textContent = '★';
+            } else {
+                star.textContent = '☆';
+            }
+
             console.log(`Toggled collection for: ${name}`);
         });
 

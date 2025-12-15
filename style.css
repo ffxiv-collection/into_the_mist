@@ -363,21 +363,17 @@ body {
     opacity: 0.6;
     /* Dimmed */
     background-color: #f1f5f9 !important;
-    /* Force separate bg if needed */
 }
 
-/* Hover effect should still work but maybe less intense if collected? */
 .minion-row:hover {
     transform: translateX(5px);
     box-shadow: var(--shadow-md);
     opacity: 1;
-    /* Brighten on hover to show interactivity? Or keep dimmed? User said "mettre une opacité", implies permanent dim. */
 }
 
 .minion-row.collected:hover {
     opacity: 0.8;
 }
-
 
 .minion-icon {
     width: 48px;
@@ -502,40 +498,54 @@ body {
     cursor: help;
 }
 
-/* New Button Style */
+/* --- BUTTON STYLE MATCHING SCREENSHOT --- */
 .btn-collect {
-    background: white;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    /* Softer rounded corners */
+    background: #4b4b4b;
+    /* Dark Grey Default */
+    border: none;
+    border-radius: 6px;
+    /* Slightly rounded square */
     cursor: pointer;
-    font-size: 1.2rem;
-    color: #ccc;
-    width: 36px;
+    font-size: 1.6rem;
+    /* Large Star */
+    color: white;
+    /* White Outline */
+    width: 42px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
     margin-left: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding-bottom: 4px;
+    /* Align star visually */
+}
+
+.btn-collect .star-icon {
+    /* Outline Star Effect via text-shadow or unicode? */
+    /* Screenshot shows a white outline star on dark bg. unicode '☆' is outline. */
+    font-family: system-ui;
+    /* Use default font for star */
 }
 
 .btn-collect:hover {
-    border-color: #10b981;
-    /* Green on hover */
-    color: #10b981;
-    transform: scale(1.1);
+    transform: scale(1.05);
+    background: #666;
 }
 
-/* Collected State for Button */
+/* Collected State */
 .minion-row.collected .btn-collect {
-    background-color: #10b981;
-    /* Green BG */
-    border-color: #10b981;
-    color: white;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--gold);
+    /* Gold Background */
+    color: #78350f;
+    /* Brownish/Dark filled star */
 }
+
+/* Use filled star for collected state via content replacement or class? */
+/* CSS Trick: toggle content based on class? Or JS change textContent? JS is safest. */
+/* If using JS to swap '☆' to '★' text, style handles color. */
+/* Screenshot seems to show filled star on Gold. */
 
 @keyframes slideUpFade {
     from {

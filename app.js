@@ -41,29 +41,48 @@ function updateUI(session) {
     const loginView = document.getElementById('login-view');
     const dashboardView = document.getElementById('dashboard-view');
     const audioBtn = document.getElementById('audio-toggle');
+    const logo = document.querySelector('.logo-circle');
 
     if (session) {
+        // --- LOGGED IN ---
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
         if (audioBtn) audioBtn.style.display = 'none';
+
+        // Logo: Corner
+        if (logo) {
+            logo.classList.remove('logo-center');
+            logo.classList.add('logo-corner');
+        }
+
         stopBgMusic();
         handleRouting();
+
     } else {
+        // --- LOGGED OUT ---
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
+
+        // Logo: Center
+        if (logo) {
+            logo.classList.remove('logo-corner');
+            logo.classList.add('logo-center');
+        }
+
         fetchSprites();
-        startBgMusic();
+
+        // Only start music if logout sound is NOT playing
+        if (!audioState.logoutSoundPlaying) {
+            startBgMusic();
+        }
     }
 }
 
 // --- ROUTING LOGIC ---
 function handleRouting() {
     const hash = window.location.hash.substring(1);
-    const validRoutes = ['dashboard-home', 'minions-view', 'mounts-view', 'barding-view', 'orchestrion-view'];
     let targetId = 'dashboard-home';
-
-    // Hash mapping
     const routeMap = {
         'home': 'dashboard-home',
         'minions': 'minions-view',
@@ -98,7 +117,9 @@ function switchView(targetId) {
     const targetEl = document.getElementById(targetId);
     if (targetEl) {
         targetEl.classList.remove('hidden');
-        if (targetId === 'minions-view') {
+        if (targetId === 'minions') { // Note: ID in HTML is minions-view
+            loadMinions();
+        } else if (targetId === 'minions-view') {
             loadMinions();
         }
     }
@@ -148,33 +169,30 @@ function setupEventListeners() {
     }
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
+        logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            // Sequential Audio Logic for Logout
+            // Logout Sequence
             if (audioState.logoutSound) {
-                // Play sound
-                audioState.logoutSound.currentTime = 0;
-                audioState.logoutSound.play().catch(() => {
-                    // Fallback if autoplay fails
-                    performLogout();
-                });
+                audioState.logoutSoundPlaying = true;
 
-                // Wait for sound to end before actually logging out
+                audioState.logoutSound.currentTime = 0;
+                audioState.logoutSound.play().catch(() => { });
+
+                // When sound ends, start music
                 audioState.logoutSound.onended = () => {
-                    performLogout();
+                    audioState.logoutSoundPlaying = false;
+                    // Check if we are still on login screen (we should be)
+                    // and audio is permitted
+                    startBgMusic();
                 };
-            } else {
-                performLogout();
             }
+
+            // Log out immediately (triggers UI update)
+            await supabase.auth.signOut();
+            window.location.hash = '';
         });
     }
-}
-
-async function performLogout() {
-    await supabase.auth.signOut();
-    window.location.hash = '';
-    // updateUI is handled by onAuthStateChange listener
 }
 
 // --- DASHBOARD NAVIGATION ---
@@ -191,13 +209,10 @@ function initDashboardNav() {
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Play Menu Sound
             if (audioState.menuSound) {
                 audioState.menuSound.currentTime = 0;
                 audioState.menuSound.play().catch(() => { });
             }
-
             const text = link.textContent.trim();
             const hash = sectionHashes[text];
             if (hash) {
@@ -253,15 +268,11 @@ function renderMinions(data) {
         const row = document.createElement('div');
 
         let patchData = null;
-        if (minion.patches && !Array.isArray(minion.patches)) {
-            patchData = minion.patches;
-        } else if (Array.isArray(minion.patches) && minion.patches.length > 0) {
-            patchData = minion.patches[0];
-        }
+        if (minion.patches && !Array.isArray(minion.patches)) { patchData = minion.patches; }
+        else if (Array.isArray(minion.patches) && minion.patches.length > 0) { patchData = minion.patches[0]; }
 
         let patchVersion = '?';
         let patchMajor = '2';
-
         if (patchData && patchData.version) {
             patchVersion = patchData.version;
             patchMajor = String(patchVersion).charAt(0);
@@ -279,7 +290,6 @@ function renderMinions(data) {
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
         const name = minion.name || 'Inconnu';
-
         const patchIconUrl = patchData ? patchData.icon_patch_url : null;
         const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
 
@@ -289,7 +299,6 @@ function renderMinions(data) {
         } else {
             badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
         }
-
         let logoHtml = '';
         if (patchLogoUrl) {
             logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
@@ -302,7 +311,6 @@ function renderMinions(data) {
                     <div class="minion-name">${name}</div>
                     ${unavailableBadge}
                 </div>
-                
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
@@ -319,22 +327,17 @@ function renderMinions(data) {
 
         const btn = row.querySelector('.btn-collect');
         const star = btn.querySelector('.star-icon');
-
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             row.classList.toggle('collected');
-
             const isCollected = row.classList.contains('collected');
-
             if (isCollected) {
-                // COLLECTED (Success)
                 star.textContent = '★';
                 if (audioState.collectSound) {
                     audioState.collectSound.currentTime = 0;
                     audioState.collectSound.play().catch(() => { });
                 }
             } else {
-                // REMOVED (Error/Cancel)
                 star.textContent = '☆';
                 if (audioState.uncollectSound) {
                     audioState.uncollectSound.currentTime = 0;
@@ -342,7 +345,6 @@ function renderMinions(data) {
                 }
             }
         });
-
         list.appendChild(row);
     });
 }
@@ -408,13 +410,13 @@ const audioState = {
     loginSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756726/FFXIV_Start_Game_hclxwe.mp3'),
     menuSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756639/FFXIV_Confirm_k4wbeb.mp3'),
 
-    // NEW SOUNDS
     logoutSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756694/FFXIV_Log_Out_vsa9ro.mp3'),
     collectSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756662/FFXIV_Incoming_Tell_3_ait6dd.mp3'),
     uncollectSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756644/FFXIV_Error_gvhk41.mp3'),
 
     isPlaying: false,
-    userInteracted: false
+    userInteracted: false,
+    logoutSoundPlaying: false
 };
 
 // Volumes

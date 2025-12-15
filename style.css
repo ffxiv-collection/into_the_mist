@@ -65,39 +65,58 @@ body {
     -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 
-/* Logo Overlay - MOVED TO TOP RIGHT */
+/* LOGO BASE STYLES */
 .logo-circle {
     width: 120px;
     height: 120px;
     background: #ffffff;
     border-radius: 50%;
     position: absolute;
-    top: 20px;
-    right: 20px;
-    bottom: auto;
-    left: auto;
-    transform: none;
+
+    /* Default / Base Props */
     box-shadow: var(--shadow-lg);
     border: 3px solid #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--gold);
-    font-weight: bold;
-    text-align: center;
     z-index: 10;
+
+    /* Transition for smooth movement */
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* STATE: CENTERED (Login) */
+.logo-center {
+    top: auto;
+    bottom: -60px;
+    /* Overhangs banner */
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* STATE: CORNER (Dashboard) */
+.logo-corner {
+    top: 20px;
+    right: 20px;
+    bottom: auto;
+    left: auto;
+    /* Reset left */
+    transform: translateX(0);
+    /* Reset transform */
 }
 
 /* --- LOGIN VIEW STYLES --- */
 #login-view {
-    /* Added Animation */
     animation: fadeIn 1.5s ease-in-out forwards;
 }
 
 .auth-container {
     max-width: 450px;
     width: 90%;
-    margin: 3rem auto;
+    margin: 6rem auto 3rem auto;
+    /* Increased top margin for logo overhang */
     padding: 3rem;
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);

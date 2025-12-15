@@ -337,7 +337,7 @@ body {
     animation: fadeIn 2s ease-in-out forwards;
 }
 
-/* --- MINIONS LIST (Previously missing) --- */
+/* --- MINIONS LIST --- */
 .minions-list {
     width: 100%;
     max-width: 1200px;
@@ -429,6 +429,24 @@ body {
     color: #78350f;
 }
 
+/* Styles for Image assets from Patches table */
+.patch-badge-img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 0.5rem;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.patch-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    margin-left: 0.5rem;
+    max-width: 140px;
+    opacity: 0.9;
+}
+
 /* Row Background tints */
 .row-2 {
     background-color: #fefefe;
@@ -452,12 +470,6 @@ body {
 
 .row-7 {
     background-color: #fffdf2;
-}
-
-.patch-logo {
-    height: 30px;
-    object-fit: contain;
-    opacity: 0.8;
 }
 
 @keyframes slideUpFade {

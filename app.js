@@ -307,63 +307,71 @@ function renderMinions(data) {
         return;
     }
 
-    const row = document.createElement('div');
-    row.className = 'minion-row'; // Starts hidden via CSS
+    data.forEach((minion, index) => {
+        const row = document.createElement('div');
+        row.className = 'minion-row'; // Class logic will append to this
 
-    // SCROLL ANIMATION OBSERVER
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-visible');
-                observer.unobserve(entry.target); // Animate only once
-            }
-        });
-    }, { threshold: 0.1 });
+        // SCROLL ANIMATION OBSERVER
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 }); // Trigger when 10% visible
+        observer.observe(row);
+        if (entry.isIntersecting) {
+            entry.target.classList.add('scroll-visible');
+            observer.unobserve(entry.target); // Animate only once
+        }
+    });
+}, { threshold: 0.1 });
 
-    observer.observe(row);
+observer.observe(row);
 
-    let patchData = null;
-    if (minion.patches && !Array.isArray(minion.patches)) { patchData = minion.patches; }
-    else if (Array.isArray(minion.patches) && minion.patches.length > 0) { patchData = minion.patches[0]; }
+let patchData = null;
+if (minion.patches && !Array.isArray(minion.patches)) { patchData = minion.patches; }
+else if (Array.isArray(minion.patches) && minion.patches.length > 0) { patchData = minion.patches[0]; }
 
-    let patchVersion = '?';
-    let patchMajor = '2';
-    if (patchData && patchData.version) {
-        patchVersion = patchData.version;
-        patchMajor = String(patchVersion).charAt(0);
-    } else if (minion.patch_id) {
-        patchVersion = minion.patch_id;
-        patchMajor = String(minion.patch_id).charAt(0);
-    }
+let patchVersion = '?';
+let patchMajor = '2';
+if (patchData && patchData.version) {
+    patchVersion = patchData.version;
+    patchMajor = String(patchVersion).charAt(0);
+} else if (minion.patch_id) {
+    patchVersion = minion.patch_id;
+    patchMajor = String(minion.patch_id).charAt(0);
+}
 
-    const isUnavailable = (minion.available === false);
-    const unavailableClass = isUnavailable ? 'unavailable' : '';
-    const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
+const isUnavailable = (minion.available === false);
+const unavailableClass = isUnavailable ? 'unavailable' : '';
+const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
 
-    // Check if collected
-    const isCollected = userCollection.has(minion.id);
-    const collectedClass = isCollected ? 'collected' : '';
+// Check if collected
+const isCollected = userCollection.has(minion.id);
+const collectedClass = isCollected ? 'collected' : '';
 
-    row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
-    row.style.animationDelay = `${index * 0.05}s`;
+row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
+row.style.animationDelay = `${index * 0.05}s`;
 
-    const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
-    const name = minion.name || 'Inconnu';
-    const patchIconUrl = patchData ? patchData.icon_patch_url : null;
-    const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
+const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
+const name = minion.name || 'Inconnu';
+const patchIconUrl = patchData ? patchData.icon_patch_url : null;
+const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
 
-    let badgeHtml = '';
-    if (patchIconUrl) {
-        badgeHtml = `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
-    } else {
-        badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
-    }
-    let logoHtml = '';
-    if (patchLogoUrl) {
-        logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
-    }
+let badgeHtml = '';
+if (patchIconUrl) {
+    badgeHtml = `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
+} else {
+    badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
+}
+let logoHtml = '';
+if (patchLogoUrl) {
+    logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
+}
 
-    row.innerHTML = `
+row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
                 <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
@@ -379,62 +387,62 @@ function renderMinions(data) {
                         
                         ${/* NEW: Relational Sources */ ''}
                         ${(minion.minion_sources || []).map(ms => {
-        const s = ms.sources;
-        const c = ms.currencies;
-        if (!s) return '';
+    const s = ms.sources;
+    const c = ms.currencies;
+    if (!s) return '';
 
-        // HIDE OFFICIAL ICON IN LINE (User Request: Show only in modal)
-        if (ms.lodestone_url) return '';
+    // HIDE OFFICIAL ICON IN LINE (User Request: Show only in modal)
+    if (ms.lodestone_url) return '';
 
-        // Construct Tooltip: "Source: Details (Cost Currency)"
-        // e.g., "Gold Saucer: Vendor (10000 MGP)"
-        let tooltip = s.name;
-        if (ms.details) tooltip += `: ${ms.details}`;
-        if (ms.cost) {
-            tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
-        }
+    // Construct Tooltip: "Source: Details (Cost Currency)"
+    // e.g., "Gold Saucer: Vendor (10000 MGP)"
+    let tooltip = s.name;
+    if (ms.details) tooltip += `: ${ms.details}`;
+    if (ms.cost) {
+        tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
+    }
 
-        // ALIGNMENT FIX: Use icon_source_url
-        const iconUrl = s.icon_source_url || '';
-        const isImg = iconUrl.startsWith('http');
+    // ALIGNMENT FIX: Use icon_source_url
+    const iconUrl = s.icon_source_url || '';
+    const isImg = iconUrl.startsWith('http');
 
-        // ICON LOGIC: If 'Boutique', use Caddie icon. Else use source icon.
-        let iconHtml = '';
+    // ICON LOGIC: If 'Boutique', use Caddie icon. Else use source icon.
+    let iconHtml = '';
 
-        if (s.name && s.name.toLowerCase().includes('boutique')) {
-            iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
-        } else {
-            // If it is an image, we HIDE it from the inline list (User Request)
-            if (isImg) return '';
+    if (s.name && s.name.toLowerCase().includes('boutique')) {
+        iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
+    } else {
+        // If it is an image, we HIDE it from the inline list (User Request)
+        if (isImg) return '';
 
-            iconHtml = `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
-        }
+        iconHtml = `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
+    }
 
-        return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
-            ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
-            : iconHtml;
-    }).join('')}
+    return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
+        ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
+        : iconHtml;
+}).join('')}
 
                         ${/* LEGACY: Text Fallback */ ''}
                         ${minion.acquisition ? (() => {
-            const text = minion.acquisition.toLowerCase();
-            let iconClass = 'fa-circle-info'; // Default
-            let title = minion.acquisition;
+        const text = minion.acquisition.toLowerCase();
+        let iconClass = 'fa-circle-info'; // Default
+        let title = minion.acquisition;
 
-            if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
-            else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
-            else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
-            else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
-            else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
-            else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
-            else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
+        if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
+        else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
+        else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
+        else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
+        else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
+        else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
+        else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
 
-            const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
+        const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
 
-            return (minion.shop_url)
-                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
-                : iconHtml;
-        })() : ''}
+        return (minion.shop_url)
+            ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
+            : iconHtml;
+    })() : ''}
                     </div>
 
                     ${unavailableBadge}
@@ -456,43 +464,43 @@ function renderMinions(data) {
             </div>
         `;
 
-    // Interaction Logic
-    const btnCollect = row.querySelector('.btn-collect');
-    const star = btnCollect.querySelector('.star-icon');
-    const btnSources = row.querySelector('.btn-sources');
-    const nameEl = row.querySelector('.minion-name');
+// Interaction Logic
+const btnCollect = row.querySelector('.btn-collect');
+const star = btnCollect.querySelector('.star-icon');
+const btnSources = row.querySelector('.btn-sources');
+const nameEl = row.querySelector('.minion-name');
 
-    // 1. Toggle Collection
-    btnCollect.addEventListener('click', async (e) => {
-        e.stopPropagation();
+// 1. Toggle Collection
+btnCollect.addEventListener('click', async (e) => {
+    e.stopPropagation();
 
-        // Optimistic UI Update
-        const newCollectedState = !row.classList.contains('collected');
-        if (newCollectedState) {
-            userCollection.add(minion.id);
-            row.classList.add('collected');
-            star.textContent = '★';
-            playCollectSound();
-        } else {
-            userCollection.delete(minion.id);
-            row.classList.remove('collected');
-            star.textContent = '☆';
-            playUncollectSound();
-        }
-
-        // Sync with DB
-        if (minion.id) toggleCollection(minion.id, newCollectedState);
-    });
-
-    // Open Modal ONLY on Source Button Click
-    if (btnSources) {
-        btnSources.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openModal(minion, patchData);
-        });
+    // Optimistic UI Update
+    const newCollectedState = !row.classList.contains('collected');
+    if (newCollectedState) {
+        userCollection.add(minion.id);
+        row.classList.add('collected');
+        star.textContent = '★';
+        playCollectSound();
+    } else {
+        userCollection.delete(minion.id);
+        row.classList.remove('collected');
+        star.textContent = '☆';
+        playUncollectSound();
     }
 
-    list.appendChild(row);
+    // Sync with DB
+    if (minion.id) toggleCollection(minion.id, newCollectedState);
+});
+
+// Open Modal ONLY on Source Button Click
+if (btnSources) {
+    btnSources.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal(minion, patchData);
+    });
+}
+
+list.appendChild(row);
 });
 }
 

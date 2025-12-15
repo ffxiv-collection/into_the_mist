@@ -358,14 +358,31 @@ body {
     transition: transform 0.2s, background-color 0.2s, opacity 0.3s;
 }
 
-/* COLLECTED STATE */
+/* UNAVAILABLE STATE (Initial) */
+.minion-row.unavailable .minion-name {
+    color: #999;
+    /* Grey out title if unavailable? */
+}
+
+/* Unavailable Badge */
+.unavailable-tag {
+    font-size: 0.75rem;
+    background-color: #fee2e2;
+    color: #ef4444;
+    padding: 2px 6px;
+    border-radius: 99px;
+    margin-left: 0.5rem;
+    border: 1px solid #fecaca;
+    display: inline-block;
+}
+
+/* COLLECTED STATE overrides Unavailable somewhat */
+/* Logic: If collected, we don't care if it's available or not, we have it. */
+/* But visually, 'collected' styles apply grayscale. */
+
 .minion-row.collected {
-    opacity: 0.5;
-    /* Stronger dimming (was 0.6) */
-    filter: grayscale(100%);
-    /* Force Grey */
-    background-color: #e2e8f0 !important;
-    /* Slightly darker grey to emphasize */
+    opacity: 1;
+    background-color: #f1f5f9 !important;
 }
 
 .minion-row:hover {
@@ -376,8 +393,6 @@ body {
 
 .minion-row.collected:hover {
     opacity: 0.8;
-    filter: grayscale(20%);
-    /* Hints of color on hover */
 }
 
 .minion-icon {
@@ -429,7 +444,6 @@ body {
 }
 
 /* Patch Colors */
-/* Note: When grayscale(100%) is applied, these beautiful colors will turn grey. This is correct for "Unobtained" usually, but user sees it as "Obtained". */
 .patch-2 {
     background-color: #e2e8f0;
     color: #475569;
@@ -510,12 +524,9 @@ body {
     /* Dark Grey Default */
     border: none;
     border-radius: 6px;
-    /* Slightly rounded square */
     cursor: pointer;
     font-size: 1.6rem;
-    /* Large Star */
     color: white;
-    /* White Outline */
     width: 42px;
     height: 36px;
     display: flex;
@@ -525,7 +536,6 @@ body {
     margin-left: 1rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     padding-bottom: 4px;
-    /* Align star visually */
 }
 
 .btn-collect .star-icon {
@@ -540,42 +550,21 @@ body {
 /* Collected State */
 .minion-row.collected .btn-collect {
     background-color: var(--gold);
-    /* Gold Background */
     color: #78350f;
-    /* Brownish/Dark filled star */
-    /* Ensure button stays colorful even if row is grayscale? */
     filter: none;
-    /* Try to override parent filter? (This doesn't work in CSS easily, child inherits/compounds filter) */
-    /* If parent has grayscale(1), this button will be grey too. */
+    /* Keep button visual intent */
 }
 
-/* IMPORTANT FIX: If row is grayscale, the gold button will look grey. */
-/* We should NOT grayscale the ROW if we want the button to look Gold. */
-/* Instead, Grayscale the IMAGES/TEXT, but keep button colorful? */
-
-/* Re-thinking strategy based on CSS limitations */
-/* If I grayscale the whole row, the Gold button becomes Grey button. User won't see it as Gold. */
-/* I must apply grayscale to specific siblings, OR unset grayscale on the button? (Cannot unset parent filter) */
-
-/* Updated Strategy: Apply grayscale to specific elements */
+/* Updated Strategy: Grayscale Elements */
 .minion-row.collected .minion-icon,
 .minion-row.collected .minion-info .col-badge,
 .minion-row.collected .minion-info .col-logo,
-.minion-row.collected .minion-info .col-market {
+.minion-row.collected .minion-info .col-market,
+.minion-row.collected .minion-name,
+.minion-row.collected .unavailable-tag {
+    /* Also grayscale the badge when collected */
     filter: grayscale(100%);
     opacity: 0.5;
-}
-
-.minion-row.collected {
-    opacity: 1;
-    /* Container stays opaque so button pops */
-    background-color: #f1f5f9 !important;
-}
-
-.minion-row.collected .btn-collect {
-    /* Button stays vivid */
-    filter: none;
-    opacity: 1;
 }
 
 @keyframes slideUpFade {

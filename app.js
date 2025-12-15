@@ -196,7 +196,12 @@ function renderMinions(data) {
             patchMajor = String(minion.patch_id).charAt(0);
         }
 
-        row.className = `minion-row row-${patchMajor}`;
+        // Logic for Availability
+        const isUnavailable = (minion.available === false);
+        const unavailableClass = isUnavailable ? 'unavailable' : '';
+        const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
+
+        row.className = `minion-row row-${patchMajor} ${unavailableClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
@@ -220,7 +225,11 @@ function renderMinions(data) {
         row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
-                <div class="minion-name">${name}</div>
+                <div style="margin-right:auto;">
+                    <div class="minion-name">${name}</div>
+                    ${unavailableBadge}
+                </div>
+                
                 <div class="minion-meta">
                     
                     <div class="col-badge">${badgeHtml}</div>

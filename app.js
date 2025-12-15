@@ -21,18 +21,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check Session
         const { data: { session } } = await supabase.auth.getSession();
 
-        // Update UI determines if we play music
         updateUI(session);
 
-        // Listen for auth changes
         supabase.auth.onAuthStateChange((_event, session) => {
             updateUI(session);
         });
 
-        // Setup Event Listeners
         setupEventListeners();
 
-        // Load Sprites (Only needed if NOT logged in)
         if (!session) fetchSprites();
 
     } catch (e) {
@@ -47,14 +43,11 @@ function updateUI(session) {
     const audioBtn = document.getElementById('audio-toggle');
 
     if (session) {
-        // Logged In
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
         if (audioBtn) audioBtn.style.display = 'none';
-
         stopBgMusic();
     } else {
-        // Logged Out
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
@@ -65,7 +58,7 @@ function updateUI(session) {
 
 // --- EVENT LISTENERS ---
 function setupEventListeners() {
-    initDashboardNav(); // Setup Menu Clicks
+    initDashboardNav();
 
     const loginForm = document.getElementById('login-form');
     const logoutBtn = document.getElementById('logout-btn');
@@ -94,7 +87,6 @@ function setupEventListeners() {
                 errorMsg.textContent = "Erreur : " + error.message;
                 errorMsg.style.display = 'block';
             } else {
-                console.log('Login success', data);
                 handleLoginSound();
             }
         });
@@ -125,19 +117,14 @@ function initDashboardNav() {
             const targetId = sections[text];
             if (!targetId) return;
 
-            // Active State
             links.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
 
-            // Hide all
             document.querySelectorAll('.dashboard-content').forEach(el => el.classList.add('hidden'));
 
-            // Show Target
             const targetEl = document.getElementById(targetId);
             if (targetEl) {
                 targetEl.classList.remove('hidden');
-
-                // Fetch data if needed
                 if (targetId === 'minions-view') {
                     loadMinions();
                 }
@@ -160,8 +147,6 @@ async function loadMinions() {
 
     list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des mascottes...</p>';
 
-    // Fetch from 'minions' joined with 'patches'
-    // Requires Foreign Key relation to be set up in Supabase: minion.patch_id -> patches.id
     const { data, error } = await supabase
         .from('minions')
         .select(`
@@ -193,14 +178,6 @@ function renderMinions(data) {
     data.forEach((minion, index) => {
         const row = document.createElement('div');
 
-        // Patch Data
-        // Joined data should be in minion.patches (object) or minion.patches (array)? 
-        // Typically object if 1:1.
-
-        // Try to determine major version for color
-        // If patches has a 'version' or 'name' we could parse it.
-        // Or fallback to patch_id column.
-
         let patchData = null;
         if (minion.patches && !Array.isArray(minion.patches)) {
             patchData = minion.patches;
@@ -215,7 +192,7 @@ function renderMinions(data) {
             patchVersion = patchData.version;
             patchMajor = String(patchVersion).charAt(0);
         } else if (minion.patch_id) {
-            patchVersion = minion.patch_id; // Fallback to ID
+            patchVersion = minion.patch_id;
             patchMajor = String(minion.patch_id).charAt(0);
         }
 
@@ -225,14 +202,8 @@ function renderMinions(data) {
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
         const name = minion.name || 'Inconnu';
 
-        // Patch Assets from joined table
         const patchIconUrl = patchData ? patchData.icon_patch_url : null;
         const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
-
-        // Build Patch Badge HTML
-        // If we have an image icon for the badge, use it instead of text badge? Or alongside?
-        // User said: "reprendre l'icone et le logo". 
-        // Screenshot shows a graphic badge (ICON) and the Logo text.
 
         let badgeHtml = '';
         if (patchIconUrl) {
@@ -251,12 +222,17 @@ function renderMinions(data) {
             <div class="minion-info">
                 <div class="minion-name">${name}</div>
                 <div class="minion-meta">
+                    <!-- Assets aligned via CSS -->
                     ${badgeHtml}
                     ${logoHtml}
-                    <!-- Extra Infos -->
-                    ${minion.hôtel_des_ventes ? '<span title="Vendable" style="font-size:1.2rem;">💰</span>' : ''}
-                    ${minion.malle_surprise ? '<span title="Malle Surprise" style="font-size:1.2rem;">🎁</span>' : ''}
-                    <div style="margin-left:auto;">⭐</div>
+                    
+                    ${minion.hôtel_des_ventes ? '<span class="meta-icon" title="Vendable">💰</span>' : ''}
+                    ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
+                    
+                    <!-- Collection Button (Placeholder) -->
+                    <button class="btn-collect" aria-label="Ajouter à la collection">
+                        <span class="star-icon">☆</span>
+                    </button>
                 </div>
             </div>
         `;
@@ -264,7 +240,7 @@ function renderMinions(data) {
     });
 }
 
-// --- SPRITES LOGIC (Decoration) ---
+// --- SPRITES LOGIC ---
 async function fetchSprites() {
     const container = document.getElementById('supabase-data');
     if (!container) return;
@@ -281,10 +257,8 @@ async function fetchSprites() {
         sprite.className = 'floating-sprite';
         const url = spriteData.icon_sprite_url;
         if (!url) return;
-
         sprite.style.backgroundImage = `url('${url}')`;
 
-        // Rejection Sampling
         let validX = 0, validY = 0;
         let found = false;
 
@@ -328,7 +302,6 @@ const audioState = {
     userInteracted: false
 };
 
-// Config
 audioState.bgMusic.loop = true;
 audioState.bgMusic.volume = 0.5;
 audioState.loginSound.volume = 0.6;

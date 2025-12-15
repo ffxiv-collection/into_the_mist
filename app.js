@@ -416,7 +416,7 @@ function renderMinions(data) {
                 </div>
                 
                 <div class="minion-center-text" title="${minion.tooltip ? minion.tooltip.replace(/"/g, '&quot;') : ''}">
-                    ${minion.tooltip ? `"${minion.tooltip}"` : ''} 
+                    ${minion.tooltip ? `<i class="fa-solid fa-quote-left quote-icon"></i> ${minion.tooltip} <i class="fa-solid fa-quote-right quote-icon"></i>` : ''} 
                 </div>
                 
                 <div class="minion-meta">

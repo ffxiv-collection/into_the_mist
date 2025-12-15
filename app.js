@@ -149,6 +149,12 @@ function setupEventListeners() {
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
+            // Play Logout Sound
+            if (audioState.logoutSound) {
+                audioState.logoutSound.currentTime = 0;
+                audioState.logoutSound.play().catch(() => { });
+            }
+
             await supabase.auth.signOut();
             window.location.hash = '';
         });
@@ -301,10 +307,23 @@ function renderMinions(data) {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             row.classList.toggle('collected');
-            if (row.classList.contains('collected')) {
+
+            const isCollected = row.classList.contains('collected');
+
+            if (isCollected) {
+                // COLLECTED (Success)
                 star.textContent = '★';
+                if (audioState.collectSound) {
+                    audioState.collectSound.currentTime = 0;
+                    audioState.collectSound.play().catch(() => { });
+                }
             } else {
+                // REMOVED (Error/Cancel)
                 star.textContent = '☆';
+                if (audioState.uncollectSound) {
+                    audioState.uncollectSound.currentTime = 0;
+                    audioState.uncollectSound.play().catch(() => { });
+                }
             }
         });
 
@@ -321,7 +340,7 @@ async function fetchSprites() {
     const { data, error } = await supabase.from('sprites').select('*');
     if (error || !data) return;
 
-    const placedPositions = [];
+    const placedPositions = placedPositions || [];
     container.innerHTML = '';
 
     data.forEach((spriteData, index) => {
@@ -357,6 +376,7 @@ async function fetchSprites() {
 }
 
 function isTooClose(x, y, existingPositions, minDistance = 8) {
+    if (!existingPositions) return false;
     for (const pos of existingPositions) {
         const dx = x - pos.x;
         const dy = (y - pos.y) * 0.56;
@@ -371,14 +391,24 @@ const audioState = {
     bgMusic: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756518/003_Prelude_Discoveries_ofr2of.mp3'),
     loginSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756726/FFXIV_Start_Game_hclxwe.mp3'),
     menuSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756639/FFXIV_Confirm_k4wbeb.mp3'),
+
+    // NEW SOUNDS
+    logoutSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756694/FFXIV_Log_Out_vsa9ro.mp3'),
+    collectSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756662/FFXIV_Incoming_Tell_3_ait6dd.mp3'),
+    uncollectSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756644/FFXIV_Error_gvhk41.mp3'),
+
     isPlaying: false,
     userInteracted: false
 };
 
+// Volumes
 audioState.bgMusic.loop = true;
 audioState.bgMusic.volume = 0.5;
 audioState.loginSound.volume = 0.6;
 audioState.menuSound.volume = 0.6;
+audioState.logoutSound.volume = 0.6;
+audioState.collectSound.volume = 0.5;
+audioState.uncollectSound.volume = 0.5;
 
 function initAudioListeners() {
     const btn = document.getElementById('audio-toggle');

@@ -1140,3 +1140,14 @@ body {
     opacity: 1;
     transform: translateX(0);
 }
+/* Eorzea Database Links */
+.eorzeadb_link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+.eorzeadb_link:hover {
+    color: var(--gold);
+    cursor: pointer;
+}

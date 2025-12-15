@@ -498,8 +498,8 @@ function openModal(minion, patchData) {
         const c = ms.currencies;
         if (!s) return;
 
-        // ALIGNMENT FIX: Use icon_url
-        const iconUrl = s.icon_url || '';
+        // ALIGNMENT FIX: Use icon_source_url
+        const iconUrl = s.icon_source_url || '';
         const isImg = iconUrl.startsWith('http');
 
         const iconHtml = isImg

@@ -69,6 +69,8 @@ function updateUI(session) {
 
 // --- EVENT LISTENERS ---
 function setupEventListeners() {
+    initDashboardNav(); // Setup Menu Clicks
+
     const loginForm = document.getElementById('login-form');
     const logoutBtn = document.getElementById('logout-btn');
 

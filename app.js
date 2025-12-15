@@ -341,8 +341,8 @@ function renderMinions(data) {
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
                     <div class="col-market">
-                        ${minion.hôtel_des_ventes ? '<span class="meta-icon" title="Vendable">💰</span>' : ''}
-                        ${minion.malle_surprise ? '<span class="meta-icon" title="Malle Surprise">🎁</span>' : ''}
+                        ${minion.hôtel_des_ventes ? '<img src="https://xivapi.com/i/065000/065002.png" class="meta-icon-img" title="Disponible au Market Board">' : ''}
+                        ${minion.malle_surprise ? '<img src="https://xivapi.com/i/036000/036635.png" class="meta-icon-img" title="Malle Surprise / Materiel Container">' : ''}
                     </div>
                     <button class="btn-collect" aria-label="Ajouter à la collection">
                         <span class="star-icon">${isCollected ? '★' : '☆'}</span> 

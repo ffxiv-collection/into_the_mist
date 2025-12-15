@@ -269,7 +269,7 @@ async function loadMinions() {
                     currencies ( name, icon_currency_url )
                 )
             `)
-            .order('id', { ascending: true })
+            .order('name', { ascending: true })
             .limit(100);
 
         if (error) {

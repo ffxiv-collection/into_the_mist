@@ -338,13 +338,24 @@ function renderMinions(data) {
                         ${name}
                         ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                         ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
-                        ${minion.acquisition ? (
-                (minion.acquisition.toLowerCase().includes('boutipue') || minion.acquisition.includes('€'))
-                    ? (minion.shop_url
-                        ? `<a href="${minion.shop_url}" target="_blank" class="shop-link"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i></a>`
-                        : `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i>`)
-                    : `<i class="fa-solid fa-circle-info meta-icon-fa" title="${minion.acquisition}"></i>`
-            ) : ''}
+                        ${minion.acquisition ? (() => {
+                const text = minion.acquisition.toLowerCase();
+                let iconClass = 'fa-circle-info'; // Default
+
+                if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
+                else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
+                else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
+                else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
+                else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
+                else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
+                else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
+
+                const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
+
+                return (minion.shop_url)
+                    ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
+                    : iconHtml;
+            })() : ''}
                     </div>
                     ${unavailableBadge}
                 </div>

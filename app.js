@@ -338,6 +338,11 @@ function renderMinions(data) {
                         ${name}
                         ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                         ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
+                        ${minion.acquisition ? (
+                (minion.acquisition.toLowerCase().includes('boutipue') || minion.acquisition.includes('€'))
+                    ? `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i>`
+                    : `<i class="fa-solid fa-circle-info meta-icon-fa" title="${minion.acquisition}"></i>`
+            ) : ''}
                     </div>
                     ${unavailableBadge}
                 </div>

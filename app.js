@@ -498,8 +498,8 @@ function openModal(minion, patchData) {
         const c = ms.currencies;
         if (!s) return;
 
-        // ALIGNMENT FIX: Use icon_source_url
-        const iconUrl = s.icon_source_url || '';
+        // ALIGNMENT FIX: Use icon_url
+        const iconUrl = s.icon_url || '';
         const isImg = iconUrl.startsWith('http');
 
         const iconHtml = isImg
@@ -509,7 +509,7 @@ function openModal(minion, patchData) {
         // Right Column: Cost
         let costHtml = '';
         if (ms.cost && ms.cost > 0) {
-            const currencyIconUrl = (c && c.icon_currency_url) ? c.icon_currency_url : '';
+            const currencyIconUrl = (c && c.icon_url) ? c.icon_url : '';
             const isCurrencyImg = currencyIconUrl.startsWith('http');
             const currencyHtml = isCurrencyImg
                 ? `<img src="${currencyIconUrl}" class="currency-icon-img" title="${c ? c.name : ''}">`

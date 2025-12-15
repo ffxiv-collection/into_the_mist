@@ -999,6 +999,9 @@ body {
 .source-info {
     display: flex;
     flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+    flex: 1;
 }
 
 .source-title {

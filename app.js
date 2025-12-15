@@ -340,7 +340,7 @@ async function fetchSprites() {
     const { data, error } = await supabase.from('sprites').select('*');
     if (error || !data) return;
 
-    const placedPositions = placedPositions || [];
+    const placedPositions = [];
     container.innerHTML = '';
 
     data.forEach((spriteData, index) => {

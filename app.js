@@ -496,6 +496,7 @@ function openModal(minion, patchData) {
     sources.forEach(ms => {
         const s = ms.sources;
         const c = ms.currencies;
+        console.log('Source:', s, 'Currency:', c); // DEBUG
         if (!s) return;
 
         // ALIGNMENT FIX: Use icon_source_url

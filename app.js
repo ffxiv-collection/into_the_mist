@@ -264,7 +264,7 @@ async function loadMinions() {
                 minion_sources (
                     details,
                     cost,
-                    sources ( name, icon_source_url, type ),
+                    sources ( name, icon_source_url ),
                     currencies ( name, icon_currency_url )
                 )
             `)

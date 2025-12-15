@@ -340,7 +340,9 @@ function renderMinions(data) {
                         ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                         ${minion.acquisition ? (
                 (minion.acquisition.toLowerCase().includes('boutipue') || minion.acquisition.includes('€'))
-                    ? `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i>`
+                    ? (minion.shop_url
+                        ? `<a href="${minion.shop_url}" target="_blank" class="shop-link"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i></a>`
+                        : `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${minion.acquisition}"></i>`)
                     : `<i class="fa-solid fa-circle-info meta-icon-fa" title="${minion.acquisition}"></i>`
             ) : ''}
                     </div>

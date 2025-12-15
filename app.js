@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) {
         console.error('Init error', e);
     }
+
+    // SCROLL SAVE
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('pageScroll', window.scrollY);
+    });
 });
 
 // --- UI UPDATES ---
@@ -283,6 +288,14 @@ async function loadMinions() {
     }
 
     renderMinions(minionsData);
+
+    // SCROLL RESTORE
+    const savedScroll = localStorage.getItem('pageScroll');
+    if (savedScroll && window.location.hash.includes('minions')) {
+        setTimeout(() => {
+            window.scrollTo(0, parseInt(savedScroll));
+        }, 100);
+    }
 }
 
 function renderMinions(data) {

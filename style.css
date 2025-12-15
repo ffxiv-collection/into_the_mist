@@ -360,9 +360,12 @@ body {
 
 /* COLLECTED STATE */
 .minion-row.collected {
-    opacity: 0.6;
-    /* Dimmed */
-    background-color: #f1f5f9 !important;
+    opacity: 0.5;
+    /* Stronger dimming (was 0.6) */
+    filter: grayscale(100%);
+    /* Force Grey */
+    background-color: #e2e8f0 !important;
+    /* Slightly darker grey to emphasize */
 }
 
 .minion-row:hover {
@@ -373,6 +376,8 @@ body {
 
 .minion-row.collected:hover {
     opacity: 0.8;
+    filter: grayscale(20%);
+    /* Hints of color on hover */
 }
 
 .minion-icon {
@@ -424,6 +429,7 @@ body {
 }
 
 /* Patch Colors */
+/* Note: When grayscale(100%) is applied, these beautiful colors will turn grey. This is correct for "Unobtained" usually, but user sees it as "Obtained". */
 .patch-2 {
     background-color: #e2e8f0;
     color: #475569;
@@ -523,10 +529,7 @@ body {
 }
 
 .btn-collect .star-icon {
-    /* Outline Star Effect via text-shadow or unicode? */
-    /* Screenshot shows a white outline star on dark bg. unicode '☆' is outline. */
     font-family: system-ui;
-    /* Use default font for star */
 }
 
 .btn-collect:hover {
@@ -540,12 +543,40 @@ body {
     /* Gold Background */
     color: #78350f;
     /* Brownish/Dark filled star */
+    /* Ensure button stays colorful even if row is grayscale? */
+    filter: none;
+    /* Try to override parent filter? (This doesn't work in CSS easily, child inherits/compounds filter) */
+    /* If parent has grayscale(1), this button will be grey too. */
 }
 
-/* Use filled star for collected state via content replacement or class? */
-/* CSS Trick: toggle content based on class? Or JS change textContent? JS is safest. */
-/* If using JS to swap '☆' to '★' text, style handles color. */
-/* Screenshot seems to show filled star on Gold. */
+/* IMPORTANT FIX: If row is grayscale, the gold button will look grey. */
+/* We should NOT grayscale the ROW if we want the button to look Gold. */
+/* Instead, Grayscale the IMAGES/TEXT, but keep button colorful? */
+
+/* Re-thinking strategy based on CSS limitations */
+/* If I grayscale the whole row, the Gold button becomes Grey button. User won't see it as Gold. */
+/* I must apply grayscale to specific siblings, OR unset grayscale on the button? (Cannot unset parent filter) */
+
+/* Updated Strategy: Apply grayscale to specific elements */
+.minion-row.collected .minion-icon,
+.minion-row.collected .minion-info .col-badge,
+.minion-row.collected .minion-info .col-logo,
+.minion-row.collected .minion-info .col-market {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.minion-row.collected {
+    opacity: 1;
+    /* Container stays opaque so button pops */
+    background-color: #f1f5f9 !important;
+}
+
+.minion-row.collected .btn-collect {
+    /* Button stays vivid */
+    filter: none;
+    opacity: 1;
+}
 
 @keyframes slideUpFade {
     from {

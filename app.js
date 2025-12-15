@@ -21,12 +21,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check Session
         const { data: { session } } = await supabase.auth.getSession();
 
+        // Update UI based on initial session
         updateUI(session);
 
         supabase.auth.onAuthStateChange((_event, session) => {
             updateUI(session);
         });
 
+        // Setup Event Listeners
         setupEventListeners();
 
         if (!session) fetchSprites();
@@ -43,22 +45,109 @@ function updateUI(session) {
     const audioBtn = document.getElementById('audio-toggle');
 
     if (session) {
+        // Logged In
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
         if (audioBtn) audioBtn.style.display = 'none';
         stopBgMusic();
+
+        // Handle Routing AFTER session is confirmed
+        handleRouting();
+
     } else {
+        // Logged Out
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
         fetchSprites();
         startBgMusic();
+
+        // Clear hash on logout to avoid confusion? Or keep it?
+        // kept simple: user sees login screen regardless of hash if not auth'd.
     }
 }
 
+// --- ROUTING LOGIC ---
+function handleRouting() {
+    const hash = window.location.hash.substring(1); // remove '#'
+    const validRoutes = ['dashboard-home', 'minions-view', 'mounts-view', 'barding-view', 'orchestrion-view'];
+
+    // Default to 'dashboard-home' if no hash or invalid
+    let targetId = 'dashboard-home';
+
+    // Mapping hash to ID (or strictly using ID as hash)
+    // Let's us semantic hashes: #home, #minions
+    const routeMap = {
+        'home': 'dashboard-home',
+        'minions': 'minions-view',
+        'mounts': 'mounts-view',
+        'bardings': 'barding-view',
+        'orchestrion': 'orchestrion-view'
+    };
+
+    if (hash && routeMap[hash]) {
+        targetId = routeMap[hash];
+    }
+
+    switchView(targetId);
+}
+
+function switchView(targetId) {
+    // Update Active Link State
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(link => {
+        // Reverse lookup map to find which link corresponds to this targetId?
+        // Or just add data-target to links in HTML?
+        // Current HTML relies on textContent. Let's fix that in initDashboardNav or here.
+
+        // Simple text matching fallback for now to keep HTML untouched if possible,
+        // but robust way is matching href or data attribute.
+        // Let's assume initDashboardNav handles the click => hash update flows.
+        link.classList.remove('active');
+
+        // Heuristic: map targetId back to keyword
+        const reverseMap = {
+            'dashboard-home': 'Accueil',
+            'minions-view': 'Mascottes',
+            'mounts-view': 'Montures',
+            'barding-view': 'Bardes',
+            'orchestrion-view': 'Orchestion'
+        };
+
+        if (link.textContent.trim() === reverseMap[targetId]) {
+            link.classList.add('active');
+        }
+    });
+
+    // Hide all contents
+    document.querySelectorAll('.dashboard-content').forEach(el => el.classList.add('hidden'));
+
+    // Show Target
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+        targetEl.classList.remove('hidden');
+
+        // Trigger data load if specific view
+        if (targetId === 'minions-view') {
+            loadMinions();
+        }
+    }
+}
+
+
 // --- EVENT LISTENERS ---
 function setupEventListeners() {
+    // Navigation Clicks -> Update Hash
     initDashboardNav();
+
+    // Handle Browser Back/Forward Buttons
+    window.addEventListener('hashchange', () => {
+        // Only switch if we are logged in (dashboard visible)
+        const dashboardView = document.getElementById('dashboard-view');
+        if (!dashboardView.classList.contains('hidden')) {
+            handleRouting();
+        }
+    });
 
     const loginForm = document.getElementById('login-form');
     const logoutBtn = document.getElementById('logout-btn');
@@ -88,6 +177,7 @@ function setupEventListeners() {
                 errorMsg.style.display = 'block';
             } else {
                 handleLoginSound();
+                // Update UI will be triggered by onAuthStateChange
             }
         });
     }
@@ -95,6 +185,7 @@ function setupEventListeners() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             await supabase.auth.signOut();
+            window.location.hash = ''; // Clear hash on logout
         });
     }
 }
@@ -102,32 +193,24 @@ function setupEventListeners() {
 // --- DASHBOARD NAVIGATION ---
 function initDashboardNav() {
     const links = document.querySelectorAll('.nav-link');
-    const sections = {
-        'Accueil': 'dashboard-home',
-        'Mascottes': 'minions-view',
-        'Montures': 'mounts-view',
-        'Bardes': 'barding-view',
-        'Orchestion': 'orchestrion-view'
+
+    // Map Link Text -> Hash
+    const sectionHashes = {
+        'Accueil': 'home',
+        'Mascottes': 'minions',
+        'Montures': 'mounts',
+        'Bardes': 'bardings',
+        'Orchestion': 'orchestrion'
     };
 
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const text = link.textContent.trim();
-            const targetId = sections[text];
-            if (!targetId) return;
+            const hash = sectionHashes[text];
 
-            links.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-
-            document.querySelectorAll('.dashboard-content').forEach(el => el.classList.add('hidden'));
-
-            const targetEl = document.getElementById(targetId);
-            if (targetEl) {
-                targetEl.classList.remove('hidden');
-                if (targetId === 'minions-view') {
-                    loadMinions();
-                }
+            if (hash) {
+                window.location.hash = hash; // Triggers hashchange -> switchView
             }
         });
     });
@@ -196,7 +279,6 @@ function renderMinions(data) {
             patchMajor = String(minion.patch_id).charAt(0);
         }
 
-        // Logic for Availability
         const isUnavailable = (minion.available === false);
         const unavailableClass = isUnavailable ? 'unavailable' : '';
         const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
@@ -253,17 +335,12 @@ function renderMinions(data) {
 
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-
-            // Toggle Visuals
             row.classList.toggle('collected');
-
-            // Toggle Icon: ☆ (outline) <-> ★ (filled)
             if (row.classList.contains('collected')) {
                 star.textContent = '★';
             } else {
                 star.textContent = '☆';
             }
-
             console.log(`Toggled collection for: ${name}`);
         });
 

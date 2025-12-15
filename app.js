@@ -264,8 +264,8 @@ async function loadMinions() {
                 minion_sources (
                     details,
                     cost,
-                    sources ( name, icon_url, type ),
-                    currencies ( name, icon_url )
+                    sources ( name, icon_source_url, type ),
+                    currencies ( name, icon_currency_url )
                 )
             `)
             .order('id', { ascending: true })
@@ -359,10 +359,13 @@ function renderMinions(data) {
                 tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
             }
 
-            const isImg = s.icon_url.startsWith('http');
+            // ALIGNMENT FIX: Use icon_source_url
+            const iconUrl = s.icon_source_url || '';
+            const isImg = iconUrl.startsWith('http');
+
             const iconHtml = isImg
-                ? `<img src="${s.icon_url}" class="meta-icon-img" title="${tooltip}">`
-                : `<i class="${s.icon_url} meta-icon-fa" title="${tooltip}"></i>`;
+                ? `<img src="${iconUrl}" class="meta-icon-img" title="${tooltip}">`
+                : `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
 
             return (s.name === 'Boutique' && minion.shop_url)
                 ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
@@ -373,6 +376,7 @@ function renderMinions(data) {
                         ${minion.acquisition ? (() => {
                 const text = minion.acquisition.toLowerCase();
                 let iconClass = 'fa-circle-info'; // Default
+                let title = minion.acquisition;
 
                 if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
                 else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
@@ -485,10 +489,13 @@ function openModal(minion, patchData) {
         const c = ms.currencies;
         if (!s) return;
 
-        const isImg = s.icon_url.startsWith('http');
+        // ALIGNMENT FIX: Use icon_source_url
+        const iconUrl = s.icon_source_url || '';
+        const isImg = iconUrl.startsWith('http');
+
         const iconHtml = isImg
-            ? `<img src="${s.icon_url}" class="source-icon-large">`
-            : `<i class="${s.icon_url} source-icon-fa-large"></i>`;
+            ? `<img src="${iconUrl}" class="source-icon-large">`
+            : `<i class="${iconUrl} source-icon-fa-large"></i>`;
 
         let extra = ms.details || '';
         if (ms.cost) {

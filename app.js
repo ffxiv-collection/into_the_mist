@@ -402,40 +402,40 @@ function renderMinions(data) {
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
-                    <button class="btn-collect" aria-label="Ajouter à la collection">
-                        <span class="star-icon">${isCollected ? '★' : '☆'}</span> 
-                    </button>
+                    <button class="btn-sources" aria-label="Voir les sources"><i class="fa-solid fa-info-circle"></i></button>
+                        <button class="btn-sources" title="Voir les moyens d'obtention">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <button class="btn-collect" title="Ajouter à ma collection">
+                            <span class="star-icon">${isCollected ? '★' : '☆'}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
 
-        const btn = row.querySelector('.btn-collect');
-        const star = btn.querySelector('.star-icon');
+        // Interaction Logic
+        const btnCollect = row.querySelector('.btn-collect');
+        const star = btnCollect.querySelector('.star-icon');
+        const btnSources = row.querySelector('.btn-sources');
+        const nameEl = row.querySelector('.minion-name');
 
-        // Toggle Collection
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation(); // Prevent opening modal
+        // 1. Toggle Collection
+        btnCollect.addEventListener('click', async (e) => {
+            e.stopPropagation();
 
             // Optimistic UI Update
             const newCollectedState = !row.classList.contains('collected');
-            row.classList.toggle('collected');
-
             if (newCollectedState) {
-                // COLLECTED
-                star.textContent = '★';
-                if (audioState.collectSound) {
-                    audioState.collectSound.currentTime = 0;
-                    audioState.collectSound.play().catch(() => { });
-                }
                 userCollection.add(minion.id);
+                row.classList.add('collected');
+                star.textContent = '★';
+                playCollectSound();
             } else {
-                // REMOVED
-                star.textContent = '☆';
-                if (audioState.uncollectSound) {
-                    audioState.uncollectSound.currentTime = 0;
-                    audioState.uncollectSound.play().catch(() => { });
-                }
                 userCollection.delete(minion.id);
+                row.classList.remove('collected');
+                star.textContent = '☆';
+                playUncollectSound();
             }
 
             // Sync with DB

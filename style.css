@@ -435,6 +435,8 @@ body {
     font-size: 1.1rem;
     color: #333;
     margin-right: auto;
+    cursor: pointer;
+    /* Clickable indication */
 }
 
 .minion-meta {

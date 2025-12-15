@@ -457,8 +457,7 @@ function openModal(minion, patchData) {
     if (!modal) return;
 
     // Populate Data
-    document.getElementById('modal-name').textContent = minion.name;
-    document.getElementById('modal-tooltip').textContent = minion.tooltip ? `"${minion.tooltip}"` : '';
+    // Name & Tooltip removed per user request
     document.getElementById('modal-img').src = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
 
     // Info Grid (REMOVED per user request)

@@ -968,38 +968,76 @@ body {
 .source-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    background: #f8fafc;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    background: #fff;
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: transform 0.2s;
+}
+
+.source-item:hover {
+    transform: translateX(4px);
+    border-color: var(--primary-color);
 }
 
 .source-icon-large {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
+    margin-right: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
 }
 
 .source-icon-fa-large {
-    font-size: 1.8rem;
-    color: var(--gold);
-    width: 40px;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+    width: 48px;
     text-align: center;
 }
 
+.source-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.source-title {
+    font-weight: 700;
+    color: #0d3b66;
+    /* Dark Blue title */
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
 .source-details {
-    flex: 1;
-}
-
-.source-name {
-    font-weight: bold;
-    display: block;
-}
-
-.source-extra {
+    font-size: 0.85rem;
     color: var(--text-muted);
-    font-size: 0.9rem;
+}
+
+.source-cost {
+    margin-left: auto;
+    /* Push to right */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cost-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.currency-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.currency-icon-fa {
+    font-size: 1.2rem;
+    color: var(--gold);
 }
 
 .modal-info-grid {

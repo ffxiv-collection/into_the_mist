@@ -564,7 +564,7 @@ function openModal(minion, patchData) {
             <div class="source-info">
                 ${sourceTitleHtml}
                 ${sourceDetailsHtml}
-                ${ms.location ? `<span style="display:block; font-size:0.9rem;">${ms.location}</span>` : ''}
+                ${ms.location ? `<span style="font-weight:bold; display:block; font-size:0.9rem;">${ms.location}</span>` : ''}
                 ${minion.reputation_rank ? `<span style="display:block; font-size:0.9rem;">${minion.reputation_rank}</span>` : ''}
             </div>
             ${costHtml}

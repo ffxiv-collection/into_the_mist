@@ -263,7 +263,9 @@ async function loadMinions() {
                 patches (*),
                 minion_sources (
                     details,
-                    sources ( name, icon_url, type )
+                    cost,
+                    sources ( name, icon_url, type ),
+                    currencies ( name, icon_url )
                 )
             `)
             .order('id', { ascending: true })
@@ -346,19 +348,25 @@ function renderMinions(data) {
                         ${/* NEW: Relational Sources */ ''}
                         ${(minion.minion_sources || []).map(ms => {
             const s = ms.sources;
+            const c = ms.currencies;
             if (!s) return '';
-            const isImg = s.icon_url.startsWith('http');
-            const tooltip = `${s.name}${ms.details ? ': ' + ms.details : ''}`;
 
+            // Construct Tooltip: "Source: Details (Cost Currency)"
+            // e.g., "Gold Saucer: Vendor (10000 MGP)"
+            let tooltip = s.name;
+            if (ms.details) tooltip += `: ${ms.details}`;
+            if (ms.cost) {
+                tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
+            }
+
+            const isImg = s.icon_url.startsWith('http');
             const iconHtml = isImg
                 ? `<img src="${s.icon_url}" class="meta-icon-img" title="${tooltip}">`
                 : `<i class="${s.icon_url} meta-icon-fa" title="${tooltip}"></i>`;
 
-            // Special link for Boutique
-            if (s.name === 'Boutique' && minion.shop_url) {
-                return `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`;
-            }
-            return iconHtml;
+            return (s.name === 'Boutique' && minion.shop_url)
+                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
+                : iconHtml;
         }).join('')}
 
                         ${/* LEGACY: Text Fallback */ ''}

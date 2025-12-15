@@ -385,14 +385,14 @@ body {
 /* UNAVAILABLE STATE (Initial) */
 /* UNAVAILABLE STATE (Background Color) */
 .minion-row.unavailable {
-    background-color: #fff1f2 !important;
-    /* Light Red */
+    background-color: #ffe4e6 !important;
+    /* Swapped: Slightly darker on normal */
     border: 1px solid #fecaca;
 }
 
 .minion-row.unavailable:hover {
-    background-color: #ffe4e6 !important;
-    /* Slightly darker on hover */
+    background-color: #fff1f2 !important;
+    /* Swapped: Lighter on hover */
 }
 
 /* COLLECTED STATE overrides Unavailable visual focus */

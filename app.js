@@ -445,8 +445,8 @@ function renderMinions(data) {
                 </div>
                 
                 <div class="minion-meta">
-                    <div class="col-logo">${logoHtml}</div>
                     <div class="col-badge">${badgeHtml}</div>
+                    <div class="col-logo">${logoHtml}</div>
                     
                     <button class="btn-collect" title="Ajouter à ma collection">
                         <span class="star-icon">${isCollected ? '★' : '☆'}</span>

@@ -357,6 +357,9 @@ function renderMinions(data) {
             const c = ms.currencies;
             if (!s) return '';
 
+            // HIDE OFFICIAL ICON IN LINE (User Request: Show only in modal)
+            if (ms.lodestone_url) return '';
+
             // Construct Tooltip: "Source: Details (Cost Currency)"
             // e.g., "Gold Saucer: Vendor (10000 MGP)"
             let tooltip = s.name;

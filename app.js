@@ -536,10 +536,17 @@ function openModal(minion, patchData) {
 
         const div = document.createElement('div');
         div.className = 'source-item';
+
+        // Prepare Title (Link or Text)
+        let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;
+        if (ms.lodestone_url) {
+            sourceTitleHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-title" target="_blank">${s.name}</a>`;
+        }
+
         div.innerHTML = `
             ${iconHtml}
             <div class="source-info">
-                <span class="source-title">${s.name}</span>
+                ${sourceTitleHtml}
                 ${ms.details ? `<span class="source-details">${ms.details}</span>` : ''}
             </div>
             ${costHtml}

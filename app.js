@@ -389,17 +389,26 @@ function renderMinions(data) {
 
 // --- DB SYNC ---
 async function toggleCollection(minionId, isCollected) {
-    if (!currentUser) return;
+    if (!currentUser) {
+        console.error("No current user!");
+        return;
+    }
+
+    console.log(`Syncing Minion ${minionId}: ${isCollected ? 'INSERT' : 'DELETE'} for User ${currentUser.id}`);
 
     if (isCollected) {
         // INSERT
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('user_minions')
-            .insert([{ user_id: currentUser.id, minion_id: minionId }]);
+            .insert([{ user_id: currentUser.id, minion_id: minionId }])
+            .select(); // Best practice to return data to confirm integrity
 
         if (error) {
             console.error('Error adding minion:', error);
-            // Revert would happen here if strict
+            alert(`Erreur de sauvegarde: ${error.message} (Code: ${error.code})`);
+            // Optional: Revert UI here
+        } else {
+            console.log('Saved:', data);
         }
     } else {
         // DELETE
@@ -411,6 +420,9 @@ async function toggleCollection(minionId, isCollected) {
 
         if (error) {
             console.error('Error removing minion:', error);
+            alert(`Erreur de suppression: ${error.message}`);
+        } else {
+            console.log('Removed successfully');
         }
     }
 }

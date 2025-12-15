@@ -334,16 +334,16 @@ function renderMinions(data) {
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
                 <div style="margin-right:auto;">
-                    <div class="minion-name">${name}</div>
+                    <div class="minion-name">
+                        ${name}
+                        ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible au Market Board"></i>' : ''}
+                        ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Malle Surprise / Materiel Container"></i>' : ''}
+                    </div>
                     ${unavailableBadge}
                 </div>
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
-                    <div class="col-market">
-                        ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible au Market Board"></i>' : ''}
-                        ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Malle Surprise / Materiel Container"></i>' : ''}
-                    </div>
                     <button class="btn-collect" aria-label="Ajouter à la collection">
                         <span class="star-icon">${isCollected ? '★' : '☆'}</span> 
                     </button>

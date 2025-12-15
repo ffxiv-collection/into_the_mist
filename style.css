@@ -601,15 +601,16 @@ body {
 
 /* Meta Icons (FontAwesome) */
 .meta-icon-fa {
-    font-size: 1.2rem;
-    margin: 0 6px;
-    color: var(--gold-primary);
-    /* Use theme gold */
+    font-size: 1.0rem;
+    margin-left: 8px;
+    margin-right: 2px;
+    color: var(--gold);
     transition: transform 0.2s ease, color 0.2s ease;
     cursor: help;
+    vertical-align: middle;
 }
 
 .meta-icon-fa:hover {
     transform: scale(1.2);
-    color: var(--gold-hover);
+    color: var(--gold-light);
 }

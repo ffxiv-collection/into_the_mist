@@ -433,12 +433,15 @@ body {
 }
 
 .minion-name {
+    display: flex;
+    /* Robust Vertical Alignment */
+    align-items: center;
     font-weight: bold;
     font-size: 1.1rem;
     color: #333;
     margin-right: auto;
-    cursor: pointer;
-    /* Clickable indication */
+    cursor: default;
+    /* Not clickable anymore (only buttons) */
 }
 
 .minion-meta {

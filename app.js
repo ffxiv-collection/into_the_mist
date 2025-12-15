@@ -27,8 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup Event Listeners
         setupEventListeners();
 
-        // Load Sprites (Only needed if NOT logged in, but benign to load anyway)
-        // If session exists, we don't strictly need them, but logic handles view switching.
+        // Init Audio
+        initAudio();
+
+        // Load Sprites
         if (!session) fetchSprites();
 
     } catch (e) {
@@ -40,16 +42,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 function updateUI(session) {
     const loginView = document.getElementById('login-view');
     const dashboardView = document.getElementById('dashboard-view');
+    const audioBtn = document.getElementById('audio-toggle');
 
     if (session) {
         // Logged In
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
+        if (audioBtn) audioBtn.style.display = 'none'; // Hide music toggle on dashboard? Or keep? 
+        // User asked to play specific sound "Once connected... play X". 
+        // This updateUI runs on load too. We should only play audio if we *just* logged in?
+        // Actually, onAuthStateChange fires on load. We might not want to play sound on refresh.
+        // But for now, let's keep it simple. If we want strict "transition" sound, we do it in login handler.
     } else {
         // Logged Out
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
-        // Refresh sprites scatter if needed
+        if (audioBtn) audioBtn.style.display = 'flex';
         fetchSprites();
     }
 }
@@ -83,8 +91,9 @@ function setupEventListeners() {
                 errorMsg.textContent = "Erreur : " + error.message;
                 errorMsg.style.display = 'block';
             } else {
-                // Success handled by onAuthStateChange
                 console.log('Login success', data);
+                // Trigger Sound Effect specifically here on explicit login action
+                handleLoginSound();
             }
         });
     }

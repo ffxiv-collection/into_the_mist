@@ -264,6 +264,7 @@ async function loadMinions() {
                 minion_sources (
                     details,
                     cost,
+                    lodestone_url,
                     sources ( name, icon_source_url ),
                     currencies ( name, icon_currency_url )
                 )
@@ -499,7 +500,7 @@ function openModal(minion, patchData) {
     sources.forEach(ms => {
         const s = ms.sources;
         const c = ms.currencies;
-        console.log('Source:', s, 'Currency:', c); // DEBUG
+
         if (!s) return;
 
         // ALIGNMENT FIX: Use icon_source_url

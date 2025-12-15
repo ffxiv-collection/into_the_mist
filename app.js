@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Init Audio
         initAudio();
 
-        // Load Sprites
+        // Load Sprites (Only needed if NOT logged in, but benign to load anyway)
+        // If session exists, we don't strictly need them, but logic handles view switching.
         if (!session) fetchSprites();
 
     } catch (e) {
@@ -48,11 +49,7 @@ function updateUI(session) {
         // Logged In
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
-        if (audioBtn) audioBtn.style.display = 'none'; // Hide music toggle on dashboard? Or keep? 
-        // User asked to play specific sound "Once connected... play X". 
-        // This updateUI runs on load too. We should only play audio if we *just* logged in?
-        // Actually, onAuthStateChange fires on load. We might not want to play sound on refresh.
-        // But for now, let's keep it simple. If we want strict "transition" sound, we do it in login handler.
+        if (audioBtn) audioBtn.style.display = 'none'; // Hide music toggle on dashboard
     } else {
         // Logged Out
         loginView.classList.remove('hidden');
@@ -107,12 +104,9 @@ function setupEventListeners() {
 
 // --- SPRITES LOGIC (Decoration) ---
 async function fetchSprites() {
-    // Only run if login view is visible? Or always?
-    // Let's check container existence.
     const container = document.getElementById('supabase-data');
     if (!container) return;
 
-    // Avoid double fetch if already populated
     if (container.children.length > 0) return;
 
     const { data, error } = await supabase.from('sprites').select('*');
@@ -168,4 +162,75 @@ function isTooClose(x, y, existingPositions, minDistance = 8) {
         if (dist < minDistance) return true;
     }
     return false;
+}
+
+// --- AUDIO MANAGER ---
+const audioState = {
+    bgMusic: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756518/003_Prelude_Discoveries_ofr2of.mp3'),
+    loginSound: new Audio('https://res.cloudinary.com/dd4rdtrig/video/upload/v1765756726/FFXIV_Start_Game_hclxwe.mp3'),
+    isPlaying: false,
+    userInteracted: false
+};
+
+// Config
+audioState.bgMusic.loop = true;
+audioState.bgMusic.volume = 0.5;
+audioState.loginSound.volume = 0.6;
+
+function initAudio() {
+    const btn = document.getElementById('audio-toggle');
+    const icon = document.getElementById('audio-icon');
+
+    // Attempt Autoplay
+    // Note: Most browsers block this until interaction
+    const playPromise = audioState.bgMusic.play();
+
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            audioState.isPlaying = true;
+            updateAudioIcon(true);
+        }).catch(error => {
+            console.log("Autoplay blocked. Waiting for interaction.");
+            audioState.isPlaying = false;
+            updateAudioIcon(false);
+        });
+    }
+
+    // Toggle Button
+    if (btn) {
+        btn.addEventListener('click', () => {
+            if (audioState.isPlaying) {
+                audioState.bgMusic.pause();
+                audioState.isPlaying = false;
+            } else {
+                audioState.bgMusic.play();
+                audioState.isPlaying = true;
+                audioState.userInteracted = true;
+            }
+            updateAudioIcon(audioState.isPlaying);
+        });
+    }
+
+    // Capture first interaction to unlock AudioContext if needed
+    document.addEventListener('click', () => {
+        if (!audioState.userInteracted && !audioState.isPlaying) {
+            // Optional logic: Auto-play on first click if it was blocked?
+            // For now, let user control via button to avoid annoyance
+        }
+        audioState.userInteracted = true;
+    }, { once: true });
+}
+
+function updateAudioIcon(isPlaying) {
+    const icon = document.getElementById('audio-icon');
+    if (icon) icon.textContent = isPlaying ? '🔊' : '🔇';
+}
+
+function handleLoginSound() {
+    // Stop BG Music
+    audioState.bgMusic.pause();
+    audioState.bgMusic.currentTime = 0;
+
+    // Play Success Sound
+    audioState.loginSound.play().catch(e => console.log("Login sound blocked", e));
 }

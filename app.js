@@ -499,19 +499,32 @@ function openModal(minion, patchData) {
             ? `<img src="${iconUrl}" class="source-icon-large">`
             : `<i class="${iconUrl} source-icon-fa-large"></i>`;
 
-        let extra = ms.details || '';
-        if (ms.cost) {
-            extra += ` • ${ms.cost.toLocaleString()} ${c ? c.name : ''}`;
+        // Right Column: Cost
+        let costHtml = '';
+        if (ms.cost && ms.cost > 0) {
+            const currencyIconUrl = (c && c.icon_currency_url) ? c.icon_currency_url : '';
+            const isCurrencyImg = currencyIconUrl.startsWith('http');
+            const currencyHtml = isCurrencyImg
+                ? `<img src="${currencyIconUrl}" class="currency-icon-img" title="${c ? c.name : ''}">`
+                : (currencyIconUrl ? `<i class="${currencyIconUrl} currency-icon-fa"></i>` : '');
+
+            costHtml = `
+                <div class="source-cost">
+                    <span class="cost-value">${ms.cost.toLocaleString()}</span>
+                    ${currencyHtml}
+                </div>
+            `;
         }
 
         const div = document.createElement('div');
         div.className = 'source-item';
         div.innerHTML = `
             ${iconHtml}
-            <div class="source-details">
-                <span class="source-name">${s.name}</span>
-                <span class="source-extra">${extra}</span>
+            <div class="source-info">
+                <span class="source-title">${s.name}</span>
+                ${ms.details ? `<span class="source-details">${ms.details}</span>` : ''}
             </div>
+            ${costHtml}
         `;
 
         // Link wrapper if Boutique

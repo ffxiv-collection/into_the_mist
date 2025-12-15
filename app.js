@@ -395,7 +395,7 @@ function renderMinions(data) {
                     </div>
                     
                     <button class="btn-sources" title="Infos & Sources">
-                        <i class="fa-solid fa-circle-plus"></i>
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
 
                     ${unavailableBadge}

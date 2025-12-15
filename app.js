@@ -509,11 +509,17 @@ function openModal(minion, patchData) {
         // Right Column: Cost
         let costHtml = '';
         if (ms.cost && ms.cost > 0) {
-            const currencyIconUrl = (c && c.icon_url) ? c.icon_url : '';
-            const isCurrencyImg = currencyIconUrl.startsWith('http');
-            const currencyHtml = isCurrencyImg
-                ? `<img src="${currencyIconUrl}" class="currency-icon-img" title="${c ? c.name : ''}">`
-                : (currencyIconUrl ? `<i class="${currencyIconUrl} currency-icon-fa"></i>` : '');
+            const currencyVal = (c && c.icon_currency_url) ? c.icon_currency_url : '';
+
+            let currencyHtml = '';
+            if (currencyVal.startsWith('http')) {
+                currencyHtml = `<img src="${currencyVal}" class="currency-icon-img" title="${c ? c.name : ''}">`;
+            } else if (currencyVal.startsWith('fa-')) {
+                currencyHtml = `<i class="${currencyVal} currency-icon-fa"></i>`;
+            } else {
+                // Text symbol fallback (e.g. "€")
+                currencyHtml = `<span class="currency-symbol">${currencyVal}</span>`;
+            }
 
             costHtml = `
                 <div class="source-cost">

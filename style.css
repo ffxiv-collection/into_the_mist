@@ -361,7 +361,6 @@ body {
 /* UNAVAILABLE STATE (Initial) */
 .minion-row.unavailable .minion-name {
     color: #999;
-    /* Grey out title if unavailable? */
 }
 
 /* Unavailable Badge */
@@ -376,10 +375,7 @@ body {
     display: inline-block;
 }
 
-/* COLLECTED STATE overrides Unavailable somewhat */
-/* Logic: If collected, we don't care if it's available or not, we have it. */
-/* But visually, 'collected' styles apply grayscale. */
-
+/* COLLECTED STATE overrides Unavailable visual focus */
 .minion-row.collected {
     opacity: 1;
     background-color: #f1f5f9 !important;
@@ -431,7 +427,8 @@ body {
 }
 
 .col-logo {
-    width: 160px;
+    width: 200px;
+    /* INCREASED from 160px */
     display: flex;
     justify-content: flex-start;
 }
@@ -480,7 +477,8 @@ body {
 }
 
 .patch-logo {
-    height: 28px;
+    height: 45px;
+    /* INCREASED from 28px */
     width: auto;
     object-fit: contain;
     max-width: 100%;
@@ -555,14 +553,13 @@ body {
     /* Keep button visual intent */
 }
 
-/* Updated Strategy: Grayscale Elements */
+/* Grayscale Elements when Collected */
 .minion-row.collected .minion-icon,
 .minion-row.collected .minion-info .col-badge,
 .minion-row.collected .minion-info .col-logo,
 .minion-row.collected .minion-info .col-market,
 .minion-row.collected .minion-name,
 .minion-row.collected .unavailable-tag {
-    /* Also grayscale the badge when collected */
     filter: grayscale(100%);
     opacity: 0.5;
 }

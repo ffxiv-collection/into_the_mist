@@ -193,8 +193,8 @@ function renderMinions(data) {
         const row = document.createElement('div');
 
         // Handling Patch/Expansion styling
-        // Using patches_id provided by user
-        let patchVal = minion.patches_id || '2';
+        // Using patch_id provided by user
+        let patchVal = minion.patch_id || '2';
 
         const patchMajor = String(patchVal).charAt(0); // Take first digit for color class
 

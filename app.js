@@ -341,8 +341,8 @@ function renderMinions(data) {
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
                     <div class="col-market">
-                        ${minion.hôtel_des_ventes ? '<img src="https://xivapi.com/i/065000/065002.png" class="meta-icon-img" title="Disponible au Market Board">' : ''}
-                        ${minion.malle_surprise ? '<img src="https://xivapi.com/i/036000/036635.png" class="meta-icon-img" title="Malle Surprise / Materiel Container">' : ''}
+                        ${minion.hôtel_des_ventes ? '<img src="https://ffxiv.gamerescape.com/w/images/thumb/c/c9/Map82_Icon.png/30px-Map82_Icon.png" class="meta-icon-img" title="Disponible au Market Board">' : ''}
+                        ${minion.malle_surprise ? '<img src="https://www.garlandtools.org/files/icons/item/36635.png" class="meta-icon-img" title="Malle Surprise / Materiel Container">' : ''}
                     </div>
                     <button class="btn-collect" aria-label="Ajouter à la collection">
                         <span class="star-icon">${isCollected ? '★' : '☆'}</span> 

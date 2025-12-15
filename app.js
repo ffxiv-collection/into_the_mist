@@ -265,7 +265,7 @@ async function loadMinions() {
                     details,
                     cost,
                     sources ( name, icon_url ),
-                    currencies ( name, icon_url )
+                    currencies ( name, icon_currency_url )
                 )
             `)
             .order('id', { ascending: true })

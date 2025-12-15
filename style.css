@@ -246,7 +246,8 @@ body {
     color: var(--text-color);
     font-family: var(--font-menu);
     /* Custom Font Miedinger */
-    font-weight: normal;
+    font-weight: bold;
+    /* Requests slightly thicker */
     font-size: 1.3rem;
     /* Larger for readability */
     padding: 0.5rem 1rem;
@@ -272,7 +273,6 @@ body {
     font-size: 0.9rem;
     transition: all 0.2s;
     font-family: var(--font-main);
-    /* Keep system font for button text or change to menu font? User said "for menu". Button is in menu. Let's keep system for now for readability on small text. */
 }
 
 .btn-logout:hover {

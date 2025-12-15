@@ -844,7 +844,7 @@ body {
     margin-right: 2px;
     color: var(--gold);
     transition: transform 0.2s ease, color 0.2s ease;
-    cursor: help;
+
     vertical-align: middle;
 }
 

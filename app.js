@@ -167,8 +167,8 @@ async function loadMinions() {
     const { data, error } = await supabase
         .from('minions')
         .select('*')
-        //.order('id', { ascending: true }) // Optional sorting
-        .limit(100); // Limit for performance init
+        .order('id', { ascending: true })
+        .limit(100);
 
     if (error) {
         console.error('Error fetching minions:', error);
@@ -191,28 +191,28 @@ function renderMinions(data) {
 
     data.forEach((minion, index) => {
         const row = document.createElement('div');
-        // Determine patch styling
-        // Try to handle numeric like 2.0 or just 2
-        let patchMajor = '2';
-        if (minion.patch) {
-            const str = String(minion.patch);
-            patchMajor = str.charAt(0);
-        }
+
+        // Handling Patch/Expansion styling
+        // Using patches_id provided by user
+        let patchVal = minion.patches_id || '2';
+
+        const patchMajor = String(patchVal).charAt(0); // Take first digit for color class
 
         row.className = `minion-row row-${patchMajor}`;
-        row.style.animationDelay = `${index * 0.05}s`; // Staggered Animation
+        row.style.animationDelay = `${index * 0.05}s`;
 
-        const iconUrl = minion.icon || minion.image_url || 'https://xivapi.com/i/000000/000405.png';
+        const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
         const name = minion.name || 'Inconnu';
-        const patch = minion.patch || '?';
 
         row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
                 <div class="minion-name">${name}</div>
                 <div class="minion-meta">
-                    <span class="patch-badge patch-${patchMajor}">${patch}</span>
-                    ${minion.patch_logo ? `<img src="${minion.patch_logo}" class="patch-logo">` : ''}
+                    <span class="patch-badge patch-${patchMajor}">Patch ${patchVal}</span>
+                    <!-- Extra Infos -->
+                    ${minion.hôtel_des_ventes ? '<span title="Vendable">💰</span>' : ''}
+                    ${minion.malle_surprise ? '<span title="Malle Surprise">🎁</span>' : ''}
                     <div>⭐</div>
                 </div>
             </div>

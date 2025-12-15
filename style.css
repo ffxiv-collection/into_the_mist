@@ -595,246 +595,244 @@ body {
 
     to {
         opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .minion-row.collected {
-            opacity: 1;
-            background-color: #f1f5f9 !important;
-        }
+.minion-row.collected {
+    opacity: 1;
+    background-color: #f1f5f9 !important;
+}
 
-        .minion-row:hover {
-            transform: translateX(5px);
-            box-shadow: var(--shadow-md);
-            opacity: 1;
-        }
+.minion-row.collected:hover {
+    opacity: 0.8;
+}
 
-        .minion-row.collected:hover {
-            opacity: 0.8;
-        }
+.minion-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    margin-right: 1.5rem;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.1);
+}
 
-        .minion-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 4px;
-            margin-right: 1.5rem;
-            object-fit: contain;
-            background: rgba(0, 0, 0, 0.1);
-        }
+.minion-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
 
-        .minion-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-        }
+.minion-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+    margin-right: auto;
+}
 
-        .minion-name {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #333;
-            margin-right: auto;
-        }
+.minion-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-        .minion-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+/* Columns for Fixed Alignment */
+.col-badge {
+    width: 60px;
+    display: flex;
+    justify-content: center;
+}
 
-        /* Columns for Fixed Alignment */
-        .col-badge {
-            width: 60px;
-            display: flex;
-            justify-content: center;
-        }
+.col-logo {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    /* CENTERED */
+}
 
-        .col-logo {
-            width: 200px;
-            display: flex;
-            justify-content: center;
-            /* CENTERED */
-        }
+.col-market {
+    width: 70px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
 
-        .col-market {
-            width: 70px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
+/* Patch Colors */
+.patch-2 {
+    background-color: #e2e8f0;
+    color: #475569;
+}
 
-        /* Patch Colors */
-        .patch-2 {
-            background-color: #e2e8f0;
-            color: #475569;
-        }
+.patch-3 {
+    background-color: #93c5fd;
+}
 
-        .patch-3 {
-            background-color: #93c5fd;
-        }
+.patch-4 {
+    background-color: #fda4af;
+}
 
-        .patch-4 {
-            background-color: #fda4af;
-        }
+.patch-5 {
+    background-color: #c4b5fd;
+}
 
-        .patch-5 {
-            background-color: #c4b5fd;
-        }
+.patch-6 {
+    background-color: #fde68a;
+    color: #92400e;
+}
 
-        .patch-6 {
-            background-color: #fde68a;
-            color: #92400e;
-        }
+.patch-7 {
+    background-color: #fcd34d;
+    color: #78350f;
+}
 
-        .patch-7 {
-            background-color: #fcd34d;
-            color: #78350f;
-        }
+/* Styles for Image assets from Patches table */
+.patch-badge-img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+}
 
-        /* Styles for Image assets from Patches table */
-        .patch-badge-img {
-            height: 32px;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
-        }
+.patch-logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    max-width: 100%;
+    opacity: 0.9;
+}
 
-        .patch-logo {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-            max-width: 100%;
-            opacity: 0.9;
-        }
+/* Row Background tints */
+.row-2 {
+    background-color: #fefefe;
+}
 
-        /* Row Background tints */
-        .row-2 {
-            background-color: #fefefe;
-        }
+.row-3 {
+    background-color: #eff6ff;
+}
 
-        .row-3 {
-            background-color: #eff6ff;
-        }
+.row-4 {
+    background-color: #fff1f2;
+}
 
-        .row-4 {
-            background-color: #fff1f2;
-        }
+.row-5 {
+    background-color: #f5f3ff;
+}
 
-        .row-5 {
-            background-color: #f5f3ff;
-        }
+.row-6 {
+    background-color: #fffbeb;
+}
 
-        .row-6 {
-            background-color: #fffbeb;
-        }
+.row-7 {
+    background-color: #fffdf2;
+}
 
-        .row-7 {
-            background-color: #fffdf2;
-        }
+/* Icons & Button */
+.meta-icon {
+    font-size: 1.2rem;
+    cursor: help;
+}
 
-        /* Icons & Button */
-        .meta-icon {
-            font-size: 1.2rem;
-            cursor: help;
-        }
+/* --- BUTTON STYLE MATCHING SCREENSHOT --- */
+.btn-collect {
+    background: #4b4b4b;
+    /* Dark Grey Default */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: white;
+    width: 42px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding-bottom: 4px;
+}
 
-        /* --- BUTTON STYLE MATCHING SCREENSHOT --- */
-        .btn-collect {
-            background: #4b4b4b;
-            /* Dark Grey Default */
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.6rem;
-            color: white;
-            width: 42px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            margin-left: 1rem;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            padding-bottom: 4px;
-        }
+.btn-collect .star-icon {
+    font-family: system-ui;
+}
 
-        .btn-collect .star-icon {
-            font-family: system-ui;
-        }
+.btn-collect:hover {
+    transform: scale(1.05);
+    background: #666;
+}
 
-        .btn-collect:hover {
-            transform: scale(1.05);
-            background: #666;
-        }
+/* Collected State */
+.minion-row.collected .btn-collect {
+    background-color: var(--gold);
+    color: #78350f;
+    filter: none;
+    /* Keep button visual intent */
+}
 
-        /* Collected State */
-        .minion-row.collected .btn-collect {
-            background-color: var(--gold);
-            color: #78350f;
-            filter: none;
-            /* Keep button visual intent */
-        }
+/* Grayscale Elements when Collected */
+.minion-row.collected .minion-icon,
+.minion-row.collected .minion-info .col-badge,
+.minion-row.collected .minion-info .col-logo,
+.minion-row.collected .minion-info .col-market,
+.minion-row.collected .minion-name,
+.minion-row.collected .unavailable-tag {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
 
-        /* Grayscale Elements when Collected */
-        .minion-row.collected .minion-icon,
-        .minion-row.collected .minion-info .col-badge,
-        .minion-row.collected .minion-info .col-logo,
-        .minion-row.collected .minion-info .col-market,
-        .minion-row.collected .minion-name,
-        .minion-row.collected .unavailable-tag {
-            filter: grayscale(100%);
-            opacity: 0.5;
-        }
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
 
-        @keyframes slideUpFade {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* Meta Icons (FontAwesome) */
+.meta-icon-fa {
+    font-size: 1.0rem;
+    margin-left: 8px;
+    margin-right: 2px;
+    color: var(--gold);
+    transition: transform 0.2s ease, color 0.2s ease;
+    cursor: help;
+    vertical-align: middle;
+}
 
-        /* Meta Icons (FontAwesome) */
-        .meta-icon-fa {
-            font-size: 1.0rem;
-            margin-left: 8px;
-            margin-right: 2px;
-            color: var(--gold);
-            transition: transform 0.2s ease, color 0.2s ease;
-            cursor: help;
-            vertical-align: middle;
-        }
+.meta-icon-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-left: 8px;
+    margin-right: 2px;
+    vertical-align: middle;
+    cursor: help;
+    transition: transform 0.2s ease;
+}
 
-        .meta-icon-img {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
-            margin-left: 8px;
-            margin-right: 2px;
-            vertical-align: middle;
-            cursor: help;
-            transition: transform 0.2s ease;
-        }
+.meta-icon-fa:hover,
+.meta-icon-img:hover {
+    transform: scale(1.2);
+    color: var(--gold-light);
+}
 
-        .meta-icon-fa:hover,
-        .meta-icon-img:hover {
-            transform: scale(1.2);
-            color: var(--gold-light);
-        }
+/* Center Text (Tooltip) */
+.minion-center-text {
+    flex: 1;
+    text-align: center;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    padding: 0 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-        /* Center Text (Tooltip) */
-        .minion-center-text {
-            flex: 1;
-            text-align: center;
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            padding: 0 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
 /* --- MODAL STYLES --- */
 .modal-overlay {
     position: fixed;

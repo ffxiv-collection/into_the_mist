@@ -342,6 +342,11 @@ function renderMinions(data) {
                 <div style="margin-right:auto; display:flex; align-items:center;">
                     <div class="minion-name">
                         ${name}
+                        
+                        <button class="btn-sources" title="Infos & Sources">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+
                         ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                         ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                         
@@ -393,10 +398,6 @@ function renderMinions(data) {
                     : iconHtml;
             })() : ''}
                     </div>
-                    
-                    <button class="btn-sources" title="Infos & Sources">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
 
                     ${unavailableBadge}
                 </div>

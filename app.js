@@ -348,6 +348,10 @@ function renderMinions(data) {
                     </div>
                     ${unavailableBadge}
                 </div>
+                <div class="minion-center-text">
+                    ${minion.tooltip ? `"${minion.tooltip}"` : ''} 
+                </div>
+                
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>

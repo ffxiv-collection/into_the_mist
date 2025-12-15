@@ -360,7 +360,7 @@ body {
 
 /* UNAVAILABLE STATE (Initial) */
 .minion-row.unavailable .minion-name {
-    color: #999;
+    /* REMOVED color override so it stays black */
 }
 
 /* Unavailable Badge */

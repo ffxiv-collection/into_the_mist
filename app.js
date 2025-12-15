@@ -339,7 +339,7 @@ function renderMinions(data) {
         row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
-                <div style="margin-right:auto;">
+                <div style="margin-right:auto; display:flex; align-items:center;">
                     <div class="minion-name">
                         ${name}
                         ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
@@ -393,8 +393,14 @@ function renderMinions(data) {
                     : iconHtml;
             })() : ''}
                     </div>
+                    
+                    <button class="btn-sources" title="Infos & Sources">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </button>
+
                     ${unavailableBadge}
                 </div>
+                
                 <div class="minion-center-text">
                     ${minion.tooltip ? `"${minion.tooltip}"` : ''} 
                 </div>
@@ -402,13 +408,11 @@ function renderMinions(data) {
                 <div class="minion-meta">
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
-                    <button class="btn-sources" title="Voir les moyens d'obtention">
-                            <i class="fa-solid fa-bars"></i>
-                        </button>
-                        <button class="btn-collect" title="Ajouter à ma collection">
-                            <span class="star-icon">${isCollected ? '★' : '☆'}</span>
-                        </button>
-                    </div>
+                    
+                    <button class="btn-collect" title="Ajouter à ma collection">
+                        <span class="star-icon">${isCollected ? '★' : '☆'}</span>
+                    </button>
+                </div>
                 </div>
             </div>
         `;

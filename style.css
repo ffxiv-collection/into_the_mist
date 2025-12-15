@@ -589,27 +589,38 @@ body {
     opacity: 0.5;
 }
 
-/* Sources Button */
+/* Sources Button (Minimal) */
 .btn-sources {
     background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    border: none;
     cursor: pointer;
-    font-size: 1rem;
-    color: var(--text-muted);
-    width: 36px;
-    height: 36px;
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    /* Discreet gray */
+    padding: 0;
+    margin-left: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    margin-left: 0.5rem;
+    width: auto;
+    height: auto;
 }
 
 .btn-sources:hover {
-    background: #f1f5f9;
     color: var(--gold);
-    border-color: var(--gold);
+    transform: scale(1.1);
+}
+
+.minion-name {
+    /* Existing styles */
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+    /* margin-right: auto; -> REMOVED because parent handles flex */
+    cursor: pointer;
+    margin-right: 0;
+    /* Clear margin so button sits next to it */
 }
 
 @keyframes slideUpFade {

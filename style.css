@@ -598,16 +598,18 @@ body {
         transform: translateY(0);
     }
 }
-/* Meta Icons (Gil, Malle) */
-.meta-icon-img {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    margin: 0 4px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    transition: transform 0.2s ease;
+
+/* Meta Icons (FontAwesome) */
+.meta-icon-fa {
+    font-size: 1.2rem;
+    margin: 0 6px;
+    color: var(--gold-primary);
+    /* Use theme gold */
+    transition: transform 0.2s ease, color 0.2s ease;
+    cursor: help;
 }
 
-.meta-icon-img:hover {
-    transform: scale(1.1);
+.meta-icon-fa:hover {
+    transform: scale(1.2);
+    color: var(--gold-hover);
 }

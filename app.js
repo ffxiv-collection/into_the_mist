@@ -265,6 +265,7 @@ async function loadMinions() {
                     details,
                     cost,
                     lodestone_url,
+                    location,
                     sources ( name, icon_source_url ),
                     currencies ( name, icon_currency_url )
                 )
@@ -563,6 +564,8 @@ function openModal(minion, patchData) {
             <div class="source-info">
                 ${sourceTitleHtml}
                 ${sourceDetailsHtml}
+                ${ms.location ? `<span style="font-weight:bold; display:block; font-size:0.9rem;">${ms.location}</span>` : ''}
+                ${minion.rank ? `<span style="font-weight:bold; display:block; font-size:0.9rem;">Rank ${minion.rank}</span>` : ''}
             </div>
             ${costHtml}
         `;

@@ -415,7 +415,7 @@ function renderMinions(data) {
                     ${unavailableBadge}
                 </div>
                 
-                <div class="minion-center-text">
+                <div class="minion-center-text" title="${minion.tooltip ? minion.tooltip.replace(/"/g, '&quot;') : ''}">
                     ${minion.tooltip ? `"${minion.tooltip}"` : ''} 
                 </div>
                 

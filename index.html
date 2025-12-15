@@ -109,6 +109,39 @@
                 <p style="text-align:center;">Orchestion à venir...</p>
             </div>
 
+            <!-- DETAILS MODAL -->
+            <div id="details-modal" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <button id="modal-close" class="modal-close-btn">&times;</button>
+
+                    <div class="modal-header">
+                        <img id="modal-img" src="" alt="Minion" class="modal-img-large">
+                        <div class="modal-title-block">
+                            <h2 id="modal-name">Name</h2>
+                            <p id="modal-tooltip" class="modal-quote">"Quote"</p>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <h3>Moyens d'obtention</h3>
+                        <div id="modal-sources-list" class="sources-list">
+                            <!-- Injected JS -->
+                        </div>
+
+                        <div class="modal-info-grid">
+                            <div class="info-item">
+                                <span class="label">Patch</span>
+                                <span id="modal-patch" class="value">2.0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Disponibilité</span>
+                                <span id="modal-available" class="value">Oui</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </main>

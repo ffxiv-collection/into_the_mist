@@ -408,8 +408,9 @@ function renderMinions(data) {
         const btn = row.querySelector('.btn-collect');
         const star = btn.querySelector('.star-icon');
 
+        // Toggle Collection
         btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevent opening modal
 
             // Optimistic UI Update
             const newCollectedState = !row.classList.contains('collected');
@@ -434,12 +435,102 @@ function renderMinions(data) {
             }
 
             // Sync with DB
-            await toggleCollection(minion.id, newCollectedState);
+            if (minion.id) toggleCollection(minion.id, newCollectedState);
+        });
+
+        // Open Modal on Row Click (except button)
+        row.addEventListener('click', () => {
+            openModal(minion, patchData);
         });
 
         list.appendChild(row);
     });
 }
+
+// --- MODAL LOGIC ---
+function openModal(minion, patchData) {
+    const modal = document.getElementById('details-modal');
+    if (!modal) return;
+
+    // Populate Data
+    document.getElementById('modal-name').textContent = minion.name;
+    document.getElementById('modal-tooltip').textContent = minion.tooltip ? `"${minion.tooltip}"` : '';
+    document.getElementById('modal-img').src = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
+
+    // Info Grid
+    document.getElementById('modal-patch').textContent = patchData ? patchData.version : (minion.patch_id || '?');
+    document.getElementById('modal-available').textContent = minion.available !== false ? 'Oui' : 'Non';
+
+    // Sources List
+    const list = document.getElementById('modal-sources-list');
+    list.innerHTML = '';
+
+    const sources = minion.minion_sources || [];
+
+    // Legacy fallback if no relational sources but acquisition text exists
+    if (sources.length === 0 && minion.acquisition) {
+        list.innerHTML = `
+            <div class="source-item">
+                <i class="fa-solid fa-circle-info source-icon-fa-large"></i>
+                <div class="source-details">
+                    <span class="source-name">Autre</span>
+                    <span class="source-extra">${minion.acquisition}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    sources.forEach(ms => {
+        const s = ms.sources;
+        const c = ms.currencies;
+        if (!s) return;
+
+        const isImg = s.icon_url.startsWith('http');
+        const iconHtml = isImg
+            ? `<img src="${s.icon_url}" class="source-icon-large">`
+            : `<i class="${s.icon_url} source-icon-fa-large"></i>`;
+
+        let extra = ms.details || '';
+        if (ms.cost) {
+            extra += ` • ${ms.cost.toLocaleString()} ${c ? c.name : ''}`;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'source-item';
+        div.innerHTML = `
+            ${iconHtml}
+            <div class="source-details">
+                <span class="source-name">${s.name}</span>
+                <span class="source-extra">${extra}</span>
+            </div>
+        `;
+
+        // Link wrapper if Boutique
+        if (s.name === 'Boutique' && minion.shop_url) {
+            div.style.cursor = 'pointer';
+            div.onclick = () => window.open(minion.shop_url, '_blank');
+            div.title = "Ouvrir la boutique";
+        }
+
+        list.appendChild(div);
+    });
+
+    // Show Modal
+    modal.classList.remove('hidden');
+}
+
+// Setup Modal Close
+document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('modal-close');
+    const modal = document.getElementById('details-modal');
+
+    if (closeBtn && modal) {
+        closeBtn.onclick = () => modal.classList.add('hidden');
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        }
+    }
+});
 
 // --- DB SYNC ---
 async function toggleCollection(minionId, isCollected) {

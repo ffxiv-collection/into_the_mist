@@ -15,8 +15,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('Supabase initialized');
 
+        // Init Audio (Setup listeners, but DO NOT PLAY yet)
+        initAudioListeners();
+
         // Check Session
         const { data: { session } } = await supabase.auth.getSession();
+
+        // Update UI determines if we play music
         updateUI(session);
 
         // Listen for auth changes
@@ -27,11 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup Event Listeners
         setupEventListeners();
 
-        // Init Audio
-        initAudio();
-
         // Load Sprites (Only needed if NOT logged in, but benign to load anyway)
-        // If session exists, we don't strictly need them, but logic handles view switching.
         if (!session) fetchSprites();
 
     } catch (e) {
@@ -49,13 +50,20 @@ function updateUI(session) {
         // Logged In
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
-        if (audioBtn) audioBtn.style.display = 'none'; // Hide music toggle on dashboard
+        if (audioBtn) audioBtn.style.display = 'none';
+
+        // STOP Music if playing (e.g. refreshed page while logged in, or transition)
+        stopBgMusic();
+
     } else {
         // Logged Out
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
         if (audioBtn) audioBtn.style.display = 'flex';
         fetchSprites();
+
+        // START Music (Autoplay attempt)
+        startBgMusic();
     }
 }
 
@@ -177,14 +185,32 @@ audioState.bgMusic.loop = true;
 audioState.bgMusic.volume = 0.5;
 audioState.loginSound.volume = 0.6;
 
-function initAudio() {
+function initAudioListeners() {
     const btn = document.getElementById('audio-toggle');
-    const icon = document.getElementById('audio-icon');
 
-    // Attempt Autoplay
-    // Note: Most browsers block this until interaction
+    // Toggle Button
+    if (btn) {
+        btn.addEventListener('click', () => {
+            if (audioState.isPlaying) {
+                stopBgMusic();
+            } else {
+                startBgMusic();
+                audioState.userInteracted = true;
+            }
+        });
+    }
+
+    // Capture first interaction to unlock AudioContext if needed
+    document.addEventListener('click', () => {
+        audioState.userInteracted = true;
+    }, { once: true });
+}
+
+function startBgMusic() {
+    // Only play if not already playing
+    if (audioState.isPlaying) return;
+
     const playPromise = audioState.bgMusic.play();
-
     if (playPromise !== undefined) {
         playPromise.then(() => {
             audioState.isPlaying = true;
@@ -195,30 +221,12 @@ function initAudio() {
             updateAudioIcon(false);
         });
     }
+}
 
-    // Toggle Button
-    if (btn) {
-        btn.addEventListener('click', () => {
-            if (audioState.isPlaying) {
-                audioState.bgMusic.pause();
-                audioState.isPlaying = false;
-            } else {
-                audioState.bgMusic.play();
-                audioState.isPlaying = true;
-                audioState.userInteracted = true;
-            }
-            updateAudioIcon(audioState.isPlaying);
-        });
-    }
-
-    // Capture first interaction to unlock AudioContext if needed
-    document.addEventListener('click', () => {
-        if (!audioState.userInteracted && !audioState.isPlaying) {
-            // Optional logic: Auto-play on first click if it was blocked?
-            // For now, let user control via button to avoid annoyance
-        }
-        audioState.userInteracted = true;
-    }, { once: true });
+function stopBgMusic() {
+    audioState.bgMusic.pause();
+    audioState.isPlaying = false;
+    updateAudioIcon(false);
 }
 
 function updateAudioIcon(isPlaying) {
@@ -228,7 +236,7 @@ function updateAudioIcon(isPlaying) {
 
 function handleLoginSound() {
     // Stop BG Music
-    audioState.bgMusic.pause();
+    stopBgMusic();
     audioState.bgMusic.currentTime = 0;
 
     // Play Success Sound

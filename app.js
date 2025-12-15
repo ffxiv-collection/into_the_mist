@@ -339,7 +339,7 @@ function renderMinions(data) {
 
         const isUnavailable = (minion.available === false);
         const unavailableClass = isUnavailable ? 'unavailable' : '';
-        const unavailableBadge = isUnavailable ? '<span class="unavailable-tag" title="Indisponible en jeu">⛔ Indisponible</span>' : '';
+
 
         // Check if collected
         const isCollected = userCollection.has(minion.id);
@@ -438,7 +438,6 @@ function renderMinions(data) {
             })() : ''}
                     </div>
 
-                    ${unavailableBadge}
                 </div>
                 
                 <div class="minion-center-text" title="${minion.tooltip ? minion.tooltip.replace(/"/g, '&quot;') : ''}">

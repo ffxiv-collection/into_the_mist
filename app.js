@@ -339,7 +339,7 @@ function renderMinions(data) {
         row.innerHTML = `
             <img src="${iconUrl}" class="minion-icon" alt="${name}">
             <div class="minion-info">
-                <div style="margin-right:auto; display:flex; align-items:center;">
+                <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
                     <div class="minion-name">
                         ${name}
                         

@@ -397,6 +397,8 @@ body {
     margin-left: 0.5rem;
     border: 1px solid #fecaca;
     display: inline-block;
+    margin-top: 4px;
+    /* Added spacing */
 }
 
 /* COLLECTED STATE overrides Unavailable visual focus */

@@ -532,7 +532,9 @@ function openModal(minion, patchData) {
 
             costHtml = `
                 <div class="source-cost">
-                    <span class="cost-value">${ms.cost.toLocaleString()}</span>
+                    <span class="cost-value">${currencyVal === '€' || (c && c.name === 'Euro')
+                    ? ms.cost.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    : ms.cost.toLocaleString()}</span>
                     ${currencyHtml}
                 </div>
             `;

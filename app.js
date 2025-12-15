@@ -260,7 +260,11 @@ async function loadMinions() {
             .from('minions')
             .select(`
                 *,
-                patches (*)
+                patches (*),
+                minion_sources (
+                    details,
+                    sources ( name, icon_url, type )
+                )
             `)
             .order('id', { ascending: true })
             .limit(100);
@@ -338,6 +342,26 @@ function renderMinions(data) {
                         ${name}
                         ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                         ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
+                        
+                        ${/* NEW: Relational Sources */ ''}
+                        ${(minion.minion_sources || []).map(ms => {
+            const s = ms.sources;
+            if (!s) return '';
+            const isImg = s.icon_url.startsWith('http');
+            const tooltip = `${s.name}${ms.details ? ': ' + ms.details : ''}`;
+
+            const iconHtml = isImg
+                ? `<img src="${s.icon_url}" class="meta-icon-img" title="${tooltip}">`
+                : `<i class="${s.icon_url} meta-icon-fa" title="${tooltip}"></i>`;
+
+            // Special link for Boutique
+            if (s.name === 'Boutique' && minion.shop_url) {
+                return `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`;
+            }
+            return iconHtml;
+        }).join('')}
+
+                        ${/* LEGACY: Text Fallback */ ''}
                         ${minion.acquisition ? (() => {
                 const text = minion.acquisition.toLowerCase();
                 let iconClass = 'fa-circle-info'; // Default

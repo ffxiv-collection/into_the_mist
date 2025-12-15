@@ -12,6 +12,16 @@
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-menu: 'Miedinger', sans-serif;
+    /* New Menu Font */
+}
+
+/* Custom Font */
+@font-face {
+    font-family: 'Miedinger';
+    src: url('https://res.cloudinary.com/dd4rdtrig/raw/upload/v1765734644/Miedinger-Regular_wkanff.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 body {

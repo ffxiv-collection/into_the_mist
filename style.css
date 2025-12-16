@@ -561,6 +561,21 @@ body {
     padding-bottom: 4px;
 }
 
+/* Force Font Awesome Rendering */
+.btn-collect i {
+    font-style: normal;
+}
+
+.btn-collect .fa-solid {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+
+.btn-collect .fa-regular {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 400 !important;
+}
+
 
 
 .btn-collect:hover {

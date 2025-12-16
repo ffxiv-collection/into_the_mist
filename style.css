@@ -1258,3 +1258,15 @@ body {
 .btn-patch-filter.patch-5 { background-color: #4338ca; }
 .btn-patch-filter.patch-6 { background-color: #d97706; }
 .btn-patch-filter.patch-7 { background-color: #eab308; }
+
+/* ICON GRAYSCALE LOGIC */
+.minion-row:not(.collected) .minion-icon {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+.minion-row.collected .minion-icon {
+    filter: grayscale(0%);
+    opacity: 1;
+}

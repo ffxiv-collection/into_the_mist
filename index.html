@@ -98,6 +98,34 @@
 
             <!-- Dashboard Content: Mascots List (Hidden) -->
             <div id="minions-view" class="dashboard-content hidden">
+
+                <!-- FILTER BAR -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span class="filter-label">Filtrer par</span>
+                        <button class="btn-filter-icon" data-filter="missing" title="Non acquis">
+                            <i class="fa-regular fa-star"></i>
+                        </button>
+                        <button class="btn-filter-icon" data-filter="collected" title="Acquis">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                    </div>
+
+                    <button class="btn-filter-reset" id="filter-reset">Afficher tout</button>
+
+                    <div class="filter-group">
+                        <span class="filter-label">Filtrer par</span>
+                        <div class="patch-filters">
+                            <button class="btn-patch-filter patch-2" data-patch="2">2.x</button>
+                            <button class="btn-patch-filter patch-3" data-patch="3">3.x</button>
+                            <button class="btn-patch-filter patch-4" data-patch="4">4.x</button>
+                            <button class="btn-patch-filter patch-5" data-patch="5">5.x</button>
+                            <button class="btn-patch-filter patch-6" data-patch="6">6.x</button>
+                            <button class="btn-patch-filter patch-7" data-patch="7">7.x</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="minions-list" class="minions-list">
                     <!-- Rows injected via JS -->
                 </div>

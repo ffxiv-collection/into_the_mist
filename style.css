@@ -1270,3 +1270,20 @@ body {
     filter: grayscale(0%);
     opacity: 1;
 }
+
+/* RESET ICON GRAYSCALE LOGIC */
+.minion-row .minion-icon {
+    filter: none;
+    opacity: 1;
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+.minion-row.collected .minion-icon {
+    filter: grayscale(100%) !important;
+    opacity: 0.5 !important;
+}
+
+.minion-row.collected:hover .minion-icon {
+    filter: grayscale(100%) !important;
+    opacity: 0.7 !important;
+}

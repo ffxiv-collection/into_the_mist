@@ -546,11 +546,11 @@ body {
     background: #4b4b4b;
     /* Dark Grey Default */
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 1.1rem;
     color: white;
-    width: 42px;
+    width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
@@ -586,7 +586,7 @@ body {
 /* Collected State */
 .minion-row.collected .btn-collect {
     background-color: var(--gold);
-    color: #78350f;
+    color: #fff;
     filter: none;
     /* Keep button visual intent */
 }

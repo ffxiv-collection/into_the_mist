@@ -1343,3 +1343,56 @@ body {
 .minion-row.collected:hover>*:not(.minion-meta) {
     filter: grayscale(0%);
 }
+
+/* --- UNIFIED STAR BUTTON STRATEGY --- */
+.btn-star-unified {
+    /* Layout & Size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+
+    /* Appearance */
+    background: #4b4b4b;
+    /* Default dark grey */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, background-color 0.2s;
+
+    /* Icon Text */
+    color: #fff;
+    font-size: 1.1rem;
+    /* Standardized Size */
+    line-height: 1;
+}
+
+.btn-star-unified:hover {
+    transform: scale(1.05);
+    background-color: #666;
+}
+
+/* Modifiers */
+.btn-star-unified.collected {
+    background-color: var(--gold);
+    color: #fff !important;
+}
+
+/* Force Font Awesome in Unified Button */
+.btn-star-unified i {
+    font-style: normal;
+}
+
+.btn-star-unified .fa-solid {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+
+.btn-star-unified .fa-regular {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 400 !important;
+}

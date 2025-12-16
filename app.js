@@ -311,7 +311,7 @@ function setupFilterListeners() {
     filterBar.dataset.init = 'true';
 
     // Collection Filters
-    filterBar.querySelectorAll('.btn-filter-icon').forEach(btn => {
+    filterBar.querySelectorAll('.btn-star-unified').forEach(btn => {
         btn.addEventListener('click', () => {
             const filterType = btn.dataset.filter;
             if (activeFilters.collection === filterType) {

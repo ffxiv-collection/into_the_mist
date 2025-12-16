@@ -1140,6 +1140,7 @@ body {
     opacity: 1;
     transform: translateX(0);
 }
+
 /* Eorzea Database Links */
 .eorzeadb_link {
     text-decoration: none;
@@ -1248,16 +1249,33 @@ body {
 
 .btn-patch-filter.active {
     opacity: 1;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Specific Patch Button Colors */
-.btn-patch-filter.patch-2 { background-color: #71717a; }
-.btn-patch-filter.patch-3 { background-color: #3b82f6; }
-.btn-patch-filter.patch-4 { background-color: #be123c; }
-.btn-patch-filter.patch-5 { background-color: #4338ca; }
-.btn-patch-filter.patch-6 { background-color: #d97706; }
-.btn-patch-filter.patch-7 { background-color: #eab308; }
+.btn-patch-filter.patch-2 {
+    background-color: #71717a;
+}
+
+.btn-patch-filter.patch-3 {
+    background-color: #3b82f6;
+}
+
+.btn-patch-filter.patch-4 {
+    background-color: #be123c;
+}
+
+.btn-patch-filter.patch-5 {
+    background-color: #4338ca;
+}
+
+.btn-patch-filter.patch-6 {
+    background-color: #d97706;
+}
+
+.btn-patch-filter.patch-7 {
+    background-color: #eab308;
+}
 
 /* ICON GRAYSCALE LOGIC */
 .minion-row:not(.collected) .minion-icon {
@@ -1288,7 +1306,20 @@ body {
     opacity: 0.7 !important;
 }
 
-.btn-sources-trigger { background:none; border:none; cursor:pointer; font-size:1.1rem; color:var(--text-muted); transition:0.2s; margin-left:0.5rem; } .btn-sources-trigger:hover { color:var(--primary); transform:scale(1.1); }
+.btn-sources-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--gold);
+    transition: 0.2s;
+    margin-left: 0.5rem;
+}
+
+.btn-sources-trigger:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
 
 /* COMPLETE GRAYSCALE for COLLECTED */
 .minion-row.collected:not(:hover) {
@@ -1296,17 +1327,17 @@ body {
     background: #f9f9f9;
 }
 
-.minion-row.collected > *:not(.minion-meta) {
+.minion-row.collected>*:not(.minion-meta) {
     filter: grayscale(100%);
     transition: 0.3s;
 }
 
-.minion-row.collected .minion-meta > *:not(.btn-collect-container) {
+.minion-row.collected .minion-meta>*:not(.btn-collect-container) {
     filter: grayscale(100%);
     opacity: 0.5;
 }
 
-.minion-row.collected:hover > *:not(.minion-meta) {
+.minion-row.collected:hover>*:not(.minion-meta) {
     filter: grayscale(0%);
 }
 

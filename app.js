@@ -536,7 +536,9 @@ function renderMinions(data) {
         const btnCollect = document.createElement('button');
         btnCollect.className = 'btn-collect';
         btnCollect.title = "Ajouter à ma collection";
-        btnCollect.innerHTML = `<span class="star-icon">${isCollected ? '★' : '☆'}</span>`;
+        btnCollect.innerHTML = isCollected
+            ? '<i class="fa-solid fa-star star-icon"></i>'
+            : '<i class="fa-regular fa-star star-icon"></i>';
 
         btnCollect.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -545,13 +547,15 @@ function renderMinions(data) {
             if (wasCollected) {
                 userCollection.delete(minion.id);
                 row.classList.remove('collected');
-                btnCollect.querySelector('.star-icon').textContent = '☆';
+                // Switch to Empty Star
+                btnCollect.innerHTML = '<i class="fa-regular fa-star star-icon"></i>';
                 playUncollectSound();
                 toggleCollection(minion.id, false);
             } else {
                 userCollection.add(minion.id);
                 row.classList.add('collected');
-                btnCollect.querySelector('.star-icon').textContent = '★';
+                // Switch to Full Star
+                btnCollect.innerHTML = '<i class="fa-solid fa-star star-icon"></i>';
                 playCollectSound();
                 toggleCollection(minion.id, true);
             }

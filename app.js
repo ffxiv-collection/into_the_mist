@@ -534,7 +534,7 @@ function renderMinions(data) {
         // 2. Collection Button
         const btnContainer = row.querySelector('.btn-collect-container');
         const btnCollect = document.createElement('button');
-        btnCollect.className = 'btn-collect';
+        btnCollect.className = isCollected ? 'btn-star-unified collected' : 'btn-star-unified';
         btnCollect.title = "Ajouter à ma collection";
         btnCollect.innerHTML = isCollected
             ? '<i class="fa-solid fa-star"></i>'
@@ -548,6 +548,7 @@ function renderMinions(data) {
                 userCollection.delete(minion.id);
                 row.classList.remove('collected');
                 // Switch to Empty Star
+                btnCollect.classList.remove('collected');
                 btnCollect.innerHTML = '<i class="fa-regular fa-star"></i>';
                 playUncollectSound();
                 toggleCollection(minion.id, false);
@@ -555,6 +556,7 @@ function renderMinions(data) {
                 userCollection.add(minion.id);
                 row.classList.add('collected');
                 // Switch to Full Star
+                btnCollect.classList.add('collected');
                 btnCollect.innerHTML = '<i class="fa-solid fa-star"></i>';
                 playCollectSound();
                 toggleCollection(minion.id, true);

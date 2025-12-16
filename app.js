@@ -429,8 +429,8 @@ function renderMinions(data) {
         row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
-        // Open Modal Listener
-        row.addEventListener('click', () => openModal(minion, patchData));
+        // Open Modal Listener -> MOVED TO MAGNIFYING GLASS ONLY
+        // row.addEventListener('click', () => openModal(minion, patchData)); // REMOVED
         observer.observe(row);
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';

@@ -565,63 +565,6 @@ function renderMinions(data) {
 }
 
 
-const isUnavailable = (minion.available === false);
-const unavailableClass = isUnavailable ? 'unavailable' : '';
-
-// Check if collected
-const isCollected = userCollection.has(minion.id);
-const collectedClass = isCollected ? 'collected' : '';
-const rowClass = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
-
-const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
-const name = minion.name || 'Inconnu';
-const patchIconUrl = patchData ? patchData.icon_patch_url : null;
-const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
-
-let badgeHtml = '';
-if (patchIconUrl) {
-    badgeHtml = `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
-} else {
-    badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
-}
-let logoHtml = '';
-if (patchLogoUrl) {
-    logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
-}
-
-// Sources Icons
-const sourceIconsHtml = (minion.minion_sources || []).map(ms => {
-    const s = ms.sources;
-    const c = ms.currencies;
-    if (!s) return '';
-
-    // HIDE OFFICIAL ICON IN LINE
-    if (ms.lodestone_url) return '';
-
-    let tooltip = s.name;
-    if (ms.details) tooltip += `: ${ms.details}`;
-    if (ms.cost) {
-        tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
-    }
-
-    const iconSrc = s.icon_source_url || '';
-    const isImg = iconSrc.startsWith('http');
-    let iconHtml = '';
-
-    if (s.name && s.name.toLowerCase().includes('boutique')) {
-        iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
-    } else {
-        if (isImg) return ''; // Hide image sources
-        iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
-    }
-
-    return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
-        ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
-        : iconHtml;
-}).join('');
-
-// Legacy Acquisition fallback
-
 
 // --- MODAL LOGIC ---
 function openModal(minion, patchData) {

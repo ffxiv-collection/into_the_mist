@@ -586,7 +586,7 @@ body {
 /* Collected State */
 .minion-row.collected .btn-collect {
     background-color: var(--gold);
-    color: #fff;
+    color: #fff !important;
     filter: none;
     /* Keep button visual intent */
 }
@@ -1342,10 +1342,4 @@ body {
 
 .minion-row.collected:hover>*:not(.minion-meta) {
     filter: grayscale(0%);
-}
-
-/* Ensure button stays active */
-.minion-row.collected .btn-collect {
-    opacity: 1 !important;
-    filter: grayscale(0%) !important;
 }

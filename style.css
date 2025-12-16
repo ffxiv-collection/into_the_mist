@@ -561,9 +561,7 @@ body {
     padding-bottom: 4px;
 }
 
-.btn-collect .star-icon {
-    font-family: system-ui;
-}
+
 
 .btn-collect:hover {
     transform: scale(1.05);

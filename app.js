@@ -621,69 +621,7 @@ const sourceIconsHtml = (minion.minion_sources || []).map(ms => {
 }).join('');
 
 // Legacy Acquisition fallback
-const acquisitionText = minion.acquisition ? (() => {
-    const text = minion.acquisition.toLowerCase();
-    let iconClass = 'fa-circle-info';
-    if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
-    else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
-    else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
-    else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
-    else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
-    else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
-    else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
 
-    const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
-    return (minion.shop_url)
-        ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
-        : iconHtml;
-})() : '';
-
-// Row HTML
-return `
-            <div class="${rowClass}" onclick="openModal(${minion.id})" style="animation-delay: ${index * 0.05}s"> 
-                <img src="${iconUrl}" class="minion-icon" alt="${name}">
-                <div class="minion-info">
-                    <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
-                        <span class="minion-name">
-                             ${name}
-                             <button class="btn-sources" title="Infos & Sources"><i class="fa-solid fa-magnifying-glass"></i></button>
-                             ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
-                             ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
-                             ${sourceIconsHtml}
-                             ${sourceIconsHtml === '' ? acquisitionText : ''}
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="minion-center-text" title="${minion.tooltip ? minion.tooltip.replace(/"/g, '&quot;') : ''}">
-                    ${minion.tooltip ? `<i class="fa-solid fa-quote-left quote-icon"></i> ${minion.tooltip} <i class="fa-solid fa-quote-right quote-icon"></i>` : ''} 
-                </div>
-                
-                <div class="minion-meta">
-                    <div class="col-badge">${badgeHtml}</div>
-                    <div class="col-logo">${logoHtml}</div>
-                    
-                    <button class="btn-collect" title="Ajouter à ma collection" onclick="event.stopPropagation(); toggleCollection(${minion.id});">
-                        <span class="star-icon">${isCollected ? '★' : '☆'}</span>
-                    </button>
-                </div>
-            </div>
-        `;
-}).join('');
-
-// Re-attach Intersection Observers for animation
-setTimeout(() => {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scroll-visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    list.querySelectorAll('.minion-row').forEach(row => observer.observe(row));
-}, 50);
-}
 
 // --- MODAL LOGIC ---
 function openModal(minion, patchData) {

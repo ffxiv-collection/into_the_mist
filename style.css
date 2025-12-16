@@ -1151,3 +1151,110 @@ body {
     color: var(--gold);
     cursor: pointer;
 }
+
+/* FILTER BAR STYLES */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.filter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.btn-filter-icon {
+    background: #333;
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-filter-icon[data-filter='collected'] {
+    background: var(--gold);
+    color: #fff;
+}
+
+.btn-filter-icon:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.btn-filter-icon.active {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+}
+
+.btn-filter-reset {
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-filter-reset:hover {
+    background: #374151;
+}
+
+.patch-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-patch-filter {
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s, opacity 0.2s;
+    opacity: 0.5;
+}
+
+.btn-patch-filter:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
+}
+
+.btn-patch-filter.active {
+    opacity: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Specific Patch Button Colors */
+.btn-patch-filter.patch-2 { background-color: #71717a; }
+.btn-patch-filter.patch-3 { background-color: #3b82f6; }
+.btn-patch-filter.patch-4 { background-color: #be123c; }
+.btn-patch-filter.patch-5 { background-color: #4338ca; }
+.btn-patch-filter.patch-6 { background-color: #d97706; }
+.btn-patch-filter.patch-7 { background-color: #eab308; }

@@ -298,31 +298,103 @@ async function loadMinions() {
     }
 }
 
+
+// --- FILTER LOGIC ---
+let activeFilters = {
+    collection: null, // 'collected' | 'missing' | null
+    patch: null // '2', '3', ... | null
+};
+
+function setupFilterListeners() {
+    const filterBar = document.querySelector('.filter-bar');
+    if (!filterBar || filterBar.dataset.init === 'true') return;
+    filterBar.dataset.init = 'true';
+
+    // Collection Filters
+    filterBar.querySelectorAll('.btn-filter-icon').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filterType = btn.dataset.filter;
+            if (activeFilters.collection === filterType) {
+                activeFilters.collection = null;
+                btn.classList.remove('active');
+            } else {
+                activeFilters.collection = filterType;
+                filterBar.querySelectorAll('.btn-filter-icon').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            renderMinions(minionsCache);
+        });
+    });
+
+    // Patch Filters
+    const patchContainer = filterBar.querySelector('.patch-filters');
+    if (patchContainer) {
+        patchContainer.querySelectorAll('.btn-patch-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const patchVer = btn.dataset.patch;
+                if (activeFilters.patch === patchVer) {
+                    activeFilters.patch = null;
+                    btn.classList.remove('active');
+                } else {
+                    activeFilters.patch = patchVer;
+                    patchContainer.querySelectorAll('.btn-patch-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+                renderMinions(minionsCache);
+            });
+        });
+    }
+
+    // Reset
+    const resetBtn = document.getElementById('filter-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            activeFilters = { collection: null, patch: null };
+            filterBar.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            renderMinions(minionsCache);
+        });
+    }
+}
+
 function renderMinions(data) {
     const list = document.getElementById('minions-list');
     list.innerHTML = '';
 
-    if (!data || data.length === 0) {
-        list.innerHTML = '<p style="text-align:center; padding: 2rem;">Aucune mascotte trouvée.</p>';
+    // Apply Filters
+    let filteredData = data;
+    if (activeFilters.collection || activeFilters.patch) {
+        filteredData = data.filter(minion => {
+            // Collection Filter
+            if (activeFilters.collection === 'collected') {
+                if (!userCollection.has(minion.id)) return false;
+            } else if (activeFilters.collection === 'missing') {
+                if (userCollection.has(minion.id)) return false;
+            }
+
+            // Patch Filter
+            // Heuristic using patch data or patch_id
+            let pVer = '2.0';
+            if (minion.patches && minion.patches.version) pVer = String(minion.patches.version);
+            else if (minion.patch_id) pVer = String(minion.patch_id);
+
+            if (activeFilters.patch) {
+                if (!pVer.startsWith(activeFilters.patch)) return false;
+            }
+
+            return true;
+        });
+    }
+
+    if (!filteredData || filteredData.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding: 2rem; color: #888;">Aucune mascotte ne correspond aux filtres.</p>';
         return;
     }
 
-    data.forEach((minion, index) => {
-        const row = document.createElement('div');
-        row.className = 'minion-row'; // Class logic will append to this
+    // Ensure listeners are set up (idempotent)
+    setupFilterListeners();
 
-        // SCROLL ANIMATION OBSERVER
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('scroll-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 }); // Trigger when 10% visible
-        observer.observe(row);
-
-
+    // Render Rows
+    list.innerHTML = filteredData.map((minion, index) => {
         let patchData = null;
         if (minion.patches && !Array.isArray(minion.patches)) { patchData = minion.patches; }
         else if (Array.isArray(minion.patches) && minion.patches.length > 0) { patchData = minion.patches[0]; }
@@ -340,13 +412,10 @@ function renderMinions(data) {
         const isUnavailable = (minion.available === false);
         const unavailableClass = isUnavailable ? 'unavailable' : '';
 
-
         // Check if collected
         const isCollected = userCollection.has(minion.id);
         const collectedClass = isCollected ? 'collected' : '';
-
-        row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
-        row.style.animationDelay = `${index * 0.05}s`;
+        const rowClass = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
         const name = minion.name || 'Inconnu';
@@ -364,80 +433,70 @@ function renderMinions(data) {
             logoHtml = `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">`;
         }
 
-        row.innerHTML = `
-            <img src="${iconUrl}" class="minion-icon" alt="${name}">
-            <div class="minion-info">
-                <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
-                    <div class="minion-name">
-                        ${name}
-                        
-                        <button class="btn-sources" title="Infos & Sources">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-
-                        ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
-                        ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
-                        
-                        ${/* NEW: Relational Sources */ ''}
-                        ${(minion.minion_sources || []).map(ms => {
+        // Sources Icons
+        const sourceIconsHtml = (minion.minion_sources || []).map(ms => {
             const s = ms.sources;
             const c = ms.currencies;
             if (!s) return '';
 
-            // HIDE OFFICIAL ICON IN LINE (User Request: Show only in modal)
+            // HIDE OFFICIAL ICON IN LINE
             if (ms.lodestone_url) return '';
 
-            // Construct Tooltip: "Source: Details (Cost Currency)"
-            // e.g., "Gold Saucer: Vendor (10000 MGP)"
             let tooltip = s.name;
             if (ms.details) tooltip += `: ${ms.details}`;
             if (ms.cost) {
                 tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
             }
 
-            // ALIGNMENT FIX: Use icon_source_url
-            const iconUrl = s.icon_source_url || '';
-            const isImg = iconUrl.startsWith('http');
-
-            // ICON LOGIC: If 'Boutique', use Caddie icon. Else use source icon.
+            const iconSrc = s.icon_source_url || '';
+            const isImg = iconSrc.startsWith('http');
             let iconHtml = '';
 
             if (s.name && s.name.toLowerCase().includes('boutique')) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
             } else {
-                // If it is an image, we HIDE it from the inline list (User Request)
-                if (isImg) return '';
-
-                iconHtml = `<i class="${iconUrl} meta-icon-fa" title="${tooltip}"></i>`;
+                if (isImg) return ''; // Hide image sources
+                iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
             }
 
             return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
                 ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
                 : iconHtml;
-        }).join('')}
+        }).join('');
 
-                        ${/* LEGACY: Text Fallback */ ''}
-                        ${minion.acquisition ? (() => {
-                const text = minion.acquisition.toLowerCase();
-                let iconClass = 'fa-circle-info'; // Default
-                let title = minion.acquisition;
+        // Legacy Acquisition fallback
+        const acquisitionText = minion.acquisition ? (() => {
+            const text = minion.acquisition.toLowerCase();
+            let iconClass = 'fa-circle-info';
+            if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
+            else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
+            else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
+            else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
+            else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
+            else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
+            else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
 
-                if (text.includes('boutique') || text.includes('€') || text.includes('store')) iconClass = 'fa-cart-shopping';
-                else if (text.includes('donjon') || text.includes('dungeon') || text.includes('raid') || text.includes('défi')) iconClass = 'fa-dungeon';
-                else if (text.includes('quête') || text.includes('quest') || text.includes('épopée')) iconClass = 'fa-scroll';
-                else if (text.includes('craft') || text.includes('artisanat') || text.includes('récolte')) iconClass = 'fa-hammer';
-                else if (text.includes('haut fait') || text.includes('achievement')) iconClass = 'fa-trophy';
-                else if (text.includes('événement') || text.includes('event')) iconClass = 'fa-calendar-star';
-                else if (text.includes('pvp') || text.includes('jcj')) iconClass = 'fa-swords';
+            const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
+            return (minion.shop_url)
+                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
+                : iconHtml;
+        })() : '';
 
-                const iconHtml = `<i class="fa-solid ${iconClass} meta-icon-fa" title="${minion.acquisition}"></i>`;
-
-                return (minion.shop_url)
-                    ? `<a href="${minion.shop_url}" target="_blank" class="shop-link">${iconHtml}</a>`
-                    : iconHtml;
-            })() : ''}
+        // Row HTML
+        return `
+            <div class="${rowClass}" onclick="openModal(${minion.id})" style="animation-delay: ${index * 0.05}s"> 
+                <img src="${iconUrl}" class="minion-icon" alt="${name}">
+                <div class="minion-info">
+                    <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
+                        <span class="minion-name">
+                             ${name}
+                             <button class="btn-sources" title="Infos & Sources"><i class="fa-solid fa-magnifying-glass"></i></button>
+                             ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
+                             ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
+                             ${sourceIconsHtml}
+                             ${sourceIconsHtml === '' ? acquisitionText : ''}
+                        </span>
                     </div>
-
                 </div>
                 
                 <div class="minion-center-text" title="${minion.tooltip ? minion.tooltip.replace(/"/g, '&quot;') : ''}">
@@ -448,52 +507,26 @@ function renderMinions(data) {
                     <div class="col-badge">${badgeHtml}</div>
                     <div class="col-logo">${logoHtml}</div>
                     
-                    <button class="btn-collect" title="Ajouter à ma collection">
+                    <button class="btn-collect" title="Ajouter à ma collection" onclick="event.stopPropagation(); toggleCollection(${minion.id});">
                         <span class="star-icon">${isCollected ? '★' : '☆'}</span>
                     </button>
                 </div>
-                </div>
             </div>
         `;
+    }).join('');
 
-        // Interaction Logic
-        const btnCollect = row.querySelector('.btn-collect');
-        const star = btnCollect.querySelector('.star-icon');
-        const btnSources = row.querySelector('.btn-sources');
-        const nameEl = row.querySelector('.minion-name');
-
-        // 1. Toggle Collection
-        btnCollect.addEventListener('click', async (e) => {
-            e.stopPropagation();
-
-            // Optimistic UI Update
-            const newCollectedState = !row.classList.contains('collected');
-            if (newCollectedState) {
-                userCollection.add(minion.id);
-                row.classList.add('collected');
-                star.textContent = '★';
-                playCollectSound();
-            } else {
-                userCollection.delete(minion.id);
-                row.classList.remove('collected');
-                star.textContent = '☆';
-                playUncollectSound();
-            }
-
-            // Sync with DB
-            if (minion.id) toggleCollection(minion.id, newCollectedState);
-        });
-
-        // Open Modal ONLY on Source Button Click
-        if (btnSources) {
-            btnSources.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openModal(minion, patchData);
+    // Re-attach Intersection Observers for animation
+    setTimeout(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-visible');
+                    observer.unobserve(entry.target);
+                }
             });
-        }
-
-        list.appendChild(row);
-    });
+        }, { threshold: 0.1 });
+        list.querySelectorAll('.minion-row').forEach(row => observer.observe(row));
+    }, 50);
 }
 
 // --- MODAL LOGIC ---
@@ -573,13 +606,14 @@ function openModal(minion, patchData) {
         let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;
         let sourceDetailsHtml = ms.details ? `<span class="source-details">${ms.details}</span>` : '';
 
-        // Apply Lodestone Link (prioritize details, fallback to title)
-        if (ms.lodestone_url) {
-            if (ms.details) {
-                // Link the details
+        // Apply Lodestone Link
+        // Rule: If details exists -> Link details. If details EMPTY -> Link Title.
+        if (ms.lodestone_url && ms.lodestone_url.trim() !== '') {
+            const hasDetails = ms.details && ms.details.trim() !== '';
+
+            if (hasDetails) {
                 sourceDetailsHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-details" target="_blank">${ms.details}</a>`;
             } else {
-                // Link the title if no details
                 sourceTitleHtml = `<a href="${ms.lodestone_url}" class="eorzeadb_link source-title" target="_blank">${s.name}</a>`;
             }
         }

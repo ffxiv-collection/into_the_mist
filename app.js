@@ -463,14 +463,14 @@ function renderMinions(data) {
             const isImg = iconSrc.startsWith('http');
             let iconHtml = '';
 
-            if (s.name && s.name.toLowerCase().includes('boutique')) {
+            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan'))) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
             } else {
                 if (isImg) return '';
                 iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
             }
 
-            return (s.name && s.name.toLowerCase().includes('boutique') && minion.shop_url)
+            return (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan')) && minion.shop_url)
                 ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
                 : iconHtml;
         }).join('');

@@ -460,6 +460,9 @@ function renderMinions(data) {
             }
 
             const iconSrc = s.icon_source_url || '';
+            const isImg = iconSrc.startsWith('http');
+            let iconHtml = '';
+
             // CONDITION: Show Cart if shop_url exists (regardless of source name)
             if (minion.shop_url) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;

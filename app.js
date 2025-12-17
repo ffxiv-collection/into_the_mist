@@ -447,6 +447,8 @@ function renderMinions(data) {
         let logoHtml = patchLogoUrl ? `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">` : '';
 
         // Sources Icons
+        let shopIconRendered = false;
+
         const sourceIconsHtml = (minion.minion_sources || []).map(ms => {
             const s = ms.sources;
             const c = ms.currencies;
@@ -463,18 +465,34 @@ function renderMinions(data) {
             const isImg = iconSrc.startsWith('http');
             let iconHtml = '';
 
-            // CONDITION: Show Cart if shop_url exists (regardless of source name)
-            if (minion.shop_url) {
-                iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
-                return `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`;
-            } else {
-                if (isImg) return '';
-                // Fallback for non-cart items
-                if (!iconSrc) return ''; // Prevent ghost icons
-                iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
-                return iconHtml;
+            // LOGIC: If source is explicitly a Shop type (Boutique/CDJapan), use Cart Icon
+            // And mark that we rendered the shop button.
+            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan'))) {
+                if (minion.shop_url) {
+                    shopIconRendered = true;
+                    iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
+                    return `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`;
+                } else {
+                    // Shop source but no URL? Show cart but not clickable? Or fallback?
+                    // User said "if no link, don't show icon" (Step 3012).
+                    // So if Boutique with no URL -> Return empty?
+                    // "S'il n'y a pas de lien, il ne faut pas afficher l'icone"
+                    return '';
+                }
             }
+
+            // Standard Source Logic
+            if (isImg) return '';
+            if (!iconSrc) return '';
+            iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
+            return iconHtml;
         }).join('');
+
+        // FALLBACK: If we have a Shop URL but no "Shop Source" rendered it (e.g. Bébé Bahamut)
+        // We append a standalone Cart Icon.
+        const standaloneShopHtml = (minion.shop_url && !shopIconRendered)
+            ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="Acheter en ligne"></i></a>`
+            : '';
 
         // Legacy Acquisition fallback
         const acquisitionText = minion.acquisition ? (() => {
@@ -505,7 +523,8 @@ function renderMinions(data) {
                             ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                             ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                             ${sourceIconsHtml}
-                            ${sourceIconsHtml === '' ? acquisitionText : ''}
+                            ${standaloneShopHtml}
+                            ${sourceIconsHtml === '' && standaloneShopHtml === '' ? acquisitionText : ''}
                     </span>
                 </div>
             </div>

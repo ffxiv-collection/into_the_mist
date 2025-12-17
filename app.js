@@ -463,10 +463,12 @@ function renderMinions(data) {
             const isImg = iconSrc.startsWith('http');
             let iconHtml = '';
 
-            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan'))) {
+            // CONDITION: Show Cart ONLY if it's Boutique/CDJapan AND has a link
+            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan')) && minion.shop_url) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
             } else {
                 if (isImg) return '';
+                // Fallback for non-cart items
                 iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
             }
 

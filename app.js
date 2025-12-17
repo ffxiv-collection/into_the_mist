@@ -470,6 +470,7 @@ function renderMinions(data) {
             } else {
                 if (isImg) return '';
                 // Fallback for non-cart items
+                if (!iconSrc) return ''; // Prevent ghost icons
                 iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
                 return iconHtml;
             }

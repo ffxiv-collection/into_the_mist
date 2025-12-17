@@ -460,21 +460,16 @@ function renderMinions(data) {
             }
 
             const iconSrc = s.icon_source_url || '';
-            const isImg = iconSrc.startsWith('http');
-            let iconHtml = '';
-
-            // CONDITION: Show Cart ONLY if it's Boutique/CDJapan AND has a link
-            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan')) && minion.shop_url) {
+            // CONDITION: Show Cart if shop_url exists (regardless of source name)
+            if (minion.shop_url) {
                 iconHtml = `<i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i>`;
+                return `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`;
             } else {
                 if (isImg) return '';
                 // Fallback for non-cart items
                 iconHtml = `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
+                return iconHtml;
             }
-
-            return (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan')) && minion.shop_url)
-                ? `<a href="${minion.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()">${iconHtml}</a>`
-                : iconHtml;
         }).join('');
 
         // Legacy Acquisition fallback

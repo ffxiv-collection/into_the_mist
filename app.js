@@ -633,11 +633,21 @@ function openModal(minion, patchData) {
         if (!s) return;
 
         // ALIGNMENT FIX: Use icon_source_url
-        const iconUrl = s.icon_source_url || '';
-        const isImg = iconUrl.startsWith('http');
+        let iconUrl = s.icon_source_url || '';
+
+        // Dark Mode Logic for CDJapan
+        if (s.name === 'CDJapan') {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                iconUrl = 'https://res.cloudinary.com/dd4rdtrig/image/upload/v1766262130/cdjapan_logo_blanc_vrpgph.png';
+            }
+        }
+
+        const iconUrlFinal = iconUrl;
+        const isImg = iconUrlFinal.startsWith('http');
 
         const iconHtml = isImg
-            ? `<img src="${iconUrl}" class="source-icon-large">`
+            ? `<img src="${iconUrlFinal}" class="source-icon-large">`
             : `<i class="${iconUrl} source-icon-fa-large"></i>`;
 
         // Right Column: Cost

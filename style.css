@@ -121,6 +121,38 @@
         background: var(--surface);
         border-color: var(--surface);
     }
+
+    /* Filter Bar Dark Mode */
+    .filter-bar {
+        background: var(--surface);
+        border-color: var(--border);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .filter-label {
+        color: var(--text-muted);
+    }
+
+    .btn-filter-reset {
+        background: #334155;
+        color: var(--text-color);
+        border: 1px solid var(--border);
+    }
+
+    .btn-filter-reset:hover {
+        background: #475569;
+    }
+
+    .btn-star-unified {
+        background: #334155;
+        border-color: var(--border);
+        color: var(--text-muted);
+    }
+
+    .btn-star-unified:hover {
+        background: #475569;
+    }
+
 }
 
 /* Custom Font */

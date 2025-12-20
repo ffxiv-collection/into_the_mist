@@ -15,23 +15,23 @@
 }
 
 [data-theme="dark"] {
-    --bg-color: #0f172a;
-    --text-color: #f1f5f9;
+    --bg-color: #121212;
+    --text-color: #e2e8f0;
     --text-muted: #94a3b8;
-    --surface: #1e293b;
-    --border: #334155;
+    --surface: #1e1e1e;
+    --border: #333333;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.7);
 
     /* Adjust specific elements for dark mode */
     .auth-container {
-        background: rgba(30, 41, 59, 0.9);
+        background: rgba(30, 30, 30, 0.95);
         border: 1px solid var(--border);
     }
 
     .form-input {
-        background: #0f172a;
+        background: #000000;
         color: var(--text-color);
         border-color: var(--border);
     }
@@ -51,12 +51,12 @@
     }
 
     .minion-row.collected {
-        background-color: #334155 !important;
+        background-color: #2d2d2d !important;
     }
 
     /* Adjust patch badges for dark mode readability if needed */
     .patch-2 {
-        background-color: #334155;
+        background-color: #2d2d2d;
         color: #cbd5e1;
     }
 
@@ -85,29 +85,29 @@
         color: #fcd34d;
     }
 
-    /* Row backgrounds */
+    /* Row backgrounds - Neutralized */
     .row-2 {
-        background-color: #1e293b;
+        background-color: #1a1a1a;
     }
 
     .row-3 {
-        background-color: #172554;
+        background-color: #161b22;
     }
 
     .row-4 {
-        background-color: #3f0915;
+        background-color: #1f1212;
     }
 
     .row-5 {
-        background-color: #2e1065;
+        background-color: #191421;
     }
 
     .row-6 {
-        background-color: #451a03;
+        background-color: #1f1710;
     }
 
     .row-7 {
-        background-color: #422006;
+        background-color: #211c0f;
     }
 
     /* Modal */
@@ -491,7 +491,7 @@ body {
 
 [data-theme="dark"] .theme-btn:hover,
 [data-theme="dark"] .audio-btn:hover {
-    background: #334155;
+    background: #333333;
 }
 
 /* Animations */

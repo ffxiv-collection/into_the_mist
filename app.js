@@ -58,7 +58,7 @@ function updateUI(session) {
         currentUser = session.user; // Update current user
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
-        // audioBtn logic removed to keep it visible everywhere
+        if (audioBtn) audioBtn.style.display = 'none';
 
         // Logo: Corner
         if (logo) {
@@ -77,7 +77,7 @@ function updateUI(session) {
 
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
-        // audioBtn logic removed (always visible)
+        if (audioBtn) audioBtn.style.display = 'flex';
 
         // Logo: Center
         if (logo) {

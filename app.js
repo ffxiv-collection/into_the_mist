@@ -279,7 +279,7 @@ async function loadMinions() {
                 )
             `)
             .order('name', { ascending: true })
-            .limit(100);
+            .limit(1000);
 
         if (error) {
             console.error('Error fetching minions:', error);

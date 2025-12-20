@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Init Audio
         initAudioListeners();
 
+        // Init Theme
+        initTheme();
+
         // Check Session
         const { data: { session } } = await supabase.auth.getSession();
 
@@ -55,7 +58,7 @@ function updateUI(session) {
         currentUser = session.user; // Update current user
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
-        if (audioBtn) audioBtn.style.display = 'none';
+        // audioBtn logic removed to keep it visible everywhere
 
         // Logo: Corner
         if (logo) {
@@ -74,7 +77,7 @@ function updateUI(session) {
 
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');
-        if (audioBtn) audioBtn.style.display = 'flex';
+        // audioBtn logic removed (always visible)
 
         // Logo: Center
         if (logo) {
@@ -801,6 +804,48 @@ async function fetchSprites() {
             placedPositions.push({ x: validX, y: validY });
         }
     });
+}
+// ------------------------------------------------------------------
+// THEME LOGIC
+// ------------------------------------------------------------------
+function initTheme() {
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    // Check Storage -> System Preference
+    const savedTheme = localStorage.getItem('theme');
+    let isDark = false;
+
+    if (savedTheme) {
+        isDark = (savedTheme === 'dark');
+    } else {
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    applyTheme(isDark);
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newIsDark = (currentTheme !== 'dark');
+            applyTheme(newIsDark);
+        });
+    }
+}
+
+function applyTheme(isDark) {
+    const root = document.documentElement;
+    const themeIcon = document.getElementById('theme-icon');
+
+    if (isDark) {
+        root.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if (themeIcon) themeIcon.textContent = '☀️'; // Sun icon for light mode switch
+    } else {
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        if (themeIcon) themeIcon.textContent = '🌙'; // Moon icon for dark mode switch
+    }
 }
 
 function isTooClose(x, y, existingPositions, minDistance = 8) {

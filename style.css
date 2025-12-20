@@ -14,6 +14,115 @@
     --font-menu: 'Miedinger', sans-serif;
 }
 
+[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-color: #f1f5f9;
+    --text-muted: #94a3b8;
+    --surface: #1e293b;
+    --border: #334155;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+
+    /* Adjust specific elements for dark mode */
+    .auth-container {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid var(--border);
+    }
+
+    .form-input {
+        background: #0f172a;
+        color: var(--text-color);
+        border-color: var(--border);
+    }
+
+    .main-nav {
+        background: var(--surface);
+        border-bottom-color: var(--border);
+    }
+
+    .minion-row {
+        background: var(--surface);
+        color: var(--text-color);
+    }
+
+    .minion-name {
+        color: var(--text-color);
+    }
+
+    .minion-row.collected {
+        background-color: #334155 !important;
+    }
+
+    /* Adjust patch badges for dark mode readability if needed */
+    .patch-2 {
+        background-color: #334155;
+        color: #cbd5e1;
+    }
+
+    .patch-3 {
+        background-color: #0c4a6e;
+        color: #bae6fd;
+    }
+
+    .patch-4 {
+        background-color: #881337;
+        color: #fecdd3;
+    }
+
+    .patch-5 {
+        background-color: #4c1d95;
+        color: #ddd6fe;
+    }
+
+    .patch-6 {
+        background-color: #78350f;
+        color: #fde68a;
+    }
+
+    .patch-7 {
+        background-color: #713f12;
+        color: #fcd34d;
+    }
+
+    /* Row backgrounds */
+    .row-2 {
+        background-color: #1e293b;
+    }
+
+    .row-3 {
+        background-color: #172554;
+    }
+
+    .row-4 {
+        background-color: #3f0915;
+    }
+
+    .row-5 {
+        background-color: #2e1065;
+    }
+
+    .row-6 {
+        background-color: #451a03;
+    }
+
+    .row-7 {
+        background-color: #422006;
+    }
+
+    /* Modal */
+    .modal-content {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-color);
+    }
+
+    .logo-circle {
+        background: var(--surface);
+        border-color: var(--surface);
+    }
+}
+
 /* Custom Font */
 @font-face {
     font-family: 'Miedinger';
@@ -344,6 +453,45 @@ body {
 .audio-btn:hover {
     transform: scale(1.1);
     background: #fffbeb;
+}
+
+/* Theme Toggle Button (Matches Audio Btn) */
+.theme-btn {
+    position: fixed;
+    bottom: 80px;
+    /* Above audio button */
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--gold);
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+    background: #fffbeb;
+}
+
+[data-theme="dark"] .theme-btn,
+[data-theme="dark"] .audio-btn {
+    background: var(--surface);
+    color: var(--text-color);
+    border-color: var(--gold);
+}
+
+[data-theme="dark"] .theme-btn:hover,
+[data-theme="dark"] .audio-btn:hover {
+    background: #334155;
 }
 
 /* Animations */

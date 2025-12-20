@@ -153,6 +153,18 @@
         background: #475569;
     }
 
+    /* Unavailable Minions Dark Mode */
+    .minion-row.unavailable {
+        background-color: #3f1115 !important;
+        /* Dark Red/Mauve */
+        border-color: #7f1d1d;
+        color: #fecaca;
+    }
+
+    .minion-row.unavailable:hover {
+        background-color: #55161b !important;
+    }
+
 }
 
 /* Custom Font */

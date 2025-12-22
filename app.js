@@ -643,6 +643,14 @@ function openModal(minion, patchData) {
             }
         }
 
+        // Dark Mode Logic for Square Enix Boutique
+        if (s.name === 'Square Enix Boutique') {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                iconUrl = 'https://res.cloudinary.com/dd4rdtrig/image/upload/v1765935529/square_enix_boutique_blanc_mbqtdy.webp';
+            }
+        }
+
         const iconUrlFinal = iconUrl;
         const isImg = iconUrlFinal.startsWith('http');
 

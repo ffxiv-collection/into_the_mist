@@ -305,7 +305,9 @@ async function loadMinions() {
 // --- FILTER LOGIC ---
 let activeFilters = {
     collection: null, // 'collected' | 'missing' | null
-    patch: null // '2', '3', ... | null
+    collection: null, // 'collected' | 'missing' | null
+    patch: null, // '2', '3', ... | null
+    search: '' // Search query string
 };
 
 function setupFilterListeners() {
@@ -348,11 +350,21 @@ function setupFilterListeners() {
         });
     }
 
+    // Search Input
+    const searchInput = document.getElementById('minion-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            activeFilters.search = e.target.value.trim().toLowerCase();
+            renderMinions(minionsCache);
+        });
+    }
+
     // Reset
     const resetBtn = document.getElementById('filter-reset');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-            activeFilters = { collection: null, patch: null };
+            activeFilters = { collection: null, patch: null, search: '' };
+            if (searchInput) searchInput.value = ''; // Clear input
             filterBar.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
             renderMinions(minionsCache);
         });
@@ -365,7 +377,7 @@ function renderMinions(data) {
 
     // Apply Filter Logic
     let filteredData = data;
-    if (activeFilters.collection || activeFilters.patch) {
+    if (activeFilters.collection || activeFilters.patch || activeFilters.search) {
         filteredData = data.filter(minion => {
             // Collection Filter
             if (activeFilters.collection === 'collected') {
@@ -381,6 +393,12 @@ function renderMinions(data) {
 
             if (activeFilters.patch) {
                 if (!pVer.startsWith(activeFilters.patch)) return false;
+            }
+
+            // Search Filter
+            if (activeFilters.search) {
+                const name = (minion.name || '').toLowerCase();
+                if (!name.includes(activeFilters.search)) return false;
             }
 
             return true;

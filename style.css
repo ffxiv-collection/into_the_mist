@@ -1498,6 +1498,59 @@ body {
     background-color: #eab308;
 }
 
+/* SEARCH BAR */
+.search-group {
+    margin-left: auto;
+    /* Pushes to the right */
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.search-input {
+    padding: 0.5rem 1rem 0.5rem 2.2rem;
+    /* Left padding for icon */
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    /* Rounded pill shape */
+    font-size: 0.9rem;
+    width: 200px;
+    transition: all 0.2s;
+    outline: none;
+    background: #f8fafc;
+    color: var(--text-color);
+}
+
+.search-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    background: #fff;
+    width: 240px;
+    /* Expand on focus */
+}
+
+[data-theme="dark"] .search-input {
+    background: #1e1e1e;
+    border-color: #333;
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .search-input:focus {
+    background: #000;
+    border-color: var(--gold);
+}
+
 
 
 /* RESET ICON GRAYSCALE LOGIC */

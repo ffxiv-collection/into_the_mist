@@ -274,6 +274,7 @@ async function loadMinions() {
                     cost,
                     lodestone_url,
                     location,
+                    created_at,
                     sources ( name, icon_source_url ),
                     currencies ( name, icon_currency_url )
                 )
@@ -629,7 +630,9 @@ function openModal(minion, patchData) {
     const list = document.getElementById('modal-sources-list');
     list.innerHTML = '';
 
-    const sources = minion.minion_sources || [];
+    const sources = (minion.minion_sources || []).sort((a, b) => {
+        return new Date(a.created_at) - new Date(b.created_at);
+    });
 
     // Legacy fallback if no relational sources but acquisition text exists
     if (sources.length === 0 && minion.acquisition) {

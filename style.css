@@ -216,6 +216,8 @@ body {
     justify-content: center;
     align-items: flex-end;
     margin-bottom: 0;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 /* Pseudo-element for Banner + Fade */

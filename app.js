@@ -370,6 +370,126 @@ function setupFilterListeners() {
             renderMinions(minionsCache);
         });
     }
+
+    // Sync Button
+    const syncBtn = document.getElementById('btn-sync');
+    if (syncBtn) {
+        syncBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert("Veuillez vous connecter pour synchroniser votre collection.");
+                return;
+            }
+            syncMinions();
+        });
+    }
+}
+
+// --- SYNC WITH FFXIV COLLECT ---
+async function syncMinions() {
+    const syncBtn = document.getElementById('btn-sync');
+    if (syncBtn) {
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sync...';
+    }
+
+    try {
+        // 1. Get Character ID
+        const { data: charData, error: charError } = await supabase
+            .from('characters')
+            .select('character_id')
+            .eq('user_id', currentUser.id)
+            .single();
+
+        if (charError || !charData) {
+            console.error('Character fetch error:', charError);
+            alert("Aucun personnage lié trouvé. Veuillez lier votre personnage dans les paramètres (à venir) ou contacter l'admin.");
+            throw new Error("No character linked");
+        }
+
+        const charId = charData.character_id;
+        console.log(`Syncing for character ID: ${charId}`);
+
+        // 2. Fetch from FFXIV Collect API
+        const response = await fetch(`https://ffxivcollect.com/api/characters/${charId}/minions/owned`);
+        if (!response.ok) throw new Error("API FFXIV Collect Error");
+
+        const ownedData = await response.json();
+        // The API returns an array of minion objects: [{ id: 123, name: "..." }, ...]
+        const apiOwnedIds = new Set(ownedData.map(m => m.id));
+
+        console.log(`API reports ${apiOwnedIds.size} minions owned.`);
+
+        // 3. Fetch Local Minion Map (FFXIV ID -> Local ID)
+        // We need to know which local ID corresponds to the API ID
+        const { data: allMinions, error: mapError } = await supabase
+            .from('minions')
+            .select('id, ffxiv_collect_id')
+            .not('ffxiv_collect_id', 'is', null);
+
+        if (mapError) throw mapError;
+
+        const ffxivMap = new Map(); // Key: API ID, Value: Local DB ID
+        allMinions.forEach(m => {
+            ffxivMap.set(m.ffxiv_collect_id, m.id);
+        });
+
+        // 4. Find Missing Minions (Differential)
+        const minionsToAdd = [];
+
+        for (const apiId of apiOwnedIds) {
+            const localDbId = ffxivMap.get(apiId);
+
+            // Only proceed if we have this minion in our local DB
+            if (localDbId) {
+                // Check if user already has this LOCAL ID collected
+                if (!userCollection.has(localDbId)) {
+                    minionsToAdd.push({
+                        user_id: currentUser.id,
+                        minion_id: localDbId
+                    });
+                }
+            }
+        }
+
+        console.log(`Found ${minionsToAdd.length} new minions to add.`);
+
+        if (minionsToAdd.length === 0) {
+            alert("Votre collection est déjà à jour !");
+        } else {
+            // 5. Bulk Insert
+            const { error: insertError } = await supabase
+                .from('user_minions')
+                .insert(minionsToAdd);
+
+            if (insertError) {
+                console.error("Bulk insert error:", insertError);
+                // Duplicate key error might happen if race condition, but differential check minimizes it.
+                // We'll treat it as partial success or error.
+                if (insertError.code === '23505') { // Unique violation
+                    alert("Certaines mascottes étaient déjà en cours d'ajout. Veuillez rafraîchir.");
+                } else {
+                    throw insertError;
+                }
+            } else {
+                // Success: Add to local set and re-render
+                minionsToAdd.forEach(item => userCollection.add(item.minion_id));
+                renderMinions(minionsCache);
+                alert(`Succès ! ${minionsToAdd.length} nouvelles mascottes ajoutées.`);
+                playCollectSound(); // Optional feedback
+            }
+        }
+
+    } catch (err) {
+        console.error("Sync failed:", err);
+        if (err.message !== "No character linked") {
+            alert("Erreur lors de la synchronisation : " + err.message);
+        }
+    } finally {
+        if (syncBtn) {
+            syncBtn.disabled = false;
+            syncBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync';
+        }
+    }
 }
 
 function renderMinions(data) {

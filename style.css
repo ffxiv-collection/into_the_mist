@@ -1657,3 +1657,42 @@ body {
     font-family: "Font Awesome 6 Free" !important;
     font-weight: 400 !important;
 }
+
+/* SYNC BUTTON */
+.btn-sync {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+}
+
+.btn-sync:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+    filter: brightness(110%);
+}
+
+.btn-sync:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-sync i {
+    font-size: 0.9rem;
+}
+
+/* Dark mode adjustment for sync button */
+[data-theme="dark"] .btn-sync {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

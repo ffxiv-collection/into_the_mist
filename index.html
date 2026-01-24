@@ -102,7 +102,6 @@
                 </div>
             </div>
 
-            <!-- Dashboard Content: Mascots List (Hidden) -->
             <div id="minions-view" class="dashboard-content hidden">
 
                 <!-- FILTER BAR -->
@@ -142,6 +141,36 @@
 
                 <div id="minions-list" class="minions-list">
                     <!-- Rows injected via JS -->
+                </div>
+            </div>
+
+            <!-- VIEW: MINION DETAIL (Hidden) -->
+            <div id="minion-detail-view" class="dashboard-content hidden">
+                <button id="btn-back-minions" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                
+                <div class="detail-container">
+                    <!-- Left: Large Image -->
+                    <div class="detail-image-wrapper">
+                        <img id="detail-img" src="" alt="Minion" class="detail-img-large">
+                    </div>
+
+                    <!-- Right: Info -->
+                    <div class="detail-info-wrapper">
+                        <div class="detail-header">
+                            <h1 id="detail-name">Nom de la Mascotte</h1>
+                            <div class="detail-patch-info">
+                                <img id="detail-patch-logo" src="" alt="Patch Logo" class="detail-patch-logo">
+                                <span id="detail-patch-ver" class="detail-patch-badge">Patch X.X</span>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="detail-diary">
+                            <h3><i class="fa-solid fa-book-open"></i> Carnet</h3>
+                            <p id="detail-diary-text">Description du carnet...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

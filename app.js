@@ -122,6 +122,10 @@ function handleRouting() {
 
     if (hash && routeMap[hash]) {
         targetId = routeMap[hash];
+    } else if (hash.startsWith('minion/')) {
+        targetId = 'minion-detail-view';
+        const minionId = hash.split('/')[1];
+        showMinionDetails(minionId);
     }
     switchView(targetId);
 }
@@ -150,6 +154,9 @@ function switchView(targetId) {
             loadMinions();
         } else if (targetId === 'minions-view') {
             loadMinions();
+        } else if (targetId === 'minion-detail-view') {
+            // Ensure minions are loaded if deep linking
+            if (!minionsCache) loadMinions();
         }
     }
 }
@@ -157,6 +164,14 @@ function switchView(targetId) {
 // --- EVENT LISTENERS ---
 function setupEventListeners() {
     initDashboardNav();
+
+    // Back Button for Details
+    const btnBack = document.getElementById('btn-back-minions');
+    if (btnBack) {
+        btnBack.addEventListener('click', () => {
+            window.location.hash = 'minions';
+        });
+    }
 
     window.addEventListener('hashchange', () => {
         const dashboardView = document.getElementById('dashboard-view');
@@ -595,8 +610,16 @@ function renderMinions(data) {
         row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
-        // Open Modal Listener -> MOVED TO MAGNIFYING GLASS ONLY
-        // row.addEventListener('click', () => openModal(minion, patchData)); // REMOVED
+        // Open Details Page Listener
+        row.dataset.id = minion.id;
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', (e) => {
+            // Prevent if clicking on interactive elements (buttons, links)
+            if (e.target.closest('button') || e.target.closest('a')) return;
+
+            window.location.hash = `minion/${minion.id}`;
+        });
+
         observer.observe(row);
 
         const iconUrl = minion.icon_minion_url || 'https://xivapi.com/i/000000/000405.png';
@@ -1137,3 +1160,69 @@ function playUncollectSound() {
         audioState.uncollectSound.play().catch(() => { });
     }
 }
+
+// --- DETAIL VIEW LOGIC ---
+function showMinionDetails(id) {
+    // If cache not loaded yet, wait slightly or handle (loadMinions called in switchView covers it partially)
+    // But if we come directly, cache might be empty.
+
+    // Retry logic if cache empty
+    if (!minionsCache) {
+        setTimeout(() => showMinionDetails(id), 200);
+        return;
+    }
+
+    const minion = minionsCache.find(m => String(m.id) === String(id));
+    if (!minion) {
+        console.error("Minion not found for details:", id);
+        window.location.hash = 'minions';
+        return;
+    }
+
+    // Populate Data
+    const nameEl = document.getElementById('detail-name');
+    const imgEl = document.getElementById('detail-img');
+    const diaryEl = document.getElementById('detail-diary-text');
+    const patchLogoEl = document.getElementById('detail-patch-logo');
+    const patchVerEl = document.getElementById('detail-patch-ver');
+
+    if (nameEl) nameEl.textContent = minion.name || 'Inconnu';
+
+    // Image: Use picture_minion_url (Large) or fallback to icon
+    if (imgEl) {
+        const largeImg = minion.picture_minion_url || minion.image_url || minion.icon_minion_url;
+        imgEl.src = largeImg;
+        imgEl.alt = minion.name;
+    }
+
+    // Diary
+    if (diaryEl) {
+        let text = minion.diary || minion.description || "Aucune description dans le carnet.";
+        // Fix for potential HTML in description or newlines
+        // If text contains HTML tags (rare but possible), stripping them or using innerHTML might be safer?
+        // For now textContent is safer.
+        diaryEl.textContent = text;
+    }
+
+    // Patch
+    let patchData = null;
+    if (minion.patches && !Array.isArray(minion.patches)) { patchData = minion.patches; }
+    else if (Array.isArray(minion.patches) && minion.patches.length > 0) { patchData = minion.patches[0]; }
+
+    if (patchLogoEl && patchVerEl) {
+        if (patchData) {
+            patchVerEl.textContent = `Patch ${patchData.version}`;
+            if (patchData.logo_patch_url) {
+                patchLogoEl.src = patchData.logo_patch_url;
+                patchLogoEl.style.display = 'block';
+            } else {
+                patchLogoEl.style.display = 'none';
+            }
+        } else {
+            patchVerEl.textContent = minion.patch_id ? `Patch ${minion.patch_id}` : 'Patch Inconnu';
+            patchLogoEl.style.display = 'none';
+        }
+    }
+}
+
+

@@ -701,7 +701,7 @@ function renderMinions(data) {
             <div class="minion-info">
                 <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
                     <span class="minion-name">
-                            <span class="minion-name-link text-patch-${patchMajor}" onclick="window.location.hash='minion/${minion.id}'; event.stopPropagation();">${name}</span>
+                            <span class="minion-name-link" onclick="window.location.hash='minion/${minion.id}'; event.stopPropagation();">${name}</span>
                             <button class="btn-sources-trigger" title="Infos & Sources"><i class="fa-solid fa-magnifying-glass"></i></button>
                             ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                             ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
@@ -1249,17 +1249,21 @@ function showMinionDetails(id) {
                 let iconUrl = s.icon_source_url || '';
                 // Dark mode checks for CDJapan/Boutique could be here but skipping for brevity
 
-                let details = s.name;
-                if (ms.details) details += ` - ${ms.details}`;
-                if (ms.cost) details += ` (${ms.cost} ${c ? c.name : ''})`;
+                let detailsText = ms.details || '';
+
+                let costHtml = '';
+                if (ms.cost) {
+                    costHtml = `<span class="source-cost badge-cost">${ms.cost.toLocaleString()} ${c ? c.name : ''}</span>`;
+                }
 
                 const div = document.createElement('div');
                 div.className = 'source-item';
                 div.innerHTML = `
                     ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
-                    <div class="source-details">
-                        <span class="source-name">${s.name}</span>
-                        <span class="source-extra">${ms.details || ''} ${ms.cost ? ' - ' + ms.cost : ''}</span>
+                    <div class="source-details section-column">
+                        <span class="source-name-title">${s.name}</span>
+                        ${detailsText ? `<span class="source-extra-info">${detailsText}</span>` : ''}
+                        ${costHtml}
                     </div>
                 `;
                 sourcesEl.appendChild(div);

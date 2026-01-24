@@ -1926,3 +1926,39 @@ body {
         padding: 1rem;
     }
 }
+
+/* Refined Source Layout */
+.section-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
+}
+
+.source-name-title {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.source-extra-info {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.badge-cost {
+    display: inline-block;
+    background: rgba(229, 181, 34, 0.15);
+    /* Gold alpha */
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+    border: 1px solid rgba(229, 181, 34, 0.3);
+}
+
+[data-theme="dark"] .badge-cost {
+    background: rgba(229, 181, 34, 0.1);
+}

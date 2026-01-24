@@ -1257,12 +1257,16 @@ function showMinionDetails(id) {
                 }
 
                 const div = document.createElement('div');
-                div.className = 'source-item';
+                div.className = 'source-item-row'; // New class for row style
                 div.innerHTML = `
-                    ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
-                    <div class="source-details section-column">
-                        <span class="source-name-title">${s.name}</span>
-                        ${detailsText ? `<span class="source-extra-info">${detailsText}</span>` : ''}
+                    <div class="source-left">
+                        ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
+                        <div class="source-details section-column">
+                            <span class="source-name-title">${s.name}</span>
+                            ${detailsText ? `<span class="source-extra-info">${detailsText}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="source-right">
                         ${costHtml}
                     </div>
                 `;

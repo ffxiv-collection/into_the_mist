@@ -1962,3 +1962,75 @@ body {
 [data-theme="dark"] .badge-cost {
     background: rgba(229, 181, 34, 0.1);
 }
+
+/* --- FINAL LAYOUT REFINEMENTS --- */
+
+/* Header: Name + Logo Side-by-Side */
+.detail-header-flex {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    /* Handle mobile */
+}
+
+/* Ensure Name doesn't have huge margin bottom now */
+#detail-name {
+    margin-bottom: 0;
+}
+
+/* Larger Patch Logo */
+.detail-patch-logo-large {
+    height: 80px;
+    /* Increased from 40px */
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Source Row - "Card Style" (Black bg) */
+.source-item-row {
+    background-color: #000;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* Full width of container */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Left side: Icon + Text */
+.source-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    /* Take simplified space */
+}
+
+/* Override text colors for dark row */
+.source-item-row .source-name-title {
+    color: #fff;
+    /* Force white title */
+}
+
+.source-item-row .source-extra-info {
+    color: #a1a1aa;
+    /* Light gray for details */
+}
+
+/* Override badge for dark background */
+.source-item-row .badge-cost {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    /* Screenshot shows white cost? Or gold? User said "centered amount", assuming gold/white */
+}
+
+/* If user wants currency symbol/icon, they are usually included in text or adjacent */

@@ -487,11 +487,10 @@ async function syncMinions(silent = false) {
                     throw insertError;
                 }
             } else {
-            } else {
                 // Success: Add to local set and re-render
                 minionsToAdd.forEach(item => userCollection.add(item.minion_id));
                 renderMinions(minionsCache);
-                
+
                 // Play sound regardless of silent mode (User Request)
                 playCollectSound();
 

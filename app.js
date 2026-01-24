@@ -487,15 +487,19 @@ async function syncMinions(silent = false) {
                     throw insertError;
                 }
             } else {
+            } else {
                 // Success: Add to local set and re-render
                 minionsToAdd.forEach(item => userCollection.add(item.minion_id));
                 renderMinions(minionsCache);
+                
+                // Play sound regardless of silent mode (User Request)
+                playCollectSound();
+
                 if (!silent) {
                     alert(`Succès ! ${minionsToAdd.length} nouvelles mascottes ajoutées.`);
-                    playCollectSound(); // Optional feedback
                 } else {
-                    // Maybe just a small toast or log?
-                    // For now, silent means silent UI.
+                    // Silent mode: No alert, but sound played.
+                    console.log(`Auto-sync added ${minionsToAdd.length} minions.`);
                 }
             }
         }

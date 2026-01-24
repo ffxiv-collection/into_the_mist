@@ -14,6 +14,59 @@
     --font-menu: 'Miedinger', sans-serif;
 }
 
+/* Patch Text Colors (Light Mode) */
+.text-patch-2 {
+    color: #facc15;
+}
+
+/* Gold/Yellowish */
+.text-patch-3 {
+    color: #0284c7;
+}
+
+/* Blue */
+.text-patch-4 {
+    color: #be123c;
+}
+
+/* Red */
+.text-patch-5 {
+    color: #7e22ce;
+}
+
+/* Purple */
+.text-patch-6 {
+    color: #d97706;
+}
+
+/* Orange */
+.text-patch-7 {
+    color: #e5b522;
+}
+
+/* Gold */
+
+/* Minion Name Link */
+.minion-name-link {
+    cursor: pointer;
+    transition: filter 0.2s;
+    display: inline-block;
+    /* For transform */
+}
+
+.minion-name-link:hover {
+    filter: brightness(1.2);
+    text-decoration: underline;
+}
+
+/* Detail Sources */
+.detail-sources {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 [data-theme="dark"] {
     --bg-color: #121212;
     --text-color: #e2e8f0;
@@ -81,7 +134,32 @@
     }
 
     .patch-7 {
-        background-color: #713f12;
+        background-color: #fcd34d;
+        color: #713f12;
+    }
+
+    /* Text Colors for Patches */
+    .text-patch-2 {
+        color: #cbd5e1;
+    }
+
+    .text-patch-3 {
+        color: #bae6fd;
+    }
+
+    .text-patch-4 {
+        color: #fecdd3;
+    }
+
+    .text-patch-5 {
+        color: #ddd6fe;
+    }
+
+    .text-patch-6 {
+        color: #fde68a;
+    }
+
+    .text-patch-7 {
         color: #fcd34d;
     }
 
@@ -1735,7 +1813,7 @@ body {
 
 /* Image Section */
 .detail-image-wrapper {
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
     border-radius: 24px;
     padding: 2rem;
     display: flex;
@@ -1750,7 +1828,7 @@ body {
     height: auto;
     max-height: 500px;
     object-fit: contain;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
     transition: transform 0.3s;
 }
 

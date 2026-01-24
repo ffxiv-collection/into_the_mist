@@ -610,15 +610,9 @@ function renderMinions(data) {
         row.className = `minion-row row-${patchMajor} ${unavailableClass} ${collectedClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
-        // Open Details Page Listener
-        row.dataset.id = minion.id;
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', (e) => {
-            // Prevent if clicking on interactive elements (buttons, links)
-            if (e.target.closest('button') || e.target.closest('a')) return;
-
-            window.location.hash = `minion/${minion.id}`;
-        });
+        // Open Details Page Listener -> REMOVED ON ROW
+        // row.dataset.id = minion.id;
+        // row.style.cursor = 'default';
 
         observer.observe(row);
 
@@ -707,7 +701,7 @@ function renderMinions(data) {
             <div class="minion-info">
                 <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
                     <span class="minion-name">
-                            ${name}
+                            <span class="minion-name-link text-patch-${patchMajor}" onclick="window.location.hash='minion/${minion.id}'; event.stopPropagation();">${name}</span>
                             <button class="btn-sources-trigger" title="Infos & Sources"><i class="fa-solid fa-magnifying-glass"></i></button>
                             ${minion.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                             ${minion.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
@@ -1185,8 +1179,23 @@ function showMinionDetails(id) {
     const diaryEl = document.getElementById('detail-diary-text');
     const patchLogoEl = document.getElementById('detail-patch-logo');
     const patchVerEl = document.getElementById('detail-patch-ver');
+    const sourcesEl = document.getElementById('detail-sources');
 
-    if (nameEl) nameEl.textContent = minion.name || 'Inconnu';
+    if (nameEl) {
+        nameEl.textContent = minion.name || 'Inconnu';
+        // Apply Patch Color using class manipulation
+        // Need patch major
+        let pMajor = '2';
+        if (minion.patches && minion.patches.version) pMajor = String(minion.patches.version).charAt(0);
+        else if (minion.patch_id) pMajor = String(minion.patch_id).charAt(0);
+
+        // Reset classes
+        nameEl.className = '';
+        nameEl.classList.add(`text-patch-${pMajor}`);
+        // Ensure gradient is removed/overridden if conflicting
+        nameEl.style.background = 'none';
+        nameEl.style.webkitTextFillColor = 'initial';
+    }
 
     // Image: Use picture_minion_url (Large) or fallback to icon
     if (imgEl) {
@@ -1221,6 +1230,40 @@ function showMinionDetails(id) {
         } else {
             patchVerEl.textContent = minion.patch_id ? `Patch ${minion.patch_id}` : 'Patch Inconnu';
             patchLogoEl.style.display = 'none';
+        }
+    }
+
+    // Sources Logic (Duplicated from render logic roughly)
+    if (sourcesEl) {
+        sourcesEl.innerHTML = '';
+        const sources = (minion.minion_sources || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        if (sources.length === 0 && minion.acquisition) {
+            sourcesEl.innerHTML = `<div class="source-item"><span class="source-name">${minion.acquisition}</span></div>`;
+        } else {
+            sources.forEach(ms => {
+                const s = ms.sources;
+                const c = ms.currencies;
+                if (!s) return;
+
+                let iconUrl = s.icon_source_url || '';
+                // Dark mode checks for CDJapan/Boutique could be here but skipping for brevity
+
+                let details = s.name;
+                if (ms.details) details += ` - ${ms.details}`;
+                if (ms.cost) details += ` (${ms.cost} ${c ? c.name : ''})`;
+
+                const div = document.createElement('div');
+                div.className = 'source-item';
+                div.innerHTML = `
+                    ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
+                    <div class="source-details">
+                        <span class="source-name">${s.name}</span>
+                        <span class="source-extra">${ms.details || ''} ${ms.cost ? ' - ' + ms.cost : ''}</span>
+                    </div>
+                `;
+                sourcesEl.appendChild(div);
+            });
         }
     }
 }

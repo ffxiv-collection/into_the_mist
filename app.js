@@ -1125,8 +1125,8 @@ function handleLoginSound() {
 function playCollectSound() {
     if (audioState.collectSound) {
         audioState.collectSound.currentTime = 0;
-        audioState.collectSound.play().catch((e) => {
-            console.warn("Audio play failed (likely autoplay policy):", e);
+        audioState.collectSound.play().catch(() => {
+            // Autoplay policy might block this if no user interaction yet.
         });
     }
 }

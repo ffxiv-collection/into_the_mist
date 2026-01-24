@@ -48,6 +48,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // --- UI UPDATES ---
 function updateUI(session) {
+    // OPTIMIZATION: If user is already set and same as session, DO NOT re-render
+    // This prevents scroll reset on tab switch / token refresh
+    if (currentUser && session && currentUser.id === session.user.id) {
+        // Just update the object reference, don't touch DOM
+        currentUser = session.user;
+        return;
+    }
+
     const loginView = document.getElementById('login-view');
     const dashboardView = document.getElementById('dashboard-view');
     const audioBtn = document.getElementById('audio-toggle');
@@ -55,6 +63,7 @@ function updateUI(session) {
 
     if (session) {
         // --- LOGGED IN ---
+        const isNewLogin = (currentUser === null);
         currentUser = session.user; // Update current user
         loginView.classList.add('hidden');
         dashboardView.classList.remove('hidden');
@@ -68,6 +77,12 @@ function updateUI(session) {
 
         stopBgMusic();
         handleRouting();
+
+        // AUTO-SYNC on fresh login/load
+        if (isNewLogin) {
+            console.log("Auto-syncing collection...");
+            syncMinions(true); // Silent mode
+        }
 
     } else {
         // --- LOGGED OUT ---
@@ -93,7 +108,6 @@ function updateUI(session) {
         }
     }
 }
-
 // --- ROUTING LOGIC ---
 function handleRouting() {
     const hash = window.location.hash.substring(1);
@@ -385,9 +399,9 @@ function setupFilterListeners() {
 }
 
 // --- SYNC WITH FFXIV COLLECT ---
-async function syncMinions() {
+async function syncMinions(silent = false) {
     const syncBtn = document.getElementById('btn-sync');
-    if (syncBtn) {
+    if (syncBtn && !silent) {
         syncBtn.disabled = true;
         syncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sync...';
     }
@@ -401,8 +415,10 @@ async function syncMinions() {
             .single();
 
         if (charError || !charData) {
-            console.error('Character fetch error:', charError);
-            alert("Aucun personnage lié trouvé. Veuillez lier votre personnage dans les paramètres (à venir) ou contacter l'admin.");
+            if (!silent) {
+                console.error('Character fetch error:', charError);
+                alert("Aucun personnage lié trouvé. Veuillez lier votre personnage dans les paramètres (à venir) ou contacter l'admin.");
+            }
             throw new Error("No character linked");
         }
 
@@ -454,7 +470,7 @@ async function syncMinions() {
         console.log(`Found ${minionsToAdd.length} new minions to add.`);
 
         if (minionsToAdd.length === 0) {
-            alert("Votre collection est déjà à jour !");
+            if (!silent) alert("Votre collection est déjà à jour !");
         } else {
             // 5. Bulk Insert
             const { error: insertError } = await supabase
@@ -466,7 +482,7 @@ async function syncMinions() {
                 // Duplicate key error might happen if race condition, but differential check minimizes it.
                 // We'll treat it as partial success or error.
                 if (insertError.code === '23505') { // Unique violation
-                    alert("Certaines mascottes étaient déjà en cours d'ajout. Veuillez rafraîchir.");
+                    if (!silent) alert("Certaines mascottes étaient déjà en cours d'ajout. Veuillez rafraîchir.");
                 } else {
                     throw insertError;
                 }
@@ -474,18 +490,23 @@ async function syncMinions() {
                 // Success: Add to local set and re-render
                 minionsToAdd.forEach(item => userCollection.add(item.minion_id));
                 renderMinions(minionsCache);
-                alert(`Succès ! ${minionsToAdd.length} nouvelles mascottes ajoutées.`);
-                playCollectSound(); // Optional feedback
+                if (!silent) {
+                    alert(`Succès ! ${minionsToAdd.length} nouvelles mascottes ajoutées.`);
+                    playCollectSound(); // Optional feedback
+                } else {
+                    // Maybe just a small toast or log?
+                    // For now, silent means silent UI.
+                }
             }
         }
 
     } catch (err) {
         console.error("Sync failed:", err);
-        if (err.message !== "No character linked") {
+        if (!silent && err.message !== "No character linked") {
             alert("Erreur lors de la synchronisation : " + err.message);
         }
     } finally {
-        if (syncBtn) {
+        if (syncBtn && !silent) {
             syncBtn.disabled = false;
             syncBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync';
         }

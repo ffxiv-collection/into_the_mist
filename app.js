@@ -1253,7 +1253,14 @@ function showMinionDetails(id) {
 
                 let costHtml = '';
                 if (ms.cost) {
-                    costHtml = `<span class="source-cost badge-cost">${ms.cost.toLocaleString()} ${c ? c.name : ''}</span>`;
+                    // Check for currency icon
+                    let currencyIcon = '';
+                    if (c && c.icon_currency_url) {
+                        currencyIcon = `<img src="${c.icon_currency_url}" class="currency-icon-small" alt="${c.name}">`;
+                    } else if (c && c.name) {
+                        currencyIcon = `<span class="currency-text">${c.name}</span>`;
+                    }
+                    costHtml = `<span class="source-cost badge-cost">${ms.cost.toLocaleString()} ${currencyIcon}</span>`;
                 }
 
                 const div = document.createElement('div');

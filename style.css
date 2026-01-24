@@ -1978,6 +1978,17 @@ body {
 /* Ensure Name doesn't have huge margin bottom now */
 #detail-name {
     margin-bottom: 0;
+    width: auto;
+    /* Allow logo next to it */
+    max-width: 100%;
+    /* Prevent overflow */
+    flex: 0 1 auto;
+    /* Flex sizing */
+}
+
+/* Ensure Logo doesn't shrink */
+.detail-patch-logo-large {
+    flex-shrink: 0;
 }
 
 /* Larger Patch Logo */

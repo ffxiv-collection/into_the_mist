@@ -1804,7 +1804,7 @@ body {
 
 .detail-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 0.8fr 1.5fr 1.5fr;
     gap: 4rem;
     align-items: start;
     max-width: 1200px;

@@ -2056,7 +2056,8 @@ body {
 /* Left side: Icon + Text */
 .source-left {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* Align to top for multi-line consistency */
     gap: 1rem;
     flex: 1;
 }

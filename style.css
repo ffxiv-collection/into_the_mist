@@ -1804,10 +1804,10 @@ body {
 
 .detail-container {
     display: grid;
-    grid-template-columns: 0.8fr 1.5fr 1.5fr;
+    grid-template-columns: 0.8fr 2fr 1.4fr;
     gap: 4rem;
     align-items: start;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
 }
 

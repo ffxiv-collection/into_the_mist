@@ -16,32 +16,32 @@
 
 /* Patch Text Colors (Light Mode) */
 .text-patch-2 {
-    color: #facc15;
+    color: #9ca3af !important;
 }
 
-/* Gold/Yellowish */
+/* Grey (Fixed V2) */
 .text-patch-3 {
-    color: #0284c7;
+    color: #0284c7 !important;
 }
 
 /* Blue */
 .text-patch-4 {
-    color: #be123c;
+    color: #be123c !important;
 }
 
 /* Red */
 .text-patch-5 {
-    color: #7e22ce;
+    color: #7e22ce !important;
 }
 
 /* Purple */
 .text-patch-6 {
-    color: #d97706;
+    color: #d97706 !important;
 }
 
 /* Orange */
 .text-patch-7 {
-    color: #e5b522;
+    color: #e5b522 !important;
 }
 
 /* Gold */
@@ -2055,10 +2055,7 @@ body {
 }
 
 /* --- COLOR OVERRIDES --- */
-/* Patch 2.x - Grey */
-.text-patch-2 {
-    color: #9ca3af !important;
-}
+
 
 /* Force Title Color to override Gradient */
 #detail-name.text-patch-2,

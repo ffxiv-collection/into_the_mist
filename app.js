@@ -813,6 +813,13 @@ function openModal(minion, patchData) {
         sources.sort((a, b) => (a.id || 0) - (b.id || 0));
     }
 
+    // Toggle 2-column layout only if more than 1 source
+    if (sources && sources.length > 1) {
+        list.classList.add('has-multiple-sources');
+    } else {
+        list.classList.remove('has-multiple-sources');
+    }
+
     sources.forEach(ms => {
         const s = ms.sources;
         const c = ms.currencies;

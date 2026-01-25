@@ -1857,9 +1857,12 @@ body {
 .detail-sources {
     display: block !important;
     width: 100%;
+    margin-top: 1.5rem;
+}
+
+.detail-sources.has-multiple-sources {
     column-count: 2;
     column-gap: 2rem;
-    margin-top: 1.5rem;
 }
 
 .detail-header {

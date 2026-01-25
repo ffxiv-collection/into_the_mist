@@ -895,7 +895,7 @@ function openModal(minion, patchData) {
         }
 
         const div = document.createElement('div');
-        div.className = 'source-item-row source-item';
+        div.className = 'source-item';
 
         // Prepare Title and Details
         let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;
@@ -1853,7 +1853,7 @@ function openMountModal(mount, patchData) {
         }
 
         const div = document.createElement('div');
-        div.className = 'source-item-row source-item';
+        div.className = 'source-item';
 
         // Prepare Title and Details
         let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;

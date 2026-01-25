@@ -1855,9 +1855,9 @@ body {
 }
 
 .detail-sources {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 3rem;
+    column-count: 2;
+    column-gap: 4rem;
+    /* Wide gap between columns */
     margin-top: 1.5rem;
 }
 
@@ -2053,22 +2053,17 @@ body {
     background-color: transparent;
     color: inherit;
     padding: 0.2rem 0;
-    /* Radically reduced padding */
-    /* Symmetrical padding for true centering */
-    /* Remove side padding if no border */
     border-radius: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Vertical center for the whole row (icon vs price) */
     width: 100%;
     gap: 1rem;
-    /* Spacing between left block (text) and right block (price) */
-    /* Remove box-shadow */
     box-shadow: none;
     border-bottom: none;
-    /* Removed borders per request */
-    /* Optional: Separator */
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
 /* Remove top border from first item */

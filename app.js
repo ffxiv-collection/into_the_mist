@@ -808,6 +808,11 @@ function openModal(minion, patchData) {
         `;
     }
 
+    // Sort sources by ID (Creation Order)
+    if (sources) {
+        sources.sort((a, b) => (a.id || 0) - (b.id || 0));
+    }
+
     sources.forEach(ms => {
         const s = ms.sources;
         const c = ms.currencies;
@@ -866,7 +871,7 @@ function openModal(minion, patchData) {
         }
 
         const div = document.createElement('div');
-        div.className = 'source-item';
+        div.className = 'source-item-row source-item';
 
         // Prepare Title and Details
         let sourceTitleHtml = `<span class="source-title">${s.name}</span>`;

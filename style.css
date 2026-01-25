@@ -2034,8 +2034,8 @@ body {
 .source-item-row {
     background-color: transparent;
     color: inherit;
-    padding: 0.4rem 0;
-    /* Reduced padding to tighten vertical space */
+    padding: 0.25rem 0 0.5rem 0;
+    /* Asymmetrical padding to visually lift content */
     /* Remove side padding if no border */
     border-radius: 0;
     display: flex;

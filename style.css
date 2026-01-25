@@ -1992,7 +1992,8 @@ body {
 
 /* Ensure Name doesn't have huge margin bottom now */
 #detail-name {
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
+    /* Added spacing per request */
     width: auto;
     max-width: 100%;
     flex: 0 1 auto;
@@ -2004,8 +2005,6 @@ body {
 }
 
 /* Patch Info Line (Logo + Badge) */
-/* Patch Info Line (Logo + Badge) */
-/* Patch Info Line (Logo + Badge) */
 .detail-patch-info {
     display: flex;
     align-items: center;
@@ -2016,7 +2015,6 @@ body {
     /* Reduced from 1.5rem */
 }
 
-/* Logo in Info Line */
 /* Logo in Info Line */
 .detail-patch-logo-large {
     max-height: 160px;
@@ -2030,14 +2028,11 @@ body {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* Divider Line */
-/* Divider Line */
 /* Divider Line - Hidden (Replaced by border-top on first item) */
 .divider {
     display: none;
 }
 
-/* Source Row - Minimalist (No Black Card) */
 /* Source Row - Minimalist (No Black Card) */
 .source-item-row {
     background-color: transparent;
@@ -2074,7 +2069,6 @@ body {
     border-bottom: none;
 }
 
-/* Left side: Icon + Text */
 /* Left side: Icon + Text */
 .source-left {
     display: flex;
@@ -2123,7 +2117,6 @@ body {
     /* Ensure internal centering if height > content */
 }
 
-/* Reset badge for transparent background */
 /* Reset badge for transparent background */
 .source-item-row .badge-cost {
     background: color-mix(in srgb, var(--primary-color) 15%, transparent);

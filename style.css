@@ -1855,9 +1855,10 @@ body {
 }
 
 .detail-sources {
+    display: block !important;
+    width: 100%;
     column-count: 2;
-    column-gap: 4rem;
-    /* Wide gap between columns */
+    column-gap: 2rem;
     margin-top: 1.5rem;
 }
 

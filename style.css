@@ -2082,7 +2082,13 @@ body {
 
 .source-item-row .source-extra-info {
     color: var(--text-muted);
-    /* Reset */
+    font-style: normal;
+    /* Removed italics per request */
+}
+
+.source-details {
+    padding-top: 2px;
+    /* Visual adjustment for top alignment */
 }
 
 /* Reset badge for transparent background */

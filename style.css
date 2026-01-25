@@ -1992,7 +1992,7 @@ body {
 
 /* Ensure Name doesn't have huge margin bottom now */
 #detail-name {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
     /* Added spacing per request */
     width: auto;
     max-width: 100%;

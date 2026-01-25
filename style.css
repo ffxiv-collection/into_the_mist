@@ -1966,45 +1966,53 @@ body {
 /* --- FINAL LAYOUT REFINEMENTS --- */
 
 @font-face {
-    font-family: 'OPTIEngeEtienne';
-    src: url('https://res.cloudinary.com/dd4rdtrig/raw/upload/v1765734670/OPTIEngeEtienne_u80k1j.otf') format('opentype');
-    font-weight: normal;
+    font-family: 'TrajanPro-Bold';
+    src: url('https://res.cloudinary.com/dd4rdtrig/raw/upload/v1765734672/TrajanPro-Bold_nv3www.otf') format('opentype');
+    font-weight: bold;
     font-style: normal;
 }
 
-/* Header: Name + Logo Side-by-Side */
+/* Header: Name Only (Centred) */
 .detail-header-flex {
     display: flex;
     align-items: center;
     justify-content: center;
     /* Centered */
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    /* More space below header */
-    flex-wrap: nowrap;
-    /* Force side-by-side */
     width: 100%;
+    margin-bottom: 2rem;
 }
 
 /* Ensure Name doesn't have huge margin bottom now */
 #detail-name {
     margin-bottom: 0;
     width: auto;
-    /* Allow logo next to it */
     max-width: 100%;
-    /* Prevent overflow */
     flex: 0 1 auto;
-    /* Flex sizing */
-    font-family: 'OPTIEngeEtienne', serif;
+    font-family: 'TrajanPro-Bold', serif;
     /* Custom Font */
     font-size: 3.5rem;
-    /* Slightly larger for impact */
     letter-spacing: 0.5px;
+    text-align: center;
 }
 
-/* Ensure Logo doesn't shrink */
+/* Patch Info Line (Logo + Badge) */
+.detail-patch-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Left aligned in column */
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Logo in Info Line */
 .detail-patch-logo-large {
+    height: 60px;
+    /* Slightly smaller for info line */
+    width: auto;
+    object-fit: contain;
     flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 /* Larger Patch Logo */

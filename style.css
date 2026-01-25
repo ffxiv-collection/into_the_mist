@@ -2057,10 +2057,11 @@ body {
 }
 
 /* Left side: Icon + Text */
+/* Left side: Icon + Text */
 .source-left {
     display: flex;
-    align-items: flex-start;
-    /* Align to top for multi-line consistency */
+    align-items: center;
+    /* Reverted to center per request */
     gap: 1rem;
     flex: 1;
 }

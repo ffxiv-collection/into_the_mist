@@ -1249,7 +1249,12 @@ function showMinionDetails(id) {
                 let iconUrl = s.icon_source_url || '';
                 // Dark mode checks for CDJapan/Boutique could be here but skipping for brevity
 
-                let detailsText = ms.details || '';
+                let extraInfos = [];
+                if (ms.details) extraInfos.push(ms.details);
+                if (ms.location) extraInfos.push(`<i class="fa-solid fa-map-pin"></i> ${ms.location}`);
+                if (ms.reputation_rank) extraInfos.push(`<i class="fa-solid fa-medal"></i> ${ms.reputation_rank}`);
+
+                let detailsText = extraInfos.join(' &nbsp;•&nbsp; ');
 
                 let costHtml = '';
                 if (ms.cost) {

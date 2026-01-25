@@ -2085,13 +2085,16 @@ body {
 }
 
 /* Reset badge for transparent background */
+/* Reset badge for transparent background */
 .source-item-row .badge-cost {
-    background: rgba(229, 181, 34, 0.15);
-    /* Restore Gold Alpha */
-    border: 1px solid rgba(229, 181, 34, 0.3);
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    /* Patch color bg with opacity */
+    border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+    /* Patch color border */
     font-size: 1rem;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--primary-color);
+    /* Patch color text */
     display: flex;
     align-items: center;
     gap: 0.5rem;

@@ -1915,6 +1915,8 @@ body {
     opacity: 0.9;
     font-style: italic;
     white-space: pre-line;
+    text-align: justify;
+    /* Justified as requested */
 }
 
 /* Responsive */

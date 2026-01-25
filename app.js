@@ -1261,33 +1261,13 @@ function showMinionDetails(id) {
                 let extraInfos = [];
                 if (ms.details) extraInfos.push(ms.details);
                 if (ms.location) extraInfos.push(`<i class="fa-solid fa-map-pin"></i> ${ms.location}`);
-                if (ms.reputation_rank) extraInfos.push(`<i class="fa-solid fa-medal"></i> ${ms.reputation_rank}`);
 
                 let detailsText = extraInfos.join(' &nbsp;•&nbsp; ');
 
-                let costHtml = '';
-                if (ms.cost) {
-                    // Check for currency icon
-                    let currencyIcon = '';
-                    if (c && c.icon_currency_url) {
-                        const iconVal = c.icon_currency_url;
-                        if (iconVal.startsWith('http') || iconVal.startsWith('/')) {
-                            currencyIcon = `<img src="${iconVal}" class="currency-icon-small" alt="${c.name}">`;
-                        } else {
-                            // It is text (e.g. € symbol)
-                            currencyIcon = `<span class="currency-text">${iconVal}</span>`;
-                        }
-                    } else if (c && c.name) {
-                        currencyIcon = `<span class="currency-text">${c.name}</span>`;
-                    }
-                    let useDecimals = false;
-                    // Check if it's a real money transition (Boutique, CDJapan, etc.) or small value
-                    if (s.name.match(/boutique|mog|station|store/i) || (c && c.icon_currency_url && !c.icon_currency_url.startsWith('http'))) {
-                        useDecimals = true;
-                    }
-
-                    const costStr = ms.cost.toLocaleString('fr-FR', useDecimals ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : {});
-                    costHtml = `<span class="source-cost badge-cost">${costStr} ${currencyIcon}</span>`;
+                // Reputation Rank from Minion Table
+                let repHtml = '';
+                if (minion.reputation_rank) {
+                    repHtml = `<span class="source-extra-info"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
                 }
 
                 const div = document.createElement('div');
@@ -1298,6 +1278,7 @@ function showMinionDetails(id) {
                         <div class="source-details section-column">
                             <span class="source-name-title">${s.name}</span>
                             ${detailsText ? `<span class="source-extra-info">${detailsText}</span>` : ''}
+                            ${repHtml}
                         </div>
                     </div>
                     <div class="source-right">

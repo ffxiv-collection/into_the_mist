@@ -126,6 +126,10 @@ function handleRouting() {
         targetId = 'minion-detail-view';
         const minionId = hash.split('/')[1];
         showMinionDetails(minionId);
+    } else if (hash.startsWith('mount/')) {
+        targetId = 'mount-detail-view';
+        const mountId = hash.split('/')[1];
+        showMountDetails(mountId);
     }
     switchView(targetId);
 }
@@ -157,6 +161,10 @@ function switchView(targetId) {
         } else if (targetId === 'minion-detail-view') {
             // Ensure minions are loaded if deep linking
             if (!minionsCache) loadMinions();
+        } else if (targetId === 'mounts-view') {
+            loadMounts();
+        } else if (targetId === 'mount-detail-view') {
+            if (!mountsCache) loadMounts();
         }
     }
 }
@@ -170,6 +178,14 @@ function setupEventListeners() {
     if (btnBack) {
         btnBack.addEventListener('click', () => {
             window.location.hash = 'minions';
+        });
+    }
+
+    // Back Button for Mounts
+    const btnBackMounts = document.getElementById('btn-back-mounts');
+    if (btnBackMounts) {
+        btnBackMounts.addEventListener('click', () => {
+            window.location.hash = 'mounts';
         });
     }
 
@@ -1338,6 +1354,321 @@ function showMinionDetails(id) {
             });
         }
     }
+}
+
+// --- MOUNTS LOGIC ---
+let mountsCache = null;
+let activeMountFilters = {
+    collection: null,
+    patch: null,
+    search: ''
+};
+
+async function loadMounts() {
+    const list = document.getElementById('mounts-list');
+    if (!list) return;
+
+    // Loading State
+    list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des montures...</p>';
+
+    // 2. Fetch Mounts Data
+    let mountsData = mountsCache;
+
+    if (!mountsData) {
+        // Assume 'mounts' table structure mirrors 'minions'
+        const { data, error } = await supabase
+            .from('mounts')
+            .select(`
+                *,
+                patches (*),
+                mount_sources (
+                    details,
+                    cost,
+                    lodestone_url,
+                    location,
+                    created_at,
+                    sources ( name, icon_source_url ),
+                    currencies ( name, icon_currency_url )
+                )
+            `)
+            .order('name', { ascending: true })
+            .limit(1000);
+
+        if (error) {
+            console.error('Error fetching mounts:', error);
+            list.innerHTML = `<p style="color:red; text-align:center;">Erreur de chargement: ${error.message}</p>`;
+            return;
+        }
+        mountsCache = data;
+        mountsData = data;
+    }
+
+    renderMounts(mountsData);
+}
+
+function renderMounts(data) {
+    const list = document.getElementById('mounts-list');
+    list.innerHTML = '';
+
+    // Apply Filter Logic
+    let filteredData = data;
+    if (activeMountFilters.collection || activeMountFilters.patch || activeMountFilters.search) {
+        filteredData = data.filter(mount => {
+            // Patch Filter
+            let pVer = '2.0';
+            if (mount.patches && mount.patches.version) pVer = String(mount.patches.version);
+            else if (mount.patch_id) pVer = String(mount.patch_id);
+
+            if (activeMountFilters.patch) {
+                if (!pVer.startsWith(activeMountFilters.patch)) return false;
+            }
+
+            // Search Filter
+            if (activeMountFilters.search) {
+                const name = (mount.name || '').toLowerCase();
+                if (!name.includes(activeMountFilters.search)) return false;
+            }
+
+            return true;
+        });
+    }
+
+    if (!filteredData || filteredData.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding: 2rem; color: #888;">Aucune monture ne correspond aux filtres.</p>';
+        return;
+    }
+
+    setupMountFilterListeners();
+
+    // Intersection Observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('scroll-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    const fragment = document.createDocumentFragment();
+
+    filteredData.forEach((mount, index) => {
+        let patchData = null;
+        if (mount.patches && !Array.isArray(mount.patches)) { patchData = mount.patches; }
+        else if (Array.isArray(mount.patches) && mount.patches.length > 0) { patchData = mount.patches[0]; }
+
+        let patchVersion = '?';
+        let patchMajor = '2';
+        if (patchData && patchData.version) {
+            patchVersion = patchData.version;
+            patchMajor = String(patchVersion).charAt(0);
+        } else if (mount.patch_id) {
+            patchVersion = mount.patch_id;
+            patchMajor = String(mount.patch_id).charAt(0);
+        }
+
+        const row = document.createElement('div');
+        row.className = `minion-row row-${patchMajor}`;
+        row.style.animationDelay = `${index * 0.05}s`;
+
+        observer.observe(row);
+
+        const iconUrl = mount.icon_mount_url || 'https://xivapi.com/i/000000/000405.png';
+        const name = mount.name || 'Inconnu';
+        const patchIconUrl = patchData ? patchData.icon_patch_url : null;
+        const patchLogoUrl = patchData ? patchData.logo_patch_url : null;
+
+        let badgeHtml = '';
+        if (patchIconUrl) {
+            badgeHtml = `<img src="${patchIconUrl}" class="patch-badge-img" alt="${patchVersion}" title="Patch ${patchVersion}">`;
+        } else {
+            badgeHtml = `<span class="patch-badge patch-${patchMajor}">${patchVersion}</span>`;
+        }
+        let logoHtml = patchLogoUrl ? `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">` : '';
+
+        // Sources Icons
+        const sourceIconsHtml = (mount.mount_sources || []).map(ms => {
+            const s = ms.sources;
+            if (!s) return '';
+            if (ms.lodestone_url) return '';
+
+            let tooltip = s.name;
+            if (ms.details) tooltip += `: ${ms.details}`;
+
+            const iconSrc = s.icon_source_url || '';
+
+            if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan'))) {
+                if (mount.shop_url) {
+                    return `<a href="${mount.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i></a>`;
+                }
+            }
+
+            if (iconSrc && !iconSrc.startsWith('http')) {
+                return `<i class="${iconSrc} meta-icon-fa" title="${tooltip}"></i>`;
+            }
+            return '';
+        }).join('');
+
+        const acquisitionText = (mount.acquisition && sourceIconsHtml === '') ? `<i class="fa-solid fa-circle-info meta-icon-fa" title="${mount.acquisition}"></i>` : '';
+
+        row.innerHTML = `
+            <img src="${iconUrl}" class="minion-icon" alt="${name}">
+            <div class="minion-info">
+                 <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
+                    <span class="minion-name">
+                            <span class="minion-name-link" onclick="window.location.hash='mount/${mount.id}'; event.stopPropagation();">${name}</span>
+                            ${sourceIconsHtml}
+                            ${acquisitionText}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="minion-center-text" title="${mount.tooltip ? mount.tooltip.replace(/"/g, '&quot;') : ''}">
+                 ${mount.tooltip ? `<i class="fa-solid fa-quote-left quote-icon"></i> ${mount.tooltip} <i class="fa-solid fa-quote-right quote-icon"></i>` : ''} 
+            </div>
+            
+            <div class="minion-meta">
+                <div class="col-badge">${badgeHtml}</div>
+                <div class="col-logo">${logoHtml}</div>
+                <div class="btn-collect-container"></div> 
+            </div>
+        `;
+
+        fragment.appendChild(row);
+    });
+
+    list.appendChild(fragment);
+}
+
+function setupMountFilterListeners() {
+    const view = document.getElementById('mounts-view');
+    if (!view || view.dataset.init === 'true') return;
+    view.dataset.init = 'true';
+
+    const filterBar = view.querySelector('.filter-bar');
+
+    // Patch Filters
+    const patchContainer = filterBar.querySelector('.patch-filters');
+    if (patchContainer) {
+        patchContainer.querySelectorAll('.btn-patch-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const patchVer = btn.dataset.patch;
+                if (activeMountFilters.patch === patchVer) {
+                    activeMountFilters.patch = null;
+                    btn.classList.remove('active');
+                } else {
+                    activeMountFilters.patch = patchVer;
+                    patchContainer.querySelectorAll('.btn-patch-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+                renderMounts(mountsCache);
+            });
+        });
+    }
+
+    // Search
+    const searchInput = document.getElementById('mount-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            activeMountFilters.search = e.target.value.trim().toLowerCase();
+            renderMounts(mountsCache);
+        });
+    }
+
+    // Reset
+    const resetBtn = document.getElementById('mount-filter-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            activeMountFilters = { collection: null, patch: null, search: '' };
+            if (searchInput) searchInput.value = '';
+            filterBar.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            renderMounts(mountsCache);
+        });
+    }
+}
+
+async function showMountDetails(mountId) {
+    switchView('mount-detail-view');
+
+    if (!mountsCache) await loadMounts();
+
+    const mount = mountsCache.find(m => String(m.id) === String(mountId));
+    if (!mount) {
+        document.getElementById('mount-detail-name').textContent = "Monture introuvable";
+        return;
+    }
+
+    document.getElementById('mount-detail-name').textContent = mount.name;
+    document.getElementById('mount-detail-img').src = mount.image_mount_url || mount.icon_mount_url || '';
+    document.getElementById('mount-detail-diary-text').textContent = mount.tooltip || "Pas de description.";
+
+    // Patch Info
+    let patchData = null;
+    if (mount.patches && !Array.isArray(mount.patches)) patchData = mount.patches;
+    else if (Array.isArray(mount.patches) && mount.patches.length > 0) patchData = mount.patches[0];
+
+    const patchBadge = document.getElementById('mount-detail-patch-ver');
+    const patchLogo = document.getElementById('mount-detail-patch-logo');
+
+    if (patchData) {
+        patchBadge.textContent = `Patch ${patchData.version}`;
+        if (patchData.logo_patch_url) {
+            patchLogo.src = patchData.logo_patch_url;
+            patchLogo.style.display = 'block';
+        } else {
+            patchLogo.style.display = 'none';
+        }
+    } else {
+        patchBadge.textContent = `Patch ${mount.patch_id || '?'}`;
+        patchLogo.style.display = 'none';
+    }
+
+    // Sources Render
+    const sourcesList = document.getElementById('mount-detail-sources');
+    sourcesList.innerHTML = '';
+
+    const sources = (mount.mount_sources || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+    // Fallback info if no sources
+    if (sources.length === 0 && mount.acquisition) {
+        sourcesList.innerHTML = `
+            <div class="source-item">
+                <i class="fa-solid fa-info-circle source-icon-large"></i>
+                <div class="source-details">
+                    <span class="source-name">Acquisition</span>
+                    <span class="source-desc">${mount.acquisition}</span>
+                </div>
+            </div>`;
+    }
+
+    sources.forEach(src => {
+        const s = src.sources;
+        const c = src.currencies;
+        if (!s) return;
+        if (src.lodestone_url) return;
+
+        const row = document.createElement('div');
+        row.className = 'source-item';
+
+        const iconSrc = s.icon_source_url;
+        let iconHtml = '';
+        if (iconSrc) {
+            if (iconSrc.startsWith('http')) {
+                iconHtml = `<img src="${iconSrc}" class="source-icon-img" alt="${s.name}">`;
+            } else {
+                iconHtml = `<i class="${iconSrc} source-icon-large"></i>`;
+            }
+        } else {
+            iconHtml = `<i class="fa-solid fa-question source-icon-large"></i>`;
+        }
+
+        let detailHtml = `<span class="source-name">${s.name}</span>`;
+        if (src.location) detailHtml += `<span class="source-desc"><i class="fa-solid fa-location-dot"></i> ${src.location}</span>`;
+        if (src.details) detailHtml += `<span class="source-desc">${src.details}</span>`;
+
+        row.innerHTML = `${iconHtml}<div class="source-details">${detailHtml}</div>`;
+        sourcesList.appendChild(row);
+    });
 }
 
 

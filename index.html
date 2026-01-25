@@ -190,9 +190,94 @@
             </div>
 
             <!-- Placeholders for other views -->
+            <!-- VIEW: MOUNTS (Hidden) -->
             <div id="mounts-view" class="dashboard-content hidden">
-                <p style="text-align:center;">Montures à venir...</p>
+
+                <!-- FILTER BAR (Duplicated for Mounts) -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span class="filter-label">Filtrer par</span>
+                        <button class="btn-star-unified missing" data-filter="missing" title="Non acquis">
+                            <i class="fa-regular fa-star"></i>
+                        </button>
+                        <button class="btn-star-unified collected" data-filter="collected" title="Acquis">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                    </div>
+
+                    <button class="btn-filter-reset" id="mount-filter-reset" title="Réinitialiser les filtres"><i
+                            class="fa-solid fa-rotate-left"></i></button>
+
+                    <!-- Sync Button shared functionality or specific to mounts? keeping placeholder for now if needed -->
+
+                    <div class="filter-group">
+                        <span class="filter-label">Filtrer par</span>
+                        <div class="patch-filters">
+                            <button class="btn-patch-filter patch-2" data-patch="2">2.x</button>
+                            <button class="btn-patch-filter patch-3" data-patch="3">3.x</button>
+                            <button class="btn-patch-filter patch-4" data-patch="4">4.x</button>
+                            <button class="btn-patch-filter patch-5" data-patch="5">5.x</button>
+                            <button class="btn-patch-filter patch-6" data-patch="6">6.x</button>
+                            <button class="btn-patch-filter patch-7" data-patch="7">7.x</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group search-group">
+                        <div class="search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="mount-search" placeholder="Rechercher..." class="search-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mounts-list" class="minions-list">
+                    <!-- Rows injected via JS -->
+                </div>
             </div>
+
+            <!-- VIEW: MOUNT DETAIL (Hidden) -->
+            <div id="mount-detail-view" class="dashboard-content hidden">
+                <button id="btn-back-mounts" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+
+                <div class="detail-header-flex">
+                    <h1 id="mount-detail-name">Nom de la Monture</h1>
+                </div>
+
+                <div class="detail-container">
+                    <!-- Left: Large Image (Col 1) -->
+                    <div class="detail-image-wrapper">
+                        <img id="mount-detail-img" src="" alt="Mount" class="detail-img-large">
+                    </div>
+
+                    <!-- Right Column: Info + Sources -->
+                    <div class="detail-column-right">
+
+                        <!-- Top: Info (Logo + Diary) -->
+                        <div class="detail-info-wrapper">
+                            <div class="detail-patch-info">
+                                <img id="mount-detail-patch-logo" src="" alt="Patch Logo"
+                                    class="detail-patch-logo-large">
+                                <span id="mount-detail-patch-ver" class="detail-patch-badge">Patch X.X</span>
+                            </div>
+
+                            <div class="detail-diary">
+                                <h3><i class="fa-solid fa-book-open"></i> Journal</h3>
+                                <p id="mount-detail-diary-text">Description du carnet...</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom: Sources -->
+                        <div class="detail-sources-wrapper">
+                            <h3><i class="fa-solid fa-map-location-dot"></i> Moyens d'obtention</h3>
+                            <div id="mount-detail-sources" class="detail-sources">
+                                <!-- Sources injected via JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div id="barding-view" class="dashboard-content hidden">
                 <p style="text-align:center;">Bardes à venir...</p>
             </div>

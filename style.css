@@ -1971,8 +1971,8 @@ body {
     align-items: center;
     gap: 1.5rem;
     margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-    /* Handle mobile */
+    flex-wrap: nowrap;
+    /* Force side-by-side */
 }
 
 /* Ensure Name doesn't have huge margin bottom now */

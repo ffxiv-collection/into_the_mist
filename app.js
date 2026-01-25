@@ -1256,8 +1256,13 @@ function showMinionDetails(id) {
                     // Check for currency icon
                     let currencyIcon = '';
                     if (c && c.icon_currency_url) {
-                        // Add error handler to fallback to text
-                        currencyIcon = `<img src="${c.icon_currency_url}" class="currency-icon-small" alt="${c.name}" onerror="this.outerHTML='<span class=\\'currency-text\\'>${c.name}</span>'">`;
+                        const iconVal = c.icon_currency_url;
+                        if (iconVal.startsWith('http') || iconVal.startsWith('/')) {
+                            currencyIcon = `<img src="${iconVal}" class="currency-icon-small" alt="${c.name}">`;
+                        } else {
+                            // It is text (e.g. € symbol)
+                            currencyIcon = `<span class="currency-text">${iconVal}</span>`;
+                        }
                     } else if (c && c.name) {
                         currencyIcon = `<span class="currency-text">${c.name}</span>`;
                     }

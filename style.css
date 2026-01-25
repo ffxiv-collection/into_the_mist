@@ -2091,8 +2091,7 @@ body {
 }
 
 .source-details {
-    padding-top: 2px;
-    /* Visual adjustment for top alignment */
+    /* Padding removed for true vertical centering */
 }
 
 /* Reset badge for transparent background */

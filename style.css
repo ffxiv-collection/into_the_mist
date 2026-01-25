@@ -2045,8 +2045,8 @@ body {
 .source-item-row {
     background-color: transparent;
     color: inherit;
-    padding: 0.35rem 0;
-    /* Compact symmetrical padding */
+    padding: 0.2rem 0;
+    /* Radically reduced padding */
     /* Symmetrical padding for true centering */
     /* Remove side padding if no border */
     border-radius: 0;

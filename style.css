@@ -1876,11 +1876,11 @@ body {
 }
 
 .detail-patch-badge {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 0.25rem 0.75rem;
-    border-radius: 99px;
-    font-size: 0.9rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: 1.1rem;
     color: var(--text-muted);
 }
 
@@ -2002,11 +2002,12 @@ body {
 }
 
 /* Patch Info Line (Logo + Badge) */
+/* Patch Info Line (Logo + Badge) */
 .detail-patch-info {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    /* Left aligned in column */
+    justify-content: center;
+    /* Centered */
     gap: 1rem;
     margin-bottom: 1.5rem;
 }

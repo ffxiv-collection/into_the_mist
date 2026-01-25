@@ -548,6 +548,119 @@ async function syncMinions(silent = false) {
     }
 }
 
+// --- SYNC MOUNTS ---
+async function syncMounts(silent = false) {
+    const syncBtn = document.getElementById('btn-sync-mounts');
+    if (syncBtn && !silent) {
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sync...';
+    }
+
+    try {
+        // 1. Get Character ID
+        const { data: charData, error: charError } = await supabase
+            .from('characters')
+            .select('character_id')
+            .eq('user_id', currentUser.id)
+            .single();
+
+        if (charError || !charData) {
+            if (!silent) {
+                console.error('Character fetch error:', charError);
+                alert("Aucun personnage lié trouvé. Veuillez lier votre personnage ou contacter l'admin.");
+            }
+            throw new Error("No character linked");
+        }
+
+        const charId = charData.character_id;
+        console.log(`Syncing Mounts for character ID: ${charId}`);
+
+        // 2. Fetch from FFXIV Collect API
+        const response = await fetch(`https://ffxivcollect.com/api/characters/${charId}/mounts/owned`);
+        if (!response.ok) throw new Error("API FFXIV Collect Error");
+
+        const ownedData = await response.json();
+        const apiOwnedIds = new Set(ownedData.map(m => m.id));
+
+        console.log(`API reports ${apiOwnedIds.size} mounts owned.`);
+
+        // 3. Fetch Local Mount Map (FFXIV ID -> Local ID)
+        const { data: allMounts, error: mapError } = await supabase
+            .from('mounts')
+            .select('id, ffxiv_collect_id')
+            .not('ffxiv_collect_id', 'is', null);
+
+        if (mapError) throw mapError;
+
+        const ffxivMap = new Map();
+        allMounts.forEach(m => {
+            ffxivMap.set(m.ffxiv_collect_id, m.id);
+        });
+
+        // 4. Find Missing Mounts
+        const mountsToAdd = [];
+
+        for (const apiId of apiOwnedIds) {
+            const localDbId = ffxivMap.get(apiId);
+            if (localDbId) {
+                if (!userMountCollection.has(localDbId)) {
+                    mountsToAdd.push({
+                        user_id: currentUser.id,
+                        mount_id: localDbId
+                    });
+                }
+            }
+        }
+
+        console.log(`Found ${mountsToAdd.length} new mounts to add.`);
+
+        if (mountsToAdd.length === 0) {
+            if (!silent) alert("Votre collection de montures est déjà à jour !");
+        } else {
+            // 5. Bulk Insert
+            const { error: insertError } = await supabase
+                .from('user_mounts')
+                .insert(mountsToAdd);
+
+            if (insertError) {
+                console.error("Bulk insert error:", insertError);
+                if (insertError.code === '23505') {
+                    if (!silent) alert("Certaines montures étaient déjà en cours d'ajout.");
+                } else {
+                    throw insertError;
+                }
+            } else {
+                mountsToAdd.forEach(item => userMountCollection.add(item.mount_id));
+
+                // Only re-render if we are on mounts view
+                const mountsView = document.getElementById('mounts-view');
+                if (mountsView && !mountsView.classList.contains('hidden')) {
+                    renderMounts(mountsCache);
+                }
+
+                playCollectSound();
+
+                if (!silent) {
+                    alert(`Succès ! ${mountsToAdd.length} nouvelles montures ajoutées.`);
+                } else {
+                    console.log(`Auto-sync added ${mountsToAdd.length} mounts.`);
+                }
+            }
+        }
+
+    } catch (err) {
+        console.error("Sync Mounts failed:", err);
+        if (!silent && err.message !== "No character linked") {
+            alert("Erreur lors de la synchronisation : " + err.message);
+        }
+    } finally {
+        if (syncBtn && !silent) {
+            syncBtn.disabled = false;
+            syncBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync';
+        }
+    }
+}
+
 function renderMinions(data) {
     const list = document.getElementById('minions-list');
     list.innerHTML = '';
@@ -1661,6 +1774,18 @@ function setupMountFilterListeners() {
             if (searchInput) searchInput.value = '';
             filterBar.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
             renderMounts(mountsCache);
+        });
+    }
+
+    // Sync Button
+    const syncBtn = document.getElementById('btn-sync-mounts');
+    if (syncBtn) {
+        syncBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert("Veuillez vous connecter pour synchroniser votre collection.");
+                return;
+            }
+            syncMounts();
         });
     }
 }

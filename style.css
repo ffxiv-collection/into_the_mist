@@ -1876,11 +1876,11 @@ body {
 }
 
 .detail-patch-badge {
-    background: transparent;
-    border: none;
-    padding: 0;
-    border-radius: 0;
-    font-size: 1.1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.9rem;
     color: var(--text-muted);
 }
 
@@ -2031,18 +2031,27 @@ body {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* Source Row - "Card Style" (Black bg) */
+/* Source Row - Minimalist (No Black Card) */
 .source-item-row {
-    background-color: #000;
-    color: #fff;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
+    background-color: transparent;
+    color: inherit;
+    padding: 0.75rem 0;
+    /* Remove side padding if no border */
+    border-radius: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    /* Full width of container */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Remove box-shadow */
+    box-shadow: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Optional: Separator */
+}
+
+/* Remove last border if desired, or keep for list feel */
+
+.source-item-row:last-child {
+    border-bottom: none;
 }
 
 /* Left side: Icon + Text */
@@ -2051,31 +2060,32 @@ body {
     align-items: center;
     gap: 1rem;
     flex: 1;
-    /* Take simplified space */
 }
 
-/* Override text colors for dark row */
+/* Reset text colors */
 .source-item-row .source-name-title {
-    color: #fff;
-    /* Force white title */
+    color: var(--text-color);
+    /* Reset to variable */
 }
 
 .source-item-row .source-extra-info {
-    color: #a1a1aa;
-    /* Light gray for details */
+    color: var(--text-muted);
+    /* Reset */
 }
 
-/* Override badge for dark background */
+/* Reset badge for transparent background */
 .source-item-row .badge-cost {
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    /* Larger cost text */
+    background: rgba(229, 181, 34, 0.15);
+    /* Restore Gold Alpha */
+    border: 1px solid rgba(229, 181, 34, 0.3);
+    font-size: 1rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--gold);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 2px 8px;
+    border-radius: 4px;
 }
 
 .currency-icon-small {

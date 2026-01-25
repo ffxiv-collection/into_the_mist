@@ -1965,14 +1965,25 @@ body {
 
 /* --- FINAL LAYOUT REFINEMENTS --- */
 
+@font-face {
+    font-family: 'OPTIEngeEtienne';
+    src: url('https://res.cloudinary.com/dd4rdtrig/raw/upload/v1765734670/OPTIEngeEtienne_u80k1j.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* Header: Name + Logo Side-by-Side */
 .detail-header-flex {
     display: flex;
     align-items: center;
+    justify-content: center;
+    /* Centered */
     gap: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    /* More space below header */
     flex-wrap: nowrap;
     /* Force side-by-side */
+    width: 100%;
 }
 
 /* Ensure Name doesn't have huge margin bottom now */
@@ -1984,6 +1995,11 @@ body {
     /* Prevent overflow */
     flex: 0 1 auto;
     /* Flex sizing */
+    font-family: 'OPTIEngeEtienne', serif;
+    /* Custom Font */
+    font-size: 3.5rem;
+    /* Slightly larger for impact */
+    letter-spacing: 0.5px;
 }
 
 /* Ensure Logo doesn't shrink */

@@ -2096,12 +2096,18 @@ body {
     color: var(--text-color);
     /* Reset to variable */
     line-height: 1.25;
+    margin: 0;
+    /* Force zero margin */
+    padding: 0;
 }
 
 .source-item-row .source-extra-info {
     color: var(--text-muted);
     font-style: normal;
     line-height: 1.25;
+    margin: 0;
+    /* Force zero margin */
+    padding: 0;
 }
 
 /* Source Details Container */

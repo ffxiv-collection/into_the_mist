@@ -2112,6 +2112,42 @@ body {
 /* --- COLOR OVERRIDES --- */
 
 
+/* --- THEME PATCH VARIABLES --- */
+.theme-patch-2 {
+    --primary-color: #71717a;
+}
+
+/* ARR/Heavensward legacy or specific */
+.theme-patch-3 {
+    --primary-color: #3b82f6;
+}
+
+/* Heavensward */
+.theme-patch-4 {
+    --primary-color: #be123c;
+}
+
+/* Stormblood */
+.theme-patch-5 {
+    --primary-color: #4338ca;
+}
+
+/* Shadowbringers */
+.theme-patch-6 {
+    --primary-color: #d97706;
+}
+
+/* Endwalker */
+.theme-patch-7 {
+    --primary-color: #eab308;
+}
+
+/* Dawntrail */
+/* Default */
+.theme-patch-default {
+    --primary-color: var(--gold);
+}
+
 /* Force Title Color to override Gradient */
 #detail-name.text-patch-2,
 #detail-name.text-patch-3,
@@ -2120,9 +2156,8 @@ body {
 #detail-name.text-patch-6,
 #detail-name.text-patch-7 {
     background: none !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: border-box !important;
-    -webkit-background-clip: border-box !important;
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 20px color-mix(in srgb, var(--primary-color) 40%, transparent);
 }
 
 /* If user wants currency symbol/icon, they are usually included in text or adjacent */

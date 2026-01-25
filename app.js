@@ -1195,6 +1195,15 @@ function showMinionDetails(id) {
         // Ensure gradient is removed/overridden if conflicting
         nameEl.style.background = 'none';
         nameEl.style.webkitTextFillColor = 'initial';
+
+        // Apply Global Patch Theme to container
+        const detailContainer = document.getElementById('minion-detail-view');
+        if (detailContainer) {
+            // Remove old theme classes
+            detailContainer.classList.remove('theme-patch-2', 'theme-patch-3', 'theme-patch-4', 'theme-patch-5', 'theme-patch-6', 'theme-patch-7', 'theme-patch-default');
+            // Add new
+            detailContainer.classList.add(`theme-patch-${pMajor}`);
+        }
     }
 
     // Image: Use picture_minion_url (Large) or fallback to icon

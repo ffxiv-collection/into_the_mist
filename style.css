@@ -2003,13 +2003,15 @@ body {
 
 /* Patch Info Line (Logo + Badge) */
 /* Patch Info Line (Logo + Badge) */
+/* Patch Info Line (Logo + Badge) */
 .detail-patch-info {
     display: flex;
     align-items: center;
     justify-content: center;
     /* Centered */
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
+    /* Reduced from 1.5rem */
 }
 
 /* Logo in Info Line */

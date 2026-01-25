@@ -2015,11 +2015,11 @@ body {
 /* Logo in Info Line */
 /* Logo in Info Line */
 .detail-patch-logo-large {
-    max-height: 120px;
-    /* Max height as requested */
+    max-height: 160px;
+    /* Taller for portrait */
     height: auto;
-    max-width: 100%;
-    /* Max width as requested */
+    max-width: 500px;
+    /* Constrain width for landscape */
     width: auto;
     object-fit: contain;
     flex-shrink: 0;

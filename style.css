@@ -1807,7 +1807,7 @@ body {
     grid-template-columns: 0.8fr 1.5fr;
     gap: 4rem;
     align-items: start;
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 

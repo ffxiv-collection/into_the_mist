@@ -2056,15 +2056,16 @@ body {
     /* Spacing between left block (text) and right block (price) */
     /* Remove box-shadow */
     box-shadow: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+    /* Removed borders per request */
     /* Optional: Separator */
 }
 
-/* Add top border to first item to replace divider */
+/* Remove top border from first item */
 .source-item-row:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 1rem;
-    /* Spacing from header */
+    border-top: none;
+    margin-top: 0;
+    /* Tighten up to header */
 }
 
 /* Remove last border if desired, or keep for list feel */

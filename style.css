@@ -2035,9 +2035,9 @@ body {
 .divider {
     height: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    /* Matched to row border */
     background: none;
-    margin: 1rem 0 0 0;
+    margin: 1rem 0 0.2rem 0;
+    /* Added bottom margin to match inter-row padding sum */
     width: 100%;
 }
 

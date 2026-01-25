@@ -1804,7 +1804,7 @@ body {
 
 .detail-container {
     display: grid;
-    grid-template-columns: 0.8fr 2fr 1.4fr;
+    grid-template-columns: 1.2fr 2fr 1.4fr;
     gap: 4rem;
     align-items: start;
     max-width: 1600px;
@@ -1826,7 +1826,7 @@ body {
 .detail-img-large {
     max-width: 100%;
     height: auto;
-    max-height: 500px;
+    max-height: 600px;
     object-fit: contain;
     filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
     transition: transform 0.3s;
@@ -1900,7 +1900,8 @@ body {
     position: relative;
 }
 
-.detail-diary h3 {
+.detail-diary h3,
+.detail-sources-wrapper h3 {
     margin-top: 0;
     color: var(--gold);
     display: flex;

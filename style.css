@@ -2031,11 +2031,13 @@ body {
 }
 
 /* Divider Line */
+/* Divider Line */
 .divider {
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
+    height: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Matched to row border */
+    background: none;
     margin: 1rem 0 0 0;
-    /* Add top margin, no bottom margin to let row padding handle it */
     width: 100%;
 }
 
@@ -2043,7 +2045,8 @@ body {
 .source-item-row {
     background-color: transparent;
     color: inherit;
-    padding: 0.5rem 0;
+    padding: 0.35rem 0;
+    /* Compact symmetrical padding */
     /* Symmetrical padding for true centering */
     /* Remove side padding if no border */
     border-radius: 0;

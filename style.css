@@ -2032,13 +2032,9 @@ body {
 
 /* Divider Line */
 /* Divider Line */
+/* Divider Line - Hidden (Replaced by border-top on first item) */
 .divider {
-    height: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: none;
-    margin: 1rem 0 0.2rem 0;
-    /* Added bottom margin to match inter-row padding sum */
-    width: 100%;
+    display: none;
 }
 
 /* Source Row - Minimalist (No Black Card) */
@@ -2051,16 +2047,25 @@ body {
     /* Remove side padding if no border */
     border-radius: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* Vertical center for the whole row (icon vs price) */
-    width: 100%;
-    gap: 1rem;
-    /* Spacing between left block (text) and right block (price) */
-    /* Remove box-shadow */
-    box-shadow: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    /* Optional: Separator */
+}
+
+/* Add top border to first item to replace divider */
+.source-item-row:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+    /* Spacing from header */
+}
+
+justify-content: space-between;
+align-items: center;
+/* Vertical center for the whole row (icon vs price) */
+width: 100%;
+gap: 1rem;
+/* Spacing between left block (text) and right block (price) */
+/* Remove box-shadow */
+box-shadow: none;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+/* Optional: Separator */
 }
 
 /* Remove last border if desired, or keep for list feel */

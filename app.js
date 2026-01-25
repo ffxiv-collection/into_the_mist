@@ -83,13 +83,16 @@ function updateUI(session) {
         if (isNewLogin) {
             console.log("Auto-syncing collection...");
             syncMinions(true); // Silent mode
+            syncMounts(true);  // Silent mode
         }
 
     } else {
         // --- LOGGED OUT ---
         currentUser = null; // Clear user
         userCollection.clear(); // Clear local collection cache
+        userMountCollection.clear(); // Clear mounts cache
         minionsCache = null; // Clear minions cache to force refresh on relogin
+        mountsCache = null; // Clear mounts cache
 
         loginView.classList.remove('hidden');
         dashboardView.classList.add('hidden');

@@ -1258,15 +1258,20 @@ function showMinionDetails(id) {
                 let iconUrl = s.icon_source_url || '';
 
                 let extraInfos = [];
-                if (ms.details) extraInfos.push(ms.details);
-                if (ms.location) extraInfos.push(`<i class="fa-solid fa-map-pin"></i> ${ms.location}`);
+                // Details first
+                if (ms.details) extraInfos.push(`<span class="source-extra-info">${ms.details}</span>`);
 
-                let detailsText = extraInfos.join(' &nbsp;•&nbsp; ');
+                // Location on new line (using div or block)
+                if (ms.location) {
+                    extraInfos.push(`<span class="source-extra-info" style="display:block; margin-top:0.2rem;"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>`);
+                }
+
+                let detailsHtml = extraInfos.join('');
 
                 // Reputation Rank from Minion Table
                 let repHtml = '';
                 if (minion.reputation_rank) {
-                    repHtml = `<span class="source-extra-info"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
+                    repHtml = `<span class="source-extra-info" style="display:block; margin-top:0.2rem;"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
                 }
 
                 let costHtml = '';
@@ -1276,16 +1281,16 @@ function showMinionDetails(id) {
                     if (c && c.icon_currency_url) {
                         const iconVal = c.icon_currency_url;
                         if (iconVal.startsWith('http') || iconVal.startsWith('/')) {
-                            currencyIcon = `<img src="${iconVal}" class="currency-icon-small" alt="${c.name}">`;
+                            currencyIcon = `<img src="${iconVal}" class="currency-icon-small" alt="${c ? c.name : ''}">`;
                         } else {
-                            // It is text (e.g. € symbol)
                             currencyIcon = `<span class="currency-text">${iconVal}</span>`;
                         }
                     } else if (c && c.name) {
                         currencyIcon = `<span class="currency-text">${c.name}</span>`;
                     }
+
                     let useDecimals = false;
-                    // Check if it's a real money transition (Boutique, CDJapan, etc.) or small value
+                    // Heuristic for real money
                     if (s.name.match(/boutique|mog|station|store/i) || (c && c.icon_currency_url && !c.icon_currency_url.startsWith('http'))) {
                         useDecimals = true;
                     }
@@ -1295,13 +1300,13 @@ function showMinionDetails(id) {
                 }
 
                 const div = document.createElement('div');
-                div.className = 'source-item-row'; // New class for row style
+                div.className = 'source-item-row';
                 div.innerHTML = `
                     <div class="source-left">
-                        ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
+                         ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
                         <div class="source-details section-column">
                             <span class="source-name-title">${s.name}</span>
-                            ${detailsText ? `<span class="source-extra-info">${detailsText}</span>` : ''}
+                            ${detailsHtml}
                             ${repHtml}
                         </div>
                     </div>

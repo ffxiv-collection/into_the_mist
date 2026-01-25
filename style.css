@@ -2067,8 +2067,7 @@ body {
 /* Remove top border from first item */
 .source-item-row:first-child {
     border-top: none;
-    margin-top: 1.5rem;
-    /* Increased spacing from header per request */
+    margin-top: 0;
 }
 
 /* Remove last border if desired, or keep for list feel */

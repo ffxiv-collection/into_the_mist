@@ -1256,7 +1256,6 @@ function showMinionDetails(id) {
                 if (!s) return;
 
                 let iconUrl = s.icon_source_url || '';
-                // Dark mode checks for CDJapan/Boutique could be here but skipping for brevity
 
                 let extraInfos = [];
                 if (ms.details) extraInfos.push(ms.details);
@@ -1268,6 +1267,31 @@ function showMinionDetails(id) {
                 let repHtml = '';
                 if (minion.reputation_rank) {
                     repHtml = `<span class="source-extra-info"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
+                }
+
+                let costHtml = '';
+                if (ms.cost) {
+                    // Check for currency icon
+                    let currencyIcon = '';
+                    if (c && c.icon_currency_url) {
+                        const iconVal = c.icon_currency_url;
+                        if (iconVal.startsWith('http') || iconVal.startsWith('/')) {
+                            currencyIcon = `<img src="${iconVal}" class="currency-icon-small" alt="${c.name}">`;
+                        } else {
+                            // It is text (e.g. € symbol)
+                            currencyIcon = `<span class="currency-text">${iconVal}</span>`;
+                        }
+                    } else if (c && c.name) {
+                        currencyIcon = `<span class="currency-text">${c.name}</span>`;
+                    }
+                    let useDecimals = false;
+                    // Check if it's a real money transition (Boutique, CDJapan, etc.) or small value
+                    if (s.name.match(/boutique|mog|station|store/i) || (c && c.icon_currency_url && !c.icon_currency_url.startsWith('http'))) {
+                        useDecimals = true;
+                    }
+
+                    const costStr = ms.cost.toLocaleString('fr-FR', useDecimals ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : {});
+                    costHtml = `<span class="source-cost badge-cost">${costStr} ${currencyIcon}</span>`;
                 }
 
                 const div = document.createElement('div');

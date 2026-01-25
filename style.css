@@ -2082,16 +2082,21 @@ body {
 .source-item-row .source-name-title {
     color: var(--text-color);
     /* Reset to variable */
+    line-height: 1.25;
 }
 
 .source-item-row .source-extra-info {
     color: var(--text-muted);
     font-style: normal;
-    /* Removed italics per request */
+    line-height: 1.25;
 }
 
+/* Source Details Container */
 .source-details {
-    /* Padding removed for true vertical centering */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Ensure internal centering if height > content */
 }
 
 /* Reset badge for transparent background */

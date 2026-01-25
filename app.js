@@ -1263,7 +1263,7 @@ function showMinionDetails(id) {
 
                 // Location on new line (using div or block)
                 if (ms.location) {
-                    extraInfos.push(`<span class="source-extra-info" style="display:block; margin-top:0.2rem;"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>`);
+                    extraInfos.push(`<span class="source-extra-info" style="display:block;"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>`);
                 }
 
                 let detailsHtml = extraInfos.join('');
@@ -1271,7 +1271,7 @@ function showMinionDetails(id) {
                 // Reputation Rank from Minion Table
                 let repHtml = '';
                 if (minion.reputation_rank) {
-                    repHtml = `<span class="source-extra-info" style="display:block; margin-top:0.2rem;"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
+                    repHtml = `<span class="source-extra-info" style="display:block;"><i class="fa-solid fa-medal"></i> ${minion.reputation_rank}</span>`;
                 }
 
                 let costHtml = '';

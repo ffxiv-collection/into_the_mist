@@ -6,6 +6,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 let supabase;
 let currentUser = null; // Store current user for RLS operations
 let userCollection = new Set(); // Store collected minion IDs
+let userMountCollection = new Set(); // Store collected mount IDs
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1371,6 +1372,20 @@ async function loadMounts() {
     // Loading State
     list.innerHTML = '<p style="text-align:center; padding:2rem;">Chargement des montures...</p>';
 
+    // 1. Fetch User Mount Collection
+    if (currentUser) {
+        const { data: userMounts, error: userError } = await supabase
+            .from('user_mounts')
+            .select('mount_id')
+            .eq('user_id', currentUser.id);
+
+        if (!userError && userMounts) {
+            userMountCollection = new Set(userMounts.map(row => row.mount_id));
+        } else {
+            console.warn('Error fetching mount collection:', userError);
+        }
+    }
+
     // 2. Fetch Mounts Data
     let mountsData = mountsCache;
 
@@ -1467,8 +1482,11 @@ function renderMounts(data) {
             patchMajor = String(mount.patch_id).charAt(0);
         }
 
+        const isCollected = userMountCollection.has(mount.id);
+        const collectedClass = isCollected ? 'collected' : '';
+
         const row = document.createElement('div');
-        row.className = `minion-row row-${patchMajor}`;
+        row.className = `minion-row row-${patchMajor} ${collectedClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
         observer.observe(row);
@@ -1517,6 +1535,9 @@ function renderMounts(data) {
                  <div style="margin-right:auto; display:flex; flex-direction:column; align-items:flex-start;">
                     <span class="minion-name">
                             <span class="minion-name-link" onclick="window.location.hash='mount/${mount.id}'; event.stopPropagation();">${name}</span>
+                            <button class="btn-sources-trigger" title="Infos & Sources"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            ${mount.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
+                            ${mount.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                             ${sourceIconsHtml}
                             ${acquisitionText}
                     </span>
@@ -1534,6 +1555,47 @@ function renderMounts(data) {
             </div>
         `;
 
+        // --- INTERACTIVITY ---
+
+        // 1. Source Button
+        const btnSources = row.querySelector('.btn-sources-trigger');
+        if (btnSources) {
+            btnSources.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openMountModal(mount, patchData);
+            });
+        }
+
+        // 2. Collection Button
+        const btnContainer = row.querySelector('.btn-collect-container');
+        const btnCollect = document.createElement('button');
+        btnCollect.className = isCollected ? 'btn-star-unified collected' : 'btn-star-unified';
+        btnCollect.title = "Ajouter à ma collection";
+        btnCollect.innerHTML = isCollected
+            ? '<i class="fa-solid fa-star"></i>'
+            : '<i class="fa-regular fa-star"></i>';
+
+        btnCollect.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wasCollected = row.classList.contains('collected');
+            if (wasCollected) {
+                userMountCollection.delete(mount.id);
+                row.classList.remove('collected');
+                btnCollect.classList.remove('collected');
+                btnCollect.innerHTML = '<i class="fa-regular fa-star"></i>';
+                playUncollectSound();
+                toggleMountCollection(mount.id, false);
+            } else {
+                userMountCollection.add(mount.id);
+                row.classList.add('collected');
+                btnCollect.classList.add('collected');
+                btnCollect.innerHTML = '<i class="fa-solid fa-star"></i>';
+                playCollectSound();
+                toggleMountCollection(mount.id, true);
+            }
+        });
+        btnContainer.appendChild(btnCollect);
+
         fragment.appendChild(row);
     });
 
@@ -1546,6 +1608,22 @@ function setupMountFilterListeners() {
     view.dataset.init = 'true';
 
     const filterBar = view.querySelector('.filter-bar');
+
+    // Collection Filters
+    filterBar.querySelectorAll('.btn-star-unified').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filterType = btn.dataset.filter;
+            if (activeMountFilters.collection === filterType) {
+                activeMountFilters.collection = null;
+                btn.classList.remove('active');
+            } else {
+                activeMountFilters.collection = filterType;
+                filterBar.querySelectorAll('.btn-star-unified').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            renderMounts(mountsCache);
+        });
+    });
 
     // Patch Filters
     const patchContainer = filterBar.querySelector('.patch-filters');
@@ -1669,6 +1747,60 @@ async function showMountDetails(mountId) {
         row.innerHTML = `${iconHtml}<div class="source-details">${detailHtml}</div>`;
         sourcesList.appendChild(row);
     });
+}
+
+// --- MOUNT HELPERS ---
+async function toggleMountCollection(mountId, isCollected) {
+    if (!currentUser) return;
+    if (isCollected) {
+        const { error } = await supabase.from('user_mounts').insert([{ user_id: currentUser.id, mount_id: mountId }]);
+        if (error) console.error('Error saving mount:', error);
+    } else {
+        const { error } = await supabase.from('user_mounts').delete().eq('user_id', currentUser.id).eq('mount_id', mountId);
+        if (error) console.error('Error deleting mount:', error);
+    }
+}
+
+function openMountModal(mount, patchData) {
+    const modal = document.getElementById('details-modal');
+    if (!modal) return;
+    const list = document.getElementById('modal-sources-list');
+    list.innerHTML = '';
+
+    const sources = (mount.mount_sources || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+    if (sources.length === 0 && mount.acquisition) {
+        list.innerHTML = `<div class="source-item"><span class="source-desc">${mount.acquisition}</span></div>`;
+    }
+
+    sources.forEach(ms => {
+        const s = ms.sources;
+        const c = ms.currencies;
+        if (!s) return;
+
+        let iconUrl = s.icon_source_url || '';
+        // Dark Mode Logic
+        if (s.name === 'Square Enix Boutique') {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) iconUrl = 'https://res.cloudinary.com/dd4rdtrig/image/upload/v1765935529/square_enix_boutique_blanc_mbqtdy.webp';
+        }
+
+        const div = document.createElement('div');
+        div.className = 'source-item-row source-item';
+        div.innerHTML = `
+            <div class="source-left">
+                ${iconUrl.startsWith('http') ? `<img src="${iconUrl}" class="source-icon-large">` : `<i class="${iconUrl} source-icon-fa-large"></i>`}
+                <div class="source-details section-column">
+                    <span class="source-name-title">${s.name}</span>
+                    <span class="source-extra-info">${ms.details || ''}</span>
+                    ${ms.location ? `<span class="source-extra-info"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>` : ''}
+                </div>
+            </div>
+            ${ms.cost ? `<div class="source-right"><span class="source-cost">${ms.cost.toLocaleString()} ${c ? c.name : ''}</span></div>` : ''}
+        `;
+        list.appendChild(div);
+    });
+    modal.classList.remove('hidden');
 }
 
 

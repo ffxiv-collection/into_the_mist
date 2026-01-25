@@ -1621,6 +1621,7 @@ function renderMounts(data) {
         let logoHtml = patchLogoUrl ? `<img src="${patchLogoUrl}" class="patch-logo" alt="Logo Patch">` : '';
 
         // Sources Icons
+        let shopIconRendered = false;
         const sourceIconsHtml = (mount.mount_sources || []).map(ms => {
             const s = ms.sources;
             if (!s) return '';
@@ -1633,6 +1634,7 @@ function renderMounts(data) {
 
             if (s.name && (s.name.toLowerCase().includes('boutique') || s.name.toLowerCase().includes('cdjapan'))) {
                 if (mount.shop_url) {
+                    shopIconRendered = true;
                     return `<a href="${mount.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="${tooltip}"></i></a>`;
                 }
             }
@@ -1642,6 +1644,11 @@ function renderMounts(data) {
             }
             return '';
         }).join('');
+
+        // FALLBACK: If we have a Shop URL but no "Shop Source" rendered it
+        const standaloneShopHtml = (mount.shop_url && !shopIconRendered)
+            ? `<a href="${mount.shop_url}" target="_blank" class="shop-link" onclick="event.stopPropagation()"><i class="fa-solid fa-cart-shopping meta-icon-fa" title="Acheter en ligne"></i></a>`
+            : '';
 
         const acquisitionText = (mount.acquisition && sourceIconsHtml === '') ? `<i class="fa-solid fa-circle-info meta-icon-fa" title="${mount.acquisition}"></i>` : '';
 
@@ -1655,7 +1662,8 @@ function renderMounts(data) {
                             ${mount.hôtel_des_ventes ? '<i class="fa-solid fa-gavel meta-icon-fa" title="Disponible à l\'hôtel des ventes"></i>' : ''}
                             ${mount.malle_surprise ? '<i class="fa-solid fa-box-open meta-icon-fa" title="Disponible dans une malle-surprise"></i>' : ''}
                             ${sourceIconsHtml}
-                            ${acquisitionText}
+                            ${standaloneShopHtml}
+                            ${sourceIconsHtml === '' && standaloneShopHtml === '' ? acquisitionText : ''}
                     </span>
                 </div>
             </div>

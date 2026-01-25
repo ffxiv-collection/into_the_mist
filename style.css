@@ -2013,21 +2013,13 @@ body {
 }
 
 /* Logo in Info Line */
+/* Logo in Info Line */
 .detail-patch-logo-large {
-    height: 60px;
-    /* Slightly smaller for info line */
+    height: 120px;
+    /* Increased as requested */
     width: auto;
     object-fit: contain;
     flex-shrink: 0;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-/* Larger Patch Logo */
-.detail-patch-logo-large {
-    height: 80px;
-    /* Increased from 40px */
-    width: auto;
-    object-fit: contain;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 

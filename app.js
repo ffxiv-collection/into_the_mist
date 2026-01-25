@@ -1266,7 +1266,14 @@ function showMinionDetails(id) {
                     } else if (c && c.name) {
                         currencyIcon = `<span class="currency-text">${c.name}</span>`;
                     }
-                    costHtml = `<span class="source-cost badge-cost">${ms.cost.toLocaleString()} ${currencyIcon}</span>`;
+                    let useDecimals = false;
+                    // Check if it's a real money transition (Boutique, CDJapan, etc.) or small value
+                    if (s.name.match(/boutique|mog|station|store/i) || (c && c.icon_currency_url && !c.icon_currency_url.startsWith('http'))) {
+                        useDecimals = true;
+                    }
+
+                    const costStr = ms.cost.toLocaleString('fr-FR', useDecimals ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : {});
+                    costHtml = `<span class="source-cost badge-cost">${costStr} ${currencyIcon}</span>`;
                 }
 
                 const div = document.createElement('div');

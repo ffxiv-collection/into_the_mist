@@ -1854,6 +1854,13 @@ body {
     flex-direction: column;
 }
 
+.detail-sources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 3rem;
+    margin-top: 1.5rem;
+}
+
 .detail-header {
     margin-bottom: 2rem;
 }

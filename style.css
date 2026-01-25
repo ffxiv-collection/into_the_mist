@@ -1804,7 +1804,7 @@ body {
 
 .detail-container {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 4rem;
     align-items: start;
     max-width: 1200px;
@@ -1837,7 +1837,8 @@ body {
 }
 
 /* Info Section */
-.detail-info-wrapper {
+.detail-info-wrapper,
+.detail-sources-wrapper {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
     border-radius: 24px;
     padding: 2rem;

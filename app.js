@@ -1257,7 +1257,15 @@ function showMinionDetails(id) {
     // Sources Logic (Duplicated from render logic roughly)
     if (sourcesEl) {
         sourcesEl.innerHTML = '';
-        const sources = (minion.minion_sources || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        // Sort by ID for chronological order
+        const sources = (minion.minion_sources || []).sort((a, b) => (a.id || 0) - (b.id || 0));
+
+        // Toggle 2-column layout
+        if (sources.length > 1) {
+            sourcesEl.classList.add('has-multiple-sources');
+        } else {
+            sourcesEl.classList.remove('has-multiple-sources');
+        }
 
         if (sources.length === 0 && minion.acquisition) {
             sourcesEl.innerHTML = `<div class="source-item"><span class="source-name">${minion.acquisition}</span></div>`;

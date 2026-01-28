@@ -1512,6 +1512,7 @@ async function loadMounts() {
             .select(`
                 *,
                 patches (*),
+                reputation_rank,
                 mount_sources (
                     details,
                     cost,
@@ -2013,6 +2014,7 @@ function openMountModal(mount, patchData) {
                 ${sourceTitleHtml}
                 ${sourceDetailsHtml}
                 ${ms.location ? `<span style="font-weight:bold; font-size:0.85rem;">${ms.location}</span>` : ''}
+                ${mount.reputation_rank ? `<span style="font-size:0.85rem;">${mount.reputation_rank}</span>` : ''}
             </div>
             ${costHtml}
         `;

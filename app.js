@@ -1601,9 +1601,10 @@ function renderMounts(data) {
 
         const isCollected = userMountCollection.has(mount.id);
         const collectedClass = isCollected ? 'collected' : '';
+        const unavailableClass = (mount.available === false) ? 'unavailable' : '';
 
         const row = document.createElement('div');
-        row.className = `minion-row row-${patchMajor} ${collectedClass}`;
+        row.className = `minion-row row-${patchMajor} ${collectedClass} ${unavailableClass}`;
         row.style.animationDelay = `${index * 0.05}s`;
 
         observer.observe(row);

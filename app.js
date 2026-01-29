@@ -1536,6 +1536,14 @@ async function loadMounts() {
     }
 
     renderMounts(mountsData);
+
+    // SCROLL RESTORE
+    const savedScroll = localStorage.getItem('pageScroll');
+    if (savedScroll && window.location.hash.includes('mounts')) {
+        setTimeout(() => {
+            window.scrollTo(0, parseInt(savedScroll));
+        }, 100);
+    }
 }
 
 function renderMounts(data) {

@@ -774,7 +774,7 @@ function renderMinions(data) {
             let tooltip = s.name;
             if (ms.details) tooltip += `: ${ms.details}`;
             if (ms.cost) {
-                tooltip += ` (${ms.cost.toLocaleString()}${c ? ' ' + c.name : ''})`;
+                tooltip += ` (${ms.cost.toLocaleString('fr-FR')}${c ? ' ' + c.name : ''})`;
             }
 
             const iconSrc = s.icon_source_url || '';
@@ -1004,7 +1004,7 @@ function openModal(minion, patchData) {
                 <div class="source-cost">
                     <span class="cost-value">${currencyVal === '€' || (c && c.name === 'Euro')
                     ? ms.cost.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                    : ms.cost.toLocaleString()}</span>
+                    : ms.cost.toLocaleString('fr-FR')}</span>
                     ${currencyHtml}
                 </div>
             `;
@@ -1992,7 +1992,7 @@ function openMountModal(mount, patchData) {
                 <div class="source-cost">
                     <span class="cost-value">${currencyVal === '€' || (c && c.name === 'Euro')
                     ? ms.cost.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                    : ms.cost.toLocaleString()}</span>
+                    : ms.cost.toLocaleString('fr-FR')}</span>
                     ${currencyHtml}
                 </div>
             `;

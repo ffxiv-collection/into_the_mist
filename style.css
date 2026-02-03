@@ -258,7 +258,9 @@
         border-color: var(--border);
     }
 
-
+    .eorzeadb_link {
+        color: white !important;
+    }
 }
 
 /* Custom Font */
@@ -1443,7 +1445,7 @@ body {
 /* Eorzea Database Links */
 .eorzeadb_link {
     text-decoration: none;
-    color: inherit;
+    color: black;
     transition: color 0.2s;
 }
 

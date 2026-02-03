@@ -1034,7 +1034,7 @@ function openModal(minion, patchData) {
             <div class="source-info">
                 ${sourceTitleHtml}
                 ${sourceDetailsHtml}
-                ${ms.location ? `<span style="font-weight:bold; font-size:0.85rem;">${ms.location}</span>` : ''}
+                ${ms.location ? `<span class="location-link-container" style="font-weight:bold; font-size:0.85rem;">${ms.location}</span>` : ''}
                 ${minion.reputation_rank ? `<span style="font-size:0.85rem;">${minion.reputation_rank}</span>` : ''}
             </div>
             ${costHtml}
@@ -1416,7 +1416,7 @@ function showMinionDetails(id) {
 
                 // Location on new line (using div or block)
                 if (ms.location) {
-                    extraInfos.push(`<span class="source-extra-info" style="display:block;"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>`);
+                    extraInfos.push(`<span class="source-extra-info location-link-container" style="display:block;"><i class="fa-solid fa-map-pin"></i> ${ms.location}</span>`);
                 }
 
                 let detailsHtml = extraInfos.join('');

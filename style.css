@@ -257,10 +257,6 @@
         background: #2d2d2d;
         border-color: var(--border);
     }
-
-    .eorzeadb_link {
-        color: white !important;
-    }
 }
 
 /* Custom Font */
@@ -1445,8 +1441,19 @@ body {
 /* Eorzea Database Links */
 .eorzeadb_link {
     text-decoration: none;
-    color: black;
+    color: inherit;
     transition: color 0.2s;
+}
+
+/* Location Injected Links */
+.location-link-container a {
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.location-link-container a:hover {
+    color: var(--gold);
 }
 
 .eorzeadb_link:hover {

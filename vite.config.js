@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-    base: '/into_the_mist/',
+    base: '/',
     envPrefix: 'VITE_',
     build: {
         rollupOptions: {
